@@ -3,8 +3,7 @@ import { useNavigate } from "react-router";
 import { Card, CardContent, CardActions, Button, Typography } from '@mui/material';
 
 /* Controller */
-export function DatabaseEndpointCardController() {
-    const { dbep } = props;
+export default function DatabaseEndpointCardController({ dbep }) {
     let navigate = useNavigate();
     return (
         <DatabaseEndpointCard dbep={dbep} navigate={navigate} />

@@ -24,12 +24,12 @@ export default function AppController() {
 
   return (
     <Box>
-      {
-        session == null ?
-        <Box/>
-        : <App sessionContextValue={sessionContextValue} />
-      }
-    </Box>
+        {
+          session != null ? /* REVERSE WHEN SESSION WORKS */
+          <Box/>
+          : <App sessionContextValue={sessionContextValue} />
+        }
+      </Box>
   )
 }
 
