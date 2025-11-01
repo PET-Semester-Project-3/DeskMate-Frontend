@@ -1,12 +1,14 @@
 import * as React from 'react';
 import { Box, Typography, Stack } from '@mui/material';
-import { DESKS, USERSTODESKS, USERS } from '../../dummyData/dummyData';
+import { useSession } from '../SessionContext';
 import DeskView from '../components/desk/DeskView';
-import Cookies from 'js-cookie';
+import { DESKS, USERSTODESKS, USERS } from '../../dummyData/dummyData';
 
-export default function DeskPage() {
+
+/* Controller */
+export default function DeskPageController() {
   
-  const session = Cookies.get('session')
+  const session = useSession();
 
   // Get user ID from session
   const currentUser = session?.user?.email
@@ -20,6 +22,13 @@ export default function DeskPage() {
         .filter(Boolean)
     : [];
 
+  return (
+    <DeskPage userDesks={userDesks} />
+  )
+}
+
+/* View */
+export function DeskPage({ userDesks }) {
   return (
     <Box title="" sx={{ boxShadow: 2 }}>
       <Typography

@@ -14,7 +14,9 @@ import {
 import WarningIcon from '@mui/icons-material/Warning';
 import deskImage from '../../assets/desk.png';
 
-export default function DeskCard({ desk }) {
+/* Controller */
+export default function DeskCardController({ desk }) {
+
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [isOnline, setIsOnline] = React.useState(desk.status === 'Online');
 
@@ -34,6 +36,21 @@ export default function DeskCard({ desk }) {
   const open = Boolean(anchorEl);
   const id = open ? 'error-popover' : undefined;
 
+  return (
+    <DeskCard 
+      anchorEl={anchorEl}
+      isOnline={isOnline}
+      handleClick={handleClick}
+      handleClose={handleClose}
+      handleSwitchChange={handleSwitchChange}
+      open={open}
+      id={id}
+    />
+  )
+}
+
+/* View */
+export function DeskCard({ anchorEl, isOnline, handleClick, handleClose, handleSwitchChange, open, id }) {
   return (
     <Card
       sx={{

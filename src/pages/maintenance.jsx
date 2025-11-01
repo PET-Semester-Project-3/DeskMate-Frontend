@@ -3,7 +3,15 @@ import { Typography, Box } from '@mui/material';
 import DeskCard from '../components/maintenance/DeskCard';
 import { DESKS } from '../../dummyData/dummyData';
 
-export default function MaintenancePage() {
+/* Controller */
+export default function MaintenancePageController() {
+  return (
+    <MaintenancePage/>
+  )
+}
+
+/* View */
+export function MaintenancePage() {
   return (
     <PageContainer title="" sx={{ boxShadow: 2 }}>
       <Typography

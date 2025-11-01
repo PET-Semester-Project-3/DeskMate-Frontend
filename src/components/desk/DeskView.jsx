@@ -16,7 +16,9 @@ import CheckIcon from '@mui/icons-material/Check';
 import EditIcon from '@mui/icons-material/Edit';
 import deskImage from '../../assets/desk.png';
 
-export default function DeskView({ desk }) {
+/* Controller */
+export default function DeskViewController({ desk }){
+
   const [deskName, setDeskName] = React.useState(desk.name);
   const [tempName, setTempName] = React.useState(desk.name);
   const [isEditingName, setIsEditingName] = React.useState(false);
@@ -32,6 +34,24 @@ export default function DeskView({ desk }) {
     setIsEditingName(true);
   };
 
+  return (
+    <DeskView 
+      deskName={deskName} 
+      tempName={tempName}
+      isEditingName={isEditingName} 
+      height={height} 
+      isOnline={isOnline} 
+      setTempName={setTempName}
+      setHeight={setHeight}
+      setIsOnline={setIsOnline}
+      handleNameConfirm={handleNameConfirm} 
+      handleNameEdit={handleNameEdit}
+    />
+  )
+}
+
+/* View */
+export function DeskView({ deskName, tempName, isEditingName, height, isOnline, setTempName, setHeight, setIsOnline, handleNameConfirm, handleNameEdit }) {
   return (
     <Card sx={{ mb: 3, p: 3 }}>
       <Grid container spacing={4}>

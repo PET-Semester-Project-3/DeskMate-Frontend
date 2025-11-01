@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { useNavigate } from "react-router";
-import { Box, Card, CardContent, CardActions, Button, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
+import { DatabaseEndpointCard } from '../components/database/DatabaseEndpointCard'
 
-const databaseendpoints = 
+const DATABASEENDPOINTS = 
 [
   { id: 1, name: "Desks", description: "The desks available in the system.", endpoint: "/desks" },
   { id: 2, name: "Users", description: "The users that exists in the system.", endpoint: "/users" },
@@ -11,34 +11,15 @@ const databaseendpoints =
   { id: 5, name: "User To Permissions", description: "The relationships for users and permissions.", endpoint: "/userstopermissions" }
 ]
 
-function DatabaseEndpointCard(props) {
-  const { dbep } = props;
-  let navigate = useNavigate();
+/* Controller */
+export default function DatabasePageController() {
   return (
-    <Card id={dbep.id} key='dbtablecard' sx={{ m: 1, minWidth: '250px' }}>
-      <CardContent>
-        <Typography variant='h6' gutterBottom>{dbep.name}</Typography>
-        <Typography variant='body1' gutterBottom>{dbep.description}</Typography>
-        <Typography variant='caption' gutterBottom sx={{ display: 'block' }}>{dbep.endpoint}</Typography>
-      </CardContent>
-      <CardActions>
-        <Button
-          variant="contained"
-          size="small"
-          onClick={() => navigate('.' + dbep.endpoint)}
-          sx={{
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            '&:hover': {
-              background: 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)',
-            }
-          }}
-        >Access</Button>
-      </CardActions>
-    </Card>
-  );
+    <DatabasePage databaseEndpoints={DATABASEENDPOINTS} />
+  )
 }
 
-export default function DatabasePage() {
+/* View */
+export function DatabasePage({ databaseEndpoints }) {
   return (
     <Box sx={{ boxShadow: 2 }}>
       <Typography
@@ -53,7 +34,7 @@ export default function DatabasePage() {
       </Typography>
       <Box>
         <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
-          {databaseendpoints.map(dbep => {
+          {databaseEndpoints.map(dbep => {
             return <DatabaseEndpointCard dbep={dbep} ></DatabaseEndpointCard>
           })}
         </Box>

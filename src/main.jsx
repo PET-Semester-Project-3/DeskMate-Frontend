@@ -4,13 +4,12 @@ import { createBrowserRouter, RouterProvider } from 'react-router';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import App from './App';
-import Layout from './layouts/dashboard';
+import Layout from './layouts/basicWebLayout';
 import DashboardPage from './pages/index';
 import DatabasePage from './pages/database';
 import DeskPage from './pages/desk';
 import MaintenancePage from './pages/maintenance';
 import theme from './theme';
-
 
 const router = createBrowserRouter([
   {

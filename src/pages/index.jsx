@@ -1,7 +1,15 @@
 import * as React from 'react';
 import { Typography, Box } from '@mui/material';
 
-export default function DashboardPage() {
+/* Controller */
+export default function DashboardPageController() {
+  return (
+    <DashboardPage/>
+  )
+}
+
+/* View */
+export function DashboardPage() {
   return (
     <Box title="" sx={{ boxShadow: 2 }}>
         <Typography
@@ -160,25 +168,7 @@ export default function DashboardPage() {
               This is where CRUD (Create, Read, Update, Delete) will be implemented and utilized.
             </Box>
           </Box>
-
         </section>
-
-
-        <Box
-          component="footer"
-          sx={{
-            mt: 4,
-            pt: 3,
-            borderTop: '2px solid rgba(102, 126, 234, 0.2)',
-            textAlign: 'center',
-            color: 'text.secondary'
-          }}
-        >
-          <i>
-            DeskMate (c) 2025, WIP
-          </i>
-        </Box>
-                
     </Box>
   )
 }

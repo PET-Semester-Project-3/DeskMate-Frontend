@@ -2,14 +2,15 @@ import * as React from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router';
 import { SessionContext } from './SessionContext';
 import Cookies from 'js-cookie';
+import { Box } from '@mui/material';
 
-export default function App() {
+/* Controller */
+export default function AppController() {
 
   const [session, setSession] = React.useState(() => {
     const savedSession = Cookies.get('session');
     return savedSession ? JSON.parse(savedSession) : null;
   });
-  const navigate = useNavigate();
 
   React.useEffect(() => {
     if (session) {
@@ -19,15 +20,21 @@ export default function App() {
     }
   }, [session]);
 
-  const signIn = React.useCallback(() => {
-    navigate('/sign-in');
-  }, [navigate]);
-  const signOut = React.useCallback(() => {
-    setSession(null);
-    navigate('/sign-in');
-  }, [navigate]);
   const sessionContextValue = React.useMemo(() => ({ session, setSession }), [session, setSession]);
 
+  return (
+    <Box>
+      {
+        session == null ?
+        <Box/>
+        : <App sessionContextValue={sessionContextValue} />
+      }
+    </Box>
+  )
+}
+
+/* View */
+export function App({ sessionContextValue }) {
   return (
     <SessionContext.Provider value={sessionContextValue}>
         <Outlet />
