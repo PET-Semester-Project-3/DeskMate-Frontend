@@ -12,7 +12,7 @@ import {
   Switch,
 } from '@mui/material';
 import WarningIcon from '@mui/icons-material/Warning';
-import deskImage from '../../assets/desk.png';
+import deskImage from '../../../assets/desk.png';
 
 /* Controller */
 export default function DeskCardController({ desk }) {

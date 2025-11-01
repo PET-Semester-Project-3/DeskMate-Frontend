@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Box, Typography } from '@mui/material';
-import DatabaseEndpointCard from '../components/database/DatabaseEndpointCard'
+import DatabaseEndpointCard from './components/DatabaseEndpointCard'
 
 const DATABASEENDPOINTS = 
 [

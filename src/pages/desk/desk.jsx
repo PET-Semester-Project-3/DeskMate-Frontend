@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Box, Typography, Stack } from '@mui/material';
-import { useSession } from '../SessionContext';
-import DeskView from '../components/desk/DeskView';
-import { DESKS, USERSTODESKS, USERS } from '../../dummyData/dummyData';
+import { useSession } from '../../SessionContext';
+import DeskView from './components/DeskView';
+import { DESKS, USERSTODESKS, USERS } from '../../../dummyData/dummyData';
 
 
 /* Controller */

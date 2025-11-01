@@ -6,9 +6,9 @@ import CssBaseline from '@mui/material/CssBaseline';
 import App from './App';
 import Layout from './layouts/basicWebLayout';
 import DashboardPage from './pages/index';
-import DatabasePage from './pages/database';
-import DeskPage from './pages/desk';
-import MaintenancePage from './pages/maintenance';
+import DatabasePage from './pages/database/database';
+import DeskPage from './pages/desk/desk';
+import MaintenancePage from './pages/maintenance/maintenance';
 import theme from './theme';
 
 const router = createBrowserRouter([

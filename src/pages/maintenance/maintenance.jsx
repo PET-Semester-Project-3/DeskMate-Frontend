@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Typography, Box } from '@mui/material';
-import DeskCard from '../components/maintenance/DeskCard';
-import { DESKS } from '../../dummyData/dummyData';
+import DeskCard from './components/DeskCard';
+import { DESKS } from '../../../dummyData/dummyData';
 
 /* Controller */
 export default function MaintenancePageController() {

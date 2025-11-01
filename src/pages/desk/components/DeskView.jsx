@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import EditIcon from '@mui/icons-material/Edit';
-import deskImage from '../../assets/desk.png';
+import deskImage from '../../../assets/desk.png';
 
 /* Controller */
 export default function DeskViewController({ desk }){
