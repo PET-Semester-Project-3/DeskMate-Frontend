@@ -37,12 +37,12 @@ export default function NavBarController(){
   const session = useSession();
 
   return (
-    <NavBar imageSrc={imageSrc} navigate={navigate} session={session} />
+    <NavBar imageSrc={imageSrc} navigate={navigate} user={session.user} />
   )
 }
 
 /* View */
-export function NavBar({ imageSrc, navigate, session }) {
+export function NavBar({ imageSrc, navigate, user }) {
 
   return (
     <Paper 
@@ -84,7 +84,7 @@ export function NavBar({ imageSrc, navigate, session }) {
         }}
       >
         {
-          session ?
+          user != null ?
             <Button 
               onClick={() => navigate('/')}
             >Sign-Out</Button>
