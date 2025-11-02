@@ -13,7 +13,7 @@ export default function MaintenancePageController() {
 /* View */
 export function MaintenancePage() {
   return (
-    <PageContainer title="" sx={{ boxShadow: 2 }}>
+    <Box sx={{ boxShadow: 2 }}>
       <Typography
         variant="h4"
         sx={{
@@ -29,6 +29,6 @@ export function MaintenancePage() {
           <DeskCard key={desk.id} desk={desk} />
         ))}
       </Box>
-    </PageContainer>
+    </Box>
   );
 }

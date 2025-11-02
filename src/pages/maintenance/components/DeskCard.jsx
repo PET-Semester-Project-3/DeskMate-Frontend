@@ -38,6 +38,7 @@ export default function DeskCardController({ desk }) {
 
   return (
     <DeskCard 
+      desk={desk}
       anchorEl={anchorEl}
       isOnline={isOnline}
       handleClick={handleClick}
@@ -50,7 +51,7 @@ export default function DeskCardController({ desk }) {
 }
 
 /* View */
-export function DeskCard({ anchorEl, isOnline, handleClick, handleClose, handleSwitchChange, open, id }) {
+export function DeskCard({ desk, anchorEl, isOnline, handleClick, handleClose, handleSwitchChange, open, id }) {
   return (
     <Card
       sx={{

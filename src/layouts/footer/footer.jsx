@@ -13,21 +13,17 @@ export default function FooterController(){
 export function Footer() {
   return (
     <Box
-          component="footer"
-          sx={{
-            mt: 4,
-            pt: 3,
-            borderTop: '2px solid rgba(102, 126, 234, 0.2)',
-            textAlign: 'center',
-          }}
-        >
-          <Typography
-            sx = {{
-              color: 'text.secondary'
-            }}
-          >
-            DeskMate (c) 2025, WIP
-          </Typography>
-        </Box>
+      component="footer"
+      sx={{
+        borderTop: '2px solid rgba(102, 126, 234, 0.2)',
+        textAlign: 'center',
+      }}
+    >
+      <Typography
+        sx = {{
+            color: 'text.secondary'
+        }}
+      >DeskMate (c) 2025, WIP</Typography>
+    </Box>
   );
 }
