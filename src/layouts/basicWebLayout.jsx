@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Outlet } from 'react-router';
 import { Box, Typography } from '@mui/material';
-import FooterController from './footer/Footer'
+import Footer from './footer/Footer'
 import NavBar from './navbar/NavBar';
 
 /* Controller */
@@ -19,7 +19,7 @@ export function Layout() {
       <Box sx={{ p: 3, pt: 18 }}>
           <Outlet />
       </Box>
-      <FooterController/>
+      <Footer/>
     </Box>
   );
 }
