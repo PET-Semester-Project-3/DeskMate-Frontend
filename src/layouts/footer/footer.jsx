@@ -17,6 +17,7 @@ export function Footer() {
       sx={{
         borderTop: '2px solid rgba(102, 126, 234, 0.2)',
         textAlign: 'center',
+        p: 2
       }}
     >
       <Typography
