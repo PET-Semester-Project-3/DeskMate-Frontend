@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Outlet } from 'react-router';
 import { Box, Typography } from '@mui/material';
-import FooterController from './footer/footer'
+import FooterController from './footer/Footer'
 
 /* Controller */
 export default function LayoutController() {

@@ -1,0 +1,33 @@
+import * as React from 'react';
+import { Outlet } from 'react-router';
+import { Box, Typography } from '@mui/material';
+
+/* Controller */
+export default function FooterController(){
+  return (
+    <Footer/>
+  )
+}
+
+/* View */
+export function Footer() {
+  return (
+    <Box
+          component="footer"
+          sx={{
+            mt: 4,
+            pt: 3,
+            borderTop: '2px solid rgba(102, 126, 234, 0.2)',
+            textAlign: 'center',
+          }}
+        >
+          <Typography
+            sx = {{
+              color: 'text.secondary'
+            }}
+          >
+            DeskMate (c) 2025, WIP
+          </Typography>
+        </Box>
+  );
+}

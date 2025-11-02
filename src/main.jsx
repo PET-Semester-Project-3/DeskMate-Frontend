@@ -4,11 +4,11 @@ import { createBrowserRouter, RouterProvider } from 'react-router';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import App from './App';
-import Layout from './layouts/basicWebLayout';
-import DashboardPage from './pages/index';
-import DatabasePage from './pages/database/database';
-import DeskPage from './pages/desk/desk';
-import MaintenancePage from './pages/maintenance/maintenance';
+import Layout from './layouts/BasicWebLayout';
+import DashboardPage from './pages/dashboard/DashboardPage';
+import DatabasePage from './pages/database/DatabasePage';
+import DeskPage from './pages/desk/DeskPage';
+import MaintenancePage from './pages/maintenance/MaintenancePage';
 import theme from './theme';
 
 const router = createBrowserRouter([
