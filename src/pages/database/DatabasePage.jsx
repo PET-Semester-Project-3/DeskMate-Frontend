@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Box, Typography } from '@mui/material';
-import { createBrowserRouter, RouterProvider } from 'react-router';
 import DatabaseDataSelection from './components/DatabaseDataSelection'
 import DatabaseDataGrid from './components/DatabaseDataGrid'
 import { DESKS, USERSTODESKS, USERS, PERMISSIONS, USERTOPERMISSONS } from '../../../dummyData/dummyData';

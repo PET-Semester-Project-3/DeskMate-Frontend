@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { useNavigate } from "react-router";
 import { DataGrid  } from '@mui/x-data-grid';
-import { Box, Card, CardContent, CardActions, Button, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 
 /* Controller */
 export default function DatabaseDataGridController({ rows }) {

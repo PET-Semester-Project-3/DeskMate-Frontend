@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Outlet, useNavigate, useLocation } from 'react-router';
+import { Outlet } from 'react-router';
 import { SessionContext } from './SessionContext';
 import Cookies from 'js-cookie';
 import { Box } from '@mui/material';

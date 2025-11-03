@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Box, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel } from '@mui/material';
+import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel } from '@mui/material';
 
 /* Controller */
 export default function DatabaseDataSelectionController({ dbSelection, onSelectionChanged }) {
