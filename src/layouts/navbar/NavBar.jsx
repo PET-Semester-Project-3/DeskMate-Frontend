@@ -54,7 +54,8 @@ export function NavBar({ imageSrc, navigate, user }) {
         borderBottom: '2px solid rgba(102, 126, 234, 0.2)',
         pl: 1,
         position: 'fixed',
-        bgcolor: 'background.default'
+        bgcolor: 'background.default',
+        zIndex: 950
       }} 
     >
       <Link onClick={() => navigate('/')} >

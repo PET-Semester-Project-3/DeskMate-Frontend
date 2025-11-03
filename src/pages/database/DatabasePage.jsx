@@ -1,25 +1,65 @@
 import * as React from 'react';
 import { Box, Typography } from '@mui/material';
-import DatabaseEndpointCard from './components/DatabaseEndpointCard'
+import { createBrowserRouter, RouterProvider } from 'react-router';
+import DatabaseDataSelection from './components/DatabaseDataSelection'
+import DatabaseDataGrid from './components/DatabaseDataGrid'
+import { DESKS, USERSTODESKS, USERS, PERMISSIONS, USERTOPERMISSONS } from '../../../dummyData/dummyData';
 
-const DATABASEENDPOINTS = 
-[
-  { id: 1, name: "Desks", description: "The desks available in the system.", endpoint: "/desks" },
-  { id: 2, name: "Users", description: "The users that exists in the system.", endpoint: "/users" },
-  { id: 3, name: "Permissions", description: "The permissions set for the website.", endpoint: "/permissions" },
-  { id: 4, name: "User To Desks", description: "The relationships for users and desks.", endpoint: "/userstodesks" },
-  { id: 5, name: "User To Permissions", description: "The relationships for users and permissions.", endpoint: "/userstopermissions" }
+const DBDATASELECTION = [
+    {
+        name: 'Desks',
+    },
+    {
+        name: 'Users',
+    },
+    {
+        name: 'User To Desks',
+    },
+    {
+        name: 'Permissions',
+    },
+    {
+        name: 'User To Permissions',
+    },
 ]
 
 /* Controller */
 export default function DatabasePageController() {
+
+  const [selectedTable, setSelectedTable] = React.useState(DBDATASELECTION[0].name);
+  const [tableRows, setTableRows] = React.useState([]);
+
+  const onSelectionChanged = (newSelectedTable) => {
+    setSelectedTable(newSelectedTable);
+  };
+
+  React.useEffect(() => {
+    switch(selectedTable){
+      case 'Desks':
+        setTableRows(DESKS);
+        break;
+      case 'Users':
+        setTableRows(USERS);
+        break;
+      case 'User To Desks':
+        setTableRows(USERSTODESKS);
+        break;
+      case 'Permissions':
+        setTableRows(PERMISSIONS);
+        break;
+      case 'User To Permissions':
+        setTableRows(USERTOPERMISSONS);
+        break;
+    };
+  }, [selectedTable])
+
   return (
-    <DatabasePage databaseEndpoints={DATABASEENDPOINTS} />
+    <DatabasePage dbSelection={[...DBDATASELECTION]} onSelectionChanged={onSelectionChanged} rows={tableRows} />
   )
 }
 
 /* View */
-export function DatabasePage({ databaseEndpoints }) {
+export function DatabasePage({ dbSelection, onSelectionChanged, rows }) {
   return (
     <Box sx={{ boxShadow: 2 }}>
       <Typography
@@ -33,10 +73,9 @@ export function DatabasePage({ databaseEndpoints }) {
         Database Management
       </Typography>
       <Box>
+        <DatabaseDataSelection dbSelection={dbSelection} onSelectionChanged={onSelectionChanged} />
         <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
-          {databaseEndpoints.map(dbep => {
-            return <DatabaseEndpointCard dbep={dbep} ></DatabaseEndpointCard>
-          })}
+          <DatabaseDataGrid rows={rows} />
         </Box>
       </Box>
     </Box>
