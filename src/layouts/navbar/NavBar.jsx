@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router';
-import { useSession } from '../../SessionContext';
+import { useSessionContext } from '../../SessionContext';
 import { Box, Paper, Button, Link, ButtonGroup } from '@mui/material';
 import DeskmateInverseSVG from '../../assets/DeskMateInverse.svg'
 import DeskmateSVG from '../../assets/DeskMate.svg'
@@ -34,15 +34,27 @@ export default function NavBarController(){
 
   const navigate = useNavigate();
 
-  const session = useSession();
+  const sessionContext = useSessionContext();
+
+  const handleLogoClick = () => {
+    navigate('/');
+  };
+
+  const handlePageClick = (page) => {
+    navigate(page.path);
+  };
+
+  const handleSignOutClick = () => {
+    sessionContext.setSession(null);
+  };
 
   return (
-    <NavBar imageSrc={imageSrc} navigate={navigate} user={session.user} />
-  )
+    <NavBar imageSrc={imageSrc} logoClick={handleLogoClick} pageClick={handlePageClick} signoutClick={handleSignOutClick} sessionContext={sessionContext} />
+  );
 }
 
 /* View */
-export function NavBar({ imageSrc, navigate, user }) {
+export function NavBar({ imageSrc, logoClick, pageClick, signoutClick, sessionContext }) {
 
   return (
     <Paper 
@@ -58,7 +70,7 @@ export function NavBar({ imageSrc, navigate, user }) {
         zIndex: 950
       }} 
     >
-      <Link onClick={() => navigate('/')} >
+      <Link onClick={logoClick} >
         <img height='100' src={imageSrc} />
       </Link>
       <ButtonGroup 
@@ -70,7 +82,7 @@ export function NavBar({ imageSrc, navigate, user }) {
           PAGES.map(page => {
             return (
               <Button 
-                onClick={() => navigate(page.path)}
+                onClick={() => pageClick(page)}
               >{page.name}</Button>
             )
           })
@@ -84,15 +96,9 @@ export function NavBar({ imageSrc, navigate, user }) {
           pr: 3
         }}
       >
-        {
-          user != null ?
-            <Button 
-              onClick={() => navigate('/')}
-            >Sign-Out</Button>
-            : <Button 
-                onClick={() => navigate('/')}
-              >Sign-In</Button>
-        }
+        <Button 
+          onClick={signoutClick}
+        >Sign-Out</Button>
       </Box>
     </Paper>
   );

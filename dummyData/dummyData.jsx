@@ -14,8 +14,8 @@ export const DESKS =
 
 export const USERS = 
 [
-    { id: 1, name: "Guest", email: "guest@guest.com", password: "guest" },
-    { id: 2, name: "Admin", email: "admin@admin.com", password: "admin" }
+    { id: 1, name: "Guest", username: 'ThisGuest', email: "guest@guest.com", password: "guest" },
+    { id: 2, name: "Admin", username: 'ThisAdmin', email: "admin@admin.com", password: "admin" }
 ];
 
 export const USERSTODESKS = 

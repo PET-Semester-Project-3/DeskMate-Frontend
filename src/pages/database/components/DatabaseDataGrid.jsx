@@ -36,7 +36,7 @@ export function DatabaseDataGrid({ rows, columns }) {
         initialState={{
           pagination: {
             paginationModel: {
-              pageSize: 5,
+              pageSize: 25,
             },
           },
         }}

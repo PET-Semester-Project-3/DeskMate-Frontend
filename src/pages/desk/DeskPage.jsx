@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Box, Typography, Stack } from '@mui/material';
-import { useSession } from '../../SessionContext';
+import { useSessionContext } from '../../SessionContext';
 import DeskView from './components/DeskView';
 import { DESKS, USERSTODESKS, USERS } from '../../../dummyData/dummyData';
 
@@ -8,11 +8,11 @@ import { DESKS, USERSTODESKS, USERS } from '../../../dummyData/dummyData';
 /* Controller */
 export default function DeskPageController() {
   
-  const session = useSession();
+  const sessionContext = useSessionContext();
 
   // Get user ID from session
-  const currentUser = session?.user?.email
-    ? USERS.find((u) => u.email === session.user.email)
+  const currentUser = sessionContext?.session?.user?.email
+    ? USERS.find((u) => u.email === sessionContext.session.user.email)
     : null;
 
   // Filter desks based on user's assigned desks
