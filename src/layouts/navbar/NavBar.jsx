@@ -67,7 +67,7 @@ export function NavBar({ imageSrc, logoClick, pageClick, signoutClick, sessionCo
         pl: 1,
         position: 'fixed',
         bgcolor: 'background.default',
-        zIndex: 950
+        zIndex: 100
       }} 
     >
       <Link onClick={logoClick} >

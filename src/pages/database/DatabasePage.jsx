@@ -2,6 +2,8 @@ import * as React from 'react';
 import { Box, Typography } from '@mui/material';
 import DatabaseDataSelection from './components/DatabaseDataSelection'
 import DatabaseDataGrid from './components/DatabaseDataGrid'
+import DatabaseActionButtons from './components/DatabaseActionButtons'
+import DatabaseObjectPopout from './components/DatabaseObjectPopout';
 import { DESKS, USERSTODESKS, USERS, PERMISSIONS, USERTOPERMISSONS } from '../../../dummyData/dummyData';
 
 const DBDATASELECTION = [
@@ -28,9 +30,24 @@ export default function DatabasePageController() {
   const [selectedTable, setSelectedTable] = React.useState(DBDATASELECTION[0].name);
   const [tableRows, setTableRows] = React.useState([]);
 
+  const [selectedRows, setSelectedRows] = React.useState([]);
+
+  const [isEditing, setIsEditing] = React.useState(false);
+
   const onSelectionChanged = (newSelectedTable) => {
     setSelectedTable(newSelectedTable);
   };
+
+  const onRowSelectionModelChange = (rowSelectionModel, details) => {
+    const selectedRows = tableRows.filter(row => {
+      return rowSelectionModel.ids.has(row.id);
+    });
+    setSelectedRows(selectedRows);
+  }
+
+  const onEditingStateChange = () => {
+    setIsEditing(!isEditing)
+  }
 
   React.useEffect(() => {
     switch(selectedTable){
@@ -53,12 +70,20 @@ export default function DatabasePageController() {
   }, [selectedTable])
 
   return (
-    <DatabasePage dbSelection={[...DBDATASELECTION]} onSelectionChanged={onSelectionChanged} rows={tableRows} />
+    <DatabasePage 
+      dbSelection={[...DBDATASELECTION]} 
+      onSelectionChanged={onSelectionChanged} 
+      rows={tableRows} 
+      onRowSelectionModelChange={onRowSelectionModelChange}
+      selectedRows={selectedRows}
+      isEditing={isEditing}
+      onEditingStateChange={onEditingStateChange}
+    />
   )
 }
 
 /* View */
-export function DatabasePage({ dbSelection, onSelectionChanged, rows }) {
+export function DatabasePage({ dbSelection, onSelectionChanged, rows, onRowSelectionModelChange, selectedRows, isEditing, onEditingStateChange }) {
   return (
     <Box sx={{ boxShadow: 2 }}>
       <Typography
@@ -72,11 +97,19 @@ export function DatabasePage({ dbSelection, onSelectionChanged, rows }) {
         Database Management
       </Typography>
       <Box>
-        <DatabaseDataSelection dbSelection={dbSelection} onSelectionChanged={onSelectionChanged} />
+        <Box sx={{ display: 'flex', flexDirection: 'row' }} >
+          <Box sx={{ width: '80%' }} >
+            <DatabaseDataSelection dbSelection={dbSelection} onSelectionChanged={onSelectionChanged} />
+          </Box>
+          <Box sx={{ width: '20%', display: 'flex', alignItems: 'flex-end' }} >
+            <DatabaseActionButtons selectedEntries={selectedRows} onEditingStateChange={onEditingStateChange} />
+          </Box>
+        </Box>
         <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
-          <DatabaseDataGrid rows={rows} />
+          <DatabaseDataGrid rows={rows} onRowSelectionModelChange={onRowSelectionModelChange} />
         </Box>
       </Box>
+      <DatabaseObjectPopout selectedEntries={selectedRows} open={isEditing} onEditingStateChange={onEditingStateChange} />
     </Box>
   );
 }

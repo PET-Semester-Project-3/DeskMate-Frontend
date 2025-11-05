@@ -71,9 +71,9 @@ export function SignInPage({ windowHeight, imageSrc, username, changeUsername, u
         height: windowHeight, 
         boxShadow: 2, 
         display: 'flex', 
+        flexDirection: 'column',
         alignItems: 'center', 
-        justifyContent: 'center',
-        flexDirection: 'column'
+        justifyContent: 'center'
       }}>
       <Card>
         <CardContent>

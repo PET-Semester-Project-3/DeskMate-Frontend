@@ -3,7 +3,7 @@ import { DataGrid  } from '@mui/x-data-grid';
 import { Box } from '@mui/material';
 
 /* Controller */
-export default function DatabaseDataGridController({ rows }) {
+export default function DatabaseDataGridController({ rows, onRowSelectionModelChange }) {
     
     const [gridColumns, setGridColumns] = React.useState([]);
 
@@ -22,27 +22,26 @@ export default function DatabaseDataGridController({ rows }) {
     }, [rows]);
     
     return (
-        <DatabaseDataGrid rows={rows} columns={gridColumns} />
+        <DatabaseDataGrid rows={rows} columns={gridColumns} onRowSelectionModelChange={onRowSelectionModelChange} />
     )
 }
 
 /* View */
-export function DatabaseDataGrid({ rows, columns }) {
+export function DatabaseDataGrid({ rows, columns, onRowSelectionModelChange }) {
   return (
-    <Box sx={{ height: 400, width: '100%' }}>
+    <Box sx={{ width: '100%' }}>
       <DataGrid
         rows={rows}
         columns={columns}
         initialState={{
           pagination: {
             paginationModel: {
-              pageSize: 25,
+              pageSize: 15,
             },
           },
         }}
-        pageSizeOptions={[25, 50, 75, 100]}
-        checkboxSelection
-        disableRowSelectionOnClick
+        pageSizeOptions={[15, 25, 50, 100]}
+        onRowSelectionModelChange={onRowSelectionModelChange}
       />
     </Box>
   );
