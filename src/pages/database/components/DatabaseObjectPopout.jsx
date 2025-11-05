@@ -4,14 +4,20 @@ import { Paper, Box, Backdrop, Button } from '@mui/material';
 /* Controller */
 export default function DatabaseObjectPopoutController({ selectedEntries, open, onEditingStateChange }) {
     
+  const [entry, setEntry] = React.useState(null)
+
+  React.useEffect(() => {
+    if (selectedEntries == null ||selectedEntries.length == 0) return;
+    setEntry(selectedEntries[0]);
+  }, [selectedEntries])
   
   return (
-    <DatabaseObjectPopout open={open} onEditingStateChange={onEditingStateChange} />
+    <DatabaseObjectPopout open={open} onEditingStateChange={onEditingStateChange} entry={entry} />
   )
 }
 
 /* View */
-export function DatabaseObjectPopout({ open, onEditingStateChange }) {
+export function DatabaseObjectPopout({ open, onEditingStateChange, entry }) {
   return (
     <Backdrop
       open={open}
@@ -45,7 +51,11 @@ export function DatabaseObjectPopout({ open, onEditingStateChange }) {
             height: '100%',
           }}
         >
-        
+          {
+            entry == null ?
+            null
+            : entry.id + " " + entry.name
+          }
         </Paper>
       </Box>
       

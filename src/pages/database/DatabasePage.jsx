@@ -36,6 +36,7 @@ export default function DatabasePageController() {
 
   const onSelectionChanged = (newSelectedTable) => {
     setSelectedTable(newSelectedTable);
+    setSelectedRows([]);
   };
 
   const onRowSelectionModelChange = (rowSelectionModel, details) => {
