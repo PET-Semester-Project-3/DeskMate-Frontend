@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { Outlet } from 'react-router';
 import { SessionContext } from './SessionContext';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import Cookies from 'js-cookie';
-import { Box } from '@mui/material';
 import SignIn from './pages/signin/SignInPage';
 
 /* Controller */
@@ -32,16 +33,14 @@ export default function AppController() {
 /* View */
 export function App({ sessionContextValue }) {
   return (
-    <SessionContext.Provider value={sessionContextValue}>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <SessionContext.Provider value={sessionContextValue}>
         {
           sessionContextValue.session == null ?
           <SignIn />
-          : (
-            
-              <Outlet />
-            
-          )
+          : <Outlet />
         }
-    </SessionContext.Provider>
+      </SessionContext.Provider>
+    </LocalizationProvider>
   );
 }
