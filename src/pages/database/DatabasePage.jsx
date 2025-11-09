@@ -3,10 +3,10 @@ import { Box, Typography } from '@mui/material';
 import DatabaseDataSelection from './components/DatabaseDataSelection'
 import DatabaseDataGrid from './components/DatabaseDataGrid'
 import DatabaseActionButtons from './components/DatabaseActionButtons'
-import DatabaseObjectPopout from './components/DatabaseObjectPopout';
+import DatabaseObjectPopout from './components/DatabaseObjectPopout/DatabaseObjectPopout';
 import { DESKS, USERSTODESKS, USERS, PERMISSIONS, USERTOPERMISSONS } from '../../../dummyData/dummyData';
 
-const DBDATASELECTION = [
+const DBTABLESELECTION = [
     {
         name: 'Desks',
     },
@@ -27,27 +27,48 @@ const DBDATASELECTION = [
 /* Controller */
 export default function DatabasePageController() {
 
-  const [selectedTable, setSelectedTable] = React.useState(DBDATASELECTION[0].name);
+  const [selectedTable, setSelectedTable] = React.useState(DBTABLESELECTION[0].name);
   const [tableRows, setTableRows] = React.useState([]);
 
-  const [selectedRows, setSelectedRows] = React.useState([]);
+  const [selectedRow, setSelectedRow] = React.useState();
 
   const [isEditing, setIsEditing] = React.useState(false);
 
   const onSelectionChanged = (newSelectedTable) => {
     setSelectedTable(newSelectedTable);
-    setSelectedRows([]);
+    setSelectedRow(null);
   };
 
   const onRowSelectionModelChange = (rowSelectionModel, details) => {
     const selectedRows = tableRows.filter(row => {
       return rowSelectionModel.ids.has(row.id);
     });
-    setSelectedRows(selectedRows);
+    if (selectedRows.length == 0)
+      setSelectedRow(null);
+    else
+      setSelectedRow(selectedRows[0]);
   }
 
   const onEditingStateChange = () => {
     setIsEditing(!isEditing)
+  }
+
+  const onRemoveSelectedClick = () => {
+    if (selectedRow != null){
+      console.log(`Remove[${selectedTable}] (Id = ${selectedRow.id})`)
+      console.log(selectedRow)
+    }
+    // BACKEND --> DB CONNECTION HERE
+  }
+
+  function onSaveObjectClick(object){
+    if (object != null) {
+      console.log(`Save[${selectedTable}] (Id = ${object.id})`)
+      console.log(object)
+    }
+    else 
+      console.log('Object was null')
+    // BACKEND --> DB CONNECTION HERE
   }
 
   React.useEffect(() => {
@@ -72,19 +93,21 @@ export default function DatabasePageController() {
 
   return (
     <DatabasePage 
-      dbSelection={[...DBDATASELECTION]} 
+      dbSelection={[...DBTABLESELECTION]} 
       onSelectionChanged={onSelectionChanged} 
       rows={tableRows} 
       onRowSelectionModelChange={onRowSelectionModelChange}
-      selectedRows={selectedRows}
+      selectedRow={selectedRow}
       isEditing={isEditing}
       onEditingStateChange={onEditingStateChange}
+      onRemoveSelectedClick={onRemoveSelectedClick}
+      onSaveObjectClick={onSaveObjectClick}
     />
   )
 }
 
 /* View */
-export function DatabasePage({ dbSelection, onSelectionChanged, rows, onRowSelectionModelChange, selectedRows, isEditing, onEditingStateChange }) {
+export function DatabasePage({ dbSelection, onSelectionChanged, rows, onRowSelectionModelChange, selectedRow, isEditing, onEditingStateChange, onRemoveSelectedClick, onSaveObjectClick }) {
   return (
     <Box sx={{ boxShadow: 2 }}>
       <Typography
@@ -100,17 +123,33 @@ export function DatabasePage({ dbSelection, onSelectionChanged, rows, onRowSelec
       <Box>
         <Box sx={{ display: 'flex', flexDirection: 'row' }} >
           <Box sx={{ width: '80%' }} >
-            <DatabaseDataSelection dbSelection={dbSelection} onSelectionChanged={onSelectionChanged} />
+            <DatabaseDataSelection 
+              dbSelection={dbSelection} 
+              onSelectionChanged={onSelectionChanged}
+            />
           </Box>
           <Box sx={{ width: '20%', display: 'flex', alignItems: 'flex-end' }} >
-            <DatabaseActionButtons selectedEntries={selectedRows} onEditingStateChange={onEditingStateChange} />
+            <DatabaseActionButtons 
+              selectedEntry={selectedRow} 
+              onEditingStateChange={onEditingStateChange}
+              onRemoveSelectedClick={onRemoveSelectedClick}
+            />
           </Box>
         </Box>
         <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
-          <DatabaseDataGrid rows={rows} onRowSelectionModelChange={onRowSelectionModelChange} />
+          <DatabaseDataGrid 
+            rows={rows} 
+            onRowSelectionModelChange={onRowSelectionModelChange} 
+          />
         </Box>
       </Box>
-      <DatabaseObjectPopout selectedEntries={selectedRows} open={isEditing} onEditingStateChange={onEditingStateChange} />
+      <DatabaseObjectPopout 
+        selectedEntry={selectedRow} 
+        isOpen={isEditing} 
+        onEditingStateChange={onEditingStateChange} 
+        schematicObject={rows[0] != null ? rows[0] : null} 
+        onSaveClick={onSaveObjectClick}
+      />
     </Box>
   );
 }
