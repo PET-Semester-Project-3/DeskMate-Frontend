@@ -32,7 +32,7 @@ export function AboutPage() {
                     borderLeft: '4px solid #667eea'
                 }}
             >
-                <Typography>
+                <Typography sx={{ maxWidth: 1280}}>
                     This application was developed to facilitate and easy and convienient way to manage a desk. <br/>
                 </Typography>
             </Box>

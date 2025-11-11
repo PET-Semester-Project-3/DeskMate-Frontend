@@ -9,7 +9,8 @@ import DashboardPage from './pages/dashboard/DashboardPage';
 import DatabasePage from './pages/database/DatabasePage';
 import DeskPage from './pages/desk/DeskPage';
 import MaintenancePage from './pages/maintenance/MaintenancePage';
-import AboutPage  from './pages/about/AboutPage';
+import AboutPage from './pages/about/AboutPage';
+import HowToUsePage from './pages/howtouse/HowToUsePage';
 import theme from './theme';
 
 
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
           {
             path: 'about',
             Component: AboutPage
+          },
+          {
+            path: 'howtouse',
+            Component: HowToUsePage
           },
         ]
       }
