@@ -39,6 +39,7 @@ export function NavBar({ imageSrc, logoClick, pageClick, signoutClick, pages }) 
 
   return (
     <Paper 
+      component='navbar'
       sx={{ 
         width: '100%', 
         height: '100', 
@@ -51,10 +52,11 @@ export function NavBar({ imageSrc, logoClick, pageClick, signoutClick, pages }) 
         zIndex: 100
       }} 
     >
-      <Link onClick={logoClick} >
-        <img height='100' src={imageSrc} />
+      <Link component='navbar-logo-link' onClick={logoClick} >
+        <img id='deskmate-logo-image' height='100' src={imageSrc} />
       </Link>
-      <ButtonGroup 
+      <ButtonGroup
+        component='navbar-navigation-buttongroup'
         variant='string' 
         fullWidth='true' 
         sx={{ pl: 3 }}
@@ -62,7 +64,8 @@ export function NavBar({ imageSrc, logoClick, pageClick, signoutClick, pages }) 
         {
           pages.map(page => {
             return (
-              <Button 
+              <Button
+                component={'navbar-navigation-pagebutton-' + page.label}
                 onClick={() => pageClick(page)}
               >{page.label}</Button>
             )
@@ -70,6 +73,7 @@ export function NavBar({ imageSrc, logoClick, pageClick, signoutClick, pages }) 
         }
       </ButtonGroup>
       <Box
+        component='navbar-account-signout-container'
         sx={{
           width: '100%',
           display: 'flex',
@@ -77,7 +81,8 @@ export function NavBar({ imageSrc, logoClick, pageClick, signoutClick, pages }) 
           pr: 3
         }}
       >
-        <Button 
+        <Button
+          component='navbar-signout-button'
           onClick={signoutClick}
         >Sign-Out</Button>
       </Box>
