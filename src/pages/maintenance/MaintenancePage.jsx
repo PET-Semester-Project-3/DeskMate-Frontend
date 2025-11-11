@@ -1,12 +1,14 @@
 import * as React from 'react';
+import useSession from '../../models/SessionContext'
 import { Typography, Box } from '@mui/material';
+import RestrictedPage from '../restricted/RestrictedPage'
 import DeskCard from './components/DeskCard';
 import { DESKS } from '../../../dummyData/dummyData';
 
 /* Controller */
 export default function MaintenancePageController() {
   return (
-    <MaintenancePage/>
+    <RestrictedPage Page={<MaintenancePage />} />
   )
 }
 

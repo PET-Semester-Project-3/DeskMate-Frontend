@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { useSessionContext } from '../../SessionContext';
+import useSession from '../../models/SessionContext';
+import { getRoutesForUser } from '../../models/RoutePermissions'
 import { FormControl, OutlinedInput, InputLabel, InputAdornment, FormHelperText, Box, TextField, Button, IconButton, Card, CardContent, CardActions, Stack } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import useWindowDimensions from '../../useWindowDimensions'
+import useWindowDimensions from '../../models/WindowDimensions'
 import DeskmateInverseSVG from '../../assets/DeskMateInverse.svg'
 import DeskmateSVG from '../../assets/DeskMate.svg'
 import { useTheme } from '@mui/material/styles';
@@ -12,7 +13,7 @@ import { USERS } from '../../../dummyData/dummyData';
 export default function SignInPageController() {
   
   const { height, width } = useWindowDimensions();
-  const sessionContext = useSessionContext();
+  const { session, setSession } = useSession();
 
   const theme = useTheme();
   const imageSrc = theme.palette.mode == 'dark' ? DeskmateInverseSVG : DeskmateSVG;
@@ -36,15 +37,16 @@ export default function SignInPageController() {
   const handleClickShowPassword = () => setShowPassword(() => !showPassword);
 
   const handleSignInClick = () => {
-    if (!USERS.map(user => user.username).includes(username)) {
+    const user = USERS.find(user => user.username == username);
+    if (user == undefined) {
       setUsernameErrorText('Could not find user')
       return;
     }
-    if (!USERS.map(user => user.password).includes(password)){
+    if (user.password != password){
       setPasswordErrorText('Wrong password')
       return;
     }
-    sessionContext.setSession({ username: username, password: password });
+    setSession({ ...user, pages: getRoutesForUser(user.id) });
   };
 
   return (

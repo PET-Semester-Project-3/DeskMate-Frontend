@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Outlet } from 'react-router';
-import { SessionContext } from './SessionContext';
+import { SessionContext } from './models/SessionContext';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import Cookies from 'js-cookie';
@@ -26,7 +26,6 @@ export default function AppController() {
 
   return (
     <App sessionContextValue={sessionContextValue} />
-    
   )
 }
 

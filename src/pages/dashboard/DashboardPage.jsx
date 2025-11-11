@@ -1,10 +1,11 @@
 import * as React from 'react';
+import RestrictedPage from '../restricted/RestrictedPage'
 import { Typography, Box } from '@mui/material';
 
 /* Controller */
 export default function DashboardPageController() {
   return (
-    <DashboardPage/>
+    <RestrictedPage Page={<DashboardPage/>} />
   )
 }
 

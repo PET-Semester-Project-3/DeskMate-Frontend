@@ -1,30 +1,10 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router';
-import { useSessionContext } from '../../SessionContext';
+import useSession from '../../models/SessionContext';
 import { Box, Paper, Button, Link, ButtonGroup } from '@mui/material';
 import DeskmateInverseSVG from '../../assets/DeskMateInverse.svg'
 import DeskmateSVG from '../../assets/DeskMate.svg'
 import { useTheme } from '@mui/material/styles';
-
-const PAGES = [
-  {
-    name: 'Dashboard',
-    path: '/'
-  },
-  {
-    name: 'Desk',
-    path: '/desk'
-  },
-  {
-    name: 'Maintenance',
-    path: '/maintenance'
-  },
-  {
-    name: 'Database',
-    path: '/database'
-  },
-]
-
 
 /* Controller */
 export default function NavBarController(){
@@ -34,27 +14,28 @@ export default function NavBarController(){
 
   const navigate = useNavigate();
 
-  const sessionContext = useSessionContext();
+  const { session, setSession} = useSession();
+  const pages = session.pages != null ? [...session.pages] : [];
 
   const handleLogoClick = () => {
     navigate('/');
   };
 
-  const handlePageClick = (page) => {
-    navigate(page.path);
+  const handlePageClick = (pages) => {
+    navigate(pages.route);
   };
 
   const handleSignOutClick = () => {
-    sessionContext.setSession(null);
+    setSession(null);
   };
 
   return (
-    <NavBar imageSrc={imageSrc} logoClick={handleLogoClick} pageClick={handlePageClick} signoutClick={handleSignOutClick} sessionContext={sessionContext} />
+    <NavBar imageSrc={imageSrc} logoClick={handleLogoClick} pageClick={handlePageClick} signoutClick={handleSignOutClick} pages={pages} />
   );
 }
 
 /* View */
-export function NavBar({ imageSrc, logoClick, pageClick, signoutClick, sessionContext }) {
+export function NavBar({ imageSrc, logoClick, pageClick, signoutClick, pages }) {
 
   return (
     <Paper 
@@ -79,11 +60,11 @@ export function NavBar({ imageSrc, logoClick, pageClick, signoutClick, sessionCo
         sx={{ pl: 3 }}
       >
         {
-          PAGES.map(page => {
+          pages.map(page => {
             return (
               <Button 
                 onClick={() => pageClick(page)}
-              >{page.name}</Button>
+              >{page.label}</Button>
             )
           })
         }

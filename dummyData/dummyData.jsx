@@ -26,16 +26,19 @@ export const USERSTODESKS =
 
 export const PERMISSIONS =
 [
-    { id: 1, route: "/desk" },
-    { id: 2, route: "/maintenance" },
-    { id: 3, route: "/database" }
+    { id: 1, label: 'Dashboard', route: "/" },
+    { id: 2, label: 'Desk', route: "/desk" },
+    { id: 3, label: 'Maintenance', route: "/maintenance" },
+    { id: 4, label: 'Database', route: "/database" }
 ];
 
 export const USERTOPERMISSONS = 
 [
     { id: 1, userid: 1, permissionid: 1 },
-    { id: 2, userid: 2, permissionid: 1 },
-    { id: 3, userid: 2, permissionid: 2 },
-    { id: 4, userid: 2, permissionid: 3 },
+    { id: 2, userid: 1, permissionid: 2 },
+    { id: 3, userid: 2, permissionid: 1 },
+    { id: 4, userid: 2, permissionid: 2 },
+    { id: 5, userid: 2, permissionid: 3 },
+    { id: 6, userid: 2, permissionid: 4 },
 ];
 

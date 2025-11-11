@@ -1,6 +1,7 @@
 import * as React from 'react';
+import RestrictedPage from '../restricted/RestrictedPage'
 import { Box, Typography, Stack } from '@mui/material';
-import { useSessionContext } from '../../SessionContext';
+import useSession from '../../models/SessionContext';
 import DeskView from './components/DeskView';
 import { DESKS, USERSTODESKS, USERS } from '../../../dummyData/dummyData';
 
@@ -8,10 +9,10 @@ import { DESKS, USERSTODESKS, USERS } from '../../../dummyData/dummyData';
 /* Controller */
 export default function DeskPageController() {
   
-  const sessionContext = useSessionContext();
+  const { session, setSession } = useSession();
 
   // Get user ID from session
-  const currentUser = sessionContext?.session?.user?.email
+  const currentUser = session?.user?.email
     ? USERS.find((u) => u.email === sessionContext.session.user.email)
     : null;
 
@@ -23,7 +24,7 @@ export default function DeskPageController() {
     : [];
 
   return (
-    <DeskPage userDesks={userDesks} />
+    <RestrictedPage Page={<DeskPage userDesks={userDesks} />} />
   )
 }
 
