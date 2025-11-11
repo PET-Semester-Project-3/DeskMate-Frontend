@@ -15,8 +15,9 @@ export default function MaintenancePageController() {
 /* View */
 export function MaintenancePage() {
   return (
-    <Box sx={{ boxShadow: 2 }}>
+    <Box id='maintenance-page' sx={{ boxShadow: 2 }}>
       <Typography
+        id='maintenance-page-header'
         variant="h4"
         sx={{
           fontWeight: 700,
@@ -26,7 +27,7 @@ export function MaintenancePage() {
       >
         Desk Maintenance
       </Typography>
-      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
+      <Box id='maintenance-page-desks-container' sx={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
         {DESKS.map((desk) => (
           <DeskCard key={desk.id} desk={desk} />
         ))}

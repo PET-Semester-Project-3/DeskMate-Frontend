@@ -54,6 +54,7 @@ export default function DeskCardController({ desk }) {
 export function DeskCard({ desk, anchorEl, isOnline, handleClick, handleClose, handleSwitchChange, open, id }) {
   return (
     <Card
+      id='desk-card'
       sx={{
         minWidth: 275,
         maxWidth: 350,
@@ -68,20 +69,21 @@ export function DeskCard({ desk, anchorEl, isOnline, handleClick, handleClose, h
         },
       }}
     >
-      <CardContent sx={{ position: 'relative' }}>
+      <CardContent id='desk-card-content' sx={{ position: 'relative' }}>
         {desk.lasterrors && desk.lasterrors.length > 0 && (
-          <Box sx={{ position: 'absolute', top: 16, left: 16 }}>
+          <Box id='desk-errors-container' sx={{ position: 'absolute', top: 16, left: 16 }}>
             <IconButton
+              id='desk-errors-button'
               aria-describedby={id}
               onClick={handleClick}
               sx={{ p: 0 }}
             >
-              <Badge badgeContent={desk.lasterrors.length} color="error">
-                <WarningIcon color="warning" />
+              <Badge id='desk-errors-button-badge' badgeContent={desk.lasterrors.length} color="error">
+                <WarningIcon id='desk-errors-button-badge-icon' color="warning" />
               </Badge>
             </IconButton>
             <Popover
-              id={id}
+              id={'desk-errors-popover-' + id}
               open={open}
               anchorEl={anchorEl}
               onClose={handleClose}
