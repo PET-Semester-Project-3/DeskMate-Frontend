@@ -70,7 +70,7 @@ export default function SignInPageController() {
 export function SignInPage({ windowHeight, imageSrc, username, changeUsername, usernameErrorText, password, changePassword, passwordErrorText, showPassword, handleClickShowPassword, signinButtonClick }) {
   return (
     <Box
-      component='signin-page-container'
+      component='signin-page'
       sx={{
         height: windowHeight, 
         boxShadow: 2, 
