@@ -35,8 +35,8 @@ const router = createBrowserRouter([
             path: 'database',
             Component: DatabasePage,
           },
-        ],
-      },
+        ]
+      }
     ],
   },
 ]);

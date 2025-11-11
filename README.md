@@ -34,14 +34,14 @@ Due to this being a demo, there has been set up 2 user types (1 Admin, 1 Guest) 
 Admin:
 
 ```bash
-Email: admin@admin.com
+Username: ThisAdmin
 Password: admin
 ```
 
 Guest:
 
 ```bash
-Email: guest@guest.com
+Username: ThisGuest
 Password: guest
 ```
 

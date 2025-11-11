@@ -1,8 +1,10 @@
 import * as React from 'react';
-import { Outlet, useNavigate, useLocation } from 'react-router';
+import { Outlet } from 'react-router';
 import { SessionContext } from './SessionContext';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import Cookies from 'js-cookie';
-import { Box } from '@mui/material';
+import SignIn from './pages/signin/SignInPage';
 
 /* Controller */
 export default function AppController() {
@@ -23,21 +25,22 @@ export default function AppController() {
   const sessionContextValue = React.useMemo(() => ({ session, setSession }), [session, setSession]);
 
   return (
-    <Box>
-        {
-          session != null ? /* REVERSE WHEN SESSION WORKS */
-          <Box/>
-          : <App sessionContextValue={sessionContextValue} />
-        }
-      </Box>
+    <App sessionContextValue={sessionContextValue} />
+    
   )
 }
 
 /* View */
 export function App({ sessionContextValue }) {
   return (
-    <SessionContext.Provider value={sessionContextValue}>
-        <Outlet />
-    </SessionContext.Provider>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <SessionContext.Provider value={sessionContextValue}>
+        {
+          sessionContextValue.session == null ?
+          <SignIn />
+          : <Outlet />
+        }
+      </SessionContext.Provider>
+    </LocalizationProvider>
   );
 }
