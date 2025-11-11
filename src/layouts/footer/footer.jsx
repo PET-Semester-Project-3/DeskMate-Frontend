@@ -1,8 +1,12 @@
 import * as React from 'react';
 import { Box, Typography, Link} from '@mui/material';
+import {useSessionContext} from '../../SessionContext';
 
 /* Controller */
 export default function FooterController(){
+  
+  // TODO: Session context to handle vissible links.  
+
   return (
     <Footer/>
   )
