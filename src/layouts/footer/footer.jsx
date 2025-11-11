@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, Link} from '@mui/material';
 
 /* Controller */
 export default function FooterController(){
@@ -23,7 +23,36 @@ export function Footer() {
         sx = {{
             color: 'text.secondary'
         }}
-      >DeskMate (c) 2025, WIP</Typography>
+      >Copyright &copy; 2025 DeskMate, All Rights Reserved </Typography>
+
+      <Box 
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'center'
+        }}>
+        
+        <Box 
+          sx={{
+            display: 'flex',
+            p: 2
+          }}>
+            <Link href='about'>About</Link>
+        </Box>
+          
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            p: 2
+          }}>
+          <Link href='/'>Dashboard</Link>
+          <Link href='desk'>Desk</Link>
+          <Link href='maintenance'>Maintenance</Link>
+          <Link href='database'>Database</Link>
+        </Box>
+      </Box>
+
     </Box>
   );
 }
