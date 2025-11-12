@@ -29,8 +29,6 @@ const DBTABLESELECTION = [
 /* Controller */
 export default function DatabasePageController() {
 
-  const { session, setSession } = useSession();
-
   const [selectedTable, setSelectedTable] = React.useState(DBTABLESELECTION[0].name);
   const [tableRows, setTableRows] = React.useState([]);
 

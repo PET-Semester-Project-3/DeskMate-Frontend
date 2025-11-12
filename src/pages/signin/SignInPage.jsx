@@ -46,7 +46,8 @@ export default function SignInPageController() {
       setPasswordErrorText('Wrong password')
       return;
     }
-    setSession({ ...user, pages: getRoutesForUser(user.id) });
+    console.log({ user: user, pages: getRoutesForUser(user.id) })
+    setSession({ user: user, pages: getRoutesForUser(user.id) });
   };
 
   return (

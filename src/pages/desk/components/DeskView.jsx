@@ -36,7 +36,8 @@ export default function DeskViewController({ desk }){
 
   return (
     <DeskView 
-      deskName={deskName} 
+      deskName={deskName}
+      desk={desk}
       tempName={tempName}
       isEditingName={isEditingName} 
       height={height} 
@@ -51,7 +52,7 @@ export default function DeskViewController({ desk }){
 }
 
 /* View */
-export function DeskView({ deskName, tempName, isEditingName, height, isOnline, setTempName, setHeight, setIsOnline, handleNameConfirm, handleNameEdit }) {
+export function DeskView({ deskName, desk, tempName, isEditingName, height, isOnline, setTempName, setHeight, setIsOnline, handleNameConfirm, handleNameEdit }) {
   return (
     <Card sx={{ mb: 3, p: 3 }}>
       <Grid container spacing={4}>

@@ -8,7 +8,6 @@ export default function RestrictedPageController({ Page }) {
   const { session, setSession } = useSession();
   const location = useLocation();
   return (
-    
     <Box id='restricted-page-control-container' >
         {session.pages.map(p => p.route).includes(location.pathname) ? 
             Page

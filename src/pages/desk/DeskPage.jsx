@@ -3,7 +3,7 @@ import RestrictedPage from '../restricted/RestrictedPage'
 import { Box, Typography, Stack } from '@mui/material';
 import useSession from '../../models/SessionContext';
 import DeskView from './components/DeskView';
-import { DESKS, USERSTODESKS, USERS } from '../../../dummyData/dummyData';
+import { DESKS, USERSTODESKS } from '../../../dummyData/dummyData';
 
 
 /* Controller */
@@ -11,16 +11,16 @@ export default function DeskPageController() {
   
   const { session, setSession } = useSession();
 
-  // Get user ID from session
-  const currentUser = session?.user?.email
-    ? USERS.find((u) => u.email === sessionContext.session.user.email)
-    : null;
-
   // Filter desks based on user's assigned desks
-  const userDesks = currentUser
-    ? USERSTODESKS.filter((utd) => utd.userid === currentUser.id)
-        .map((utd) => DESKS.find((desk) => desk.id === utd.deskid))
-        .filter(Boolean)
+  const userDesksIds = session.user
+    ? USERSTODESKS.map(utd => {
+      if (utd.userid == session.user.id)
+        return utd.deskid;
+    })
+    : [];
+
+  const userDesks = userDesksIds.length > 0
+    ? DESKS.filter(d => userDesksIds.includes(d.id))
     : [];
 
   return (
@@ -45,7 +45,7 @@ export function DeskPage({ userDesks }) {
       <Box sx={{ maxWidth: '1600px', margin: '0 auto' }}>
         {userDesks.length > 0 ? (
           <Stack spacing={2}>
-            {userDesks.map((desk) => (
+            {userDesks.map(desk => (
               <DeskView key={desk.id} desk={desk} />
             ))}
           </Stack>
