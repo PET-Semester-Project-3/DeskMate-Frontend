@@ -36,7 +36,8 @@ export default function DeskViewController({ desk }){
 
   return (
     <DeskView 
-      deskName={deskName} 
+      deskName={deskName}
+      desk={desk}
       tempName={tempName}
       isEditingName={isEditingName} 
       height={height} 
@@ -51,16 +52,18 @@ export default function DeskViewController({ desk }){
 }
 
 /* View */
-export function DeskView({ deskName, tempName, isEditingName, height, isOnline, setTempName, setHeight, setIsOnline, handleNameConfirm, handleNameEdit }) {
+export function DeskView({ deskName, desk, tempName, isEditingName, height, isOnline, setTempName, setHeight, setIsOnline, handleNameConfirm, handleNameEdit }) {
   return (
-    <Card sx={{ mb: 3, p: 3 }}>
-      <Grid container spacing={4}>
+    <Card component='div' id='desk-view' sx={{ mb: 3, p: 3 }}>
+      <Grid component='section' id='desk-view-grid' container spacing={4}>
         {/* Left Panel - Controls */}
-        <Grid item xs={12} md={6}>
-          <Stack spacing={3}>
+        <Grid component='section' id='desk-view-grid-left-panel' item xs={12} md={6}>
+          <Stack component='ul' id='desk-view-left-panel-list' spacing={3}>
             {/* Desk Name */}
-            <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start' }}>
+            <Box component='span' id='desk-view-left-panel-desk-container' sx={{ display: 'flex', gap: 1, alignItems: 'flex-start' }}>
               <TextField
+                component='form'
+                id='desk-view-left-panel-desk-name-textfield'
                 label="Desk Name"
                 value={isEditingName ? tempName : deskName}
                 onChange={(e) => setTempName(e.target.value)}
@@ -70,32 +73,38 @@ export function DeskView({ deskName, tempName, isEditingName, height, isOnline, 
               />
               {isEditingName ? (
                 <IconButton
+                  component='button'
+                  id='desk-view-left-panel-desk-name-edit-check-button'
                   color="primary"
                   onClick={handleNameConfirm}
                   sx={{ mt: 1 }}
                 >
-                  <CheckIcon />
+                  <CheckIcon id='desk-view-left-panel-desk-name-check-icon' />
                 </IconButton>
               ) : (
                 <IconButton
+                  component='button'
+                  id='desk-view-left-panel-desk-name-edit-icon-button'
                   color="default"
                   onClick={handleNameEdit}
                   sx={{ mt: 1 }}
                 >
-                  <EditIcon />
+                  <EditIcon id='desk-view-left-panel-desk-name-icon-edit' />
                 </IconButton>
               )}
             </Box>
 
             {/* Manufacturer Info */}
-            <Typography variant="caption" color="text.secondary">
+            <Typography component='p' id='desk-view-left-panel-manufacturer-header' variant="caption" color="text.secondary">
               Manufacturer: {desk.manufacturer}
             </Typography>
 
             {/* Height Control */}
-            <Box>
-              <Typography gutterBottom>Height: {height} cm</Typography>
+            <Box component='span' id='desk-view-left-panel-height-container' >
+              <Typography component='p' id='desk-view-left-panel-height-header' gutterBottom>Height: {height} cm</Typography>
               <Slider
+                component='form'
+                id='desk-view-left-panel-height-slider'
                 value={height}
                 onChange={(_, newValue) => setHeight(newValue)}
                 min={60}
@@ -106,8 +115,12 @@ export function DeskView({ deskName, tempName, isEditingName, height, isOnline, 
 
             {/* Power Toggle */}
             <FormControlLabel
+              component='label'
+              id='desk-view-left-panel-power-container'
               control={
                 <Switch
+                  component='form'
+                  id='desk-view-left-panel-power-switch'
                   checked={isOnline}
                   onChange={(e) => setIsOnline(e.target.checked)}
                   color="primary"
@@ -118,13 +131,13 @@ export function DeskView({ deskName, tempName, isEditingName, height, isOnline, 
 
             {/* Error Warnings */}
             {desk.lasterrors && desk.lasterrors.length > 0 && (
-              <Alert severity="warning">
-                <Typography variant="subtitle2" gutterBottom>
+              <Alert component='section' id='desk-view-left-panel-error-alert' severity="warning">
+                <Typography component='p' id='desk-view-left-panel-error-alert-header' variant="subtitle2" gutterBottom>
                   Errors detected:
                 </Typography>
-                <ul style={{ margin: 0, paddingLeft: 20 }}>
+                <ul id='desk-view-left-panel-error-alert-entry-list' style={{ margin: 0, paddingLeft: 20 }}>
                   {desk.lasterrors.map((error, index) => (
-                    <li key={index}>{error}</li>
+                    <li id={'desk-view-left-panel-error-alert-entry-' + index} key={index}>{error}</li>
                   ))}
                 </ul>
               </Alert>
@@ -133,16 +146,9 @@ export function DeskView({ deskName, tempName, isEditingName, height, isOnline, 
         </Grid>
 
         {/* Right Panel - Desk Visualization */}
-        <Grid item xs={12} md={6}>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              height: '100%',
-            }}
-          >
-            <img
+        <Grid component='section' id='desk-view-grid-right-panel' item xs={12} md={6}>
+          <img
+              id='desk-view-grid-right-panel-desk-image'
               src={deskImage}
               alt="Desk"
               style={{
@@ -150,8 +156,7 @@ export function DeskView({ deskName, tempName, isEditingName, height, isOnline, 
                 maxWidth: '500px',
                 height: 'auto',
               }}
-            />
-          </Box>
+          />
         </Grid>
       </Grid>
     </Card>

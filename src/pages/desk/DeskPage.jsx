@@ -1,37 +1,40 @@
 import * as React from 'react';
+import RestrictedPage from '../restricted/RestrictedPage'
 import { Box, Typography, Stack } from '@mui/material';
-import { useSessionContext } from '../../SessionContext';
+import useSession from '../../models/SessionContext';
 import DeskView from './components/DeskView';
-import { DESKS, USERSTODESKS, USERS } from '../../../dummyData/dummyData';
+import { DESKS, USERSTODESKS } from '../../../dummyData/dummyData';
 
 
 /* Controller */
 export default function DeskPageController() {
   
-  const sessionContext = useSessionContext();
-
-  // Get user ID from session
-  const currentUser = sessionContext?.session?.user?.email
-    ? USERS.find((u) => u.email === sessionContext.session.user.email)
-    : null;
+  const { session, setSession } = useSession();
 
   // Filter desks based on user's assigned desks
-  const userDesks = currentUser
-    ? USERSTODESKS.filter((utd) => utd.userid === currentUser.id)
-        .map((utd) => DESKS.find((desk) => desk.id === utd.deskid))
-        .filter(Boolean)
+  const userDesksIds = session.user
+    ? USERSTODESKS.map(utd => {
+      if (utd.userid == session.user.id)
+        return utd.deskid;
+    })
+    : [];
+
+  const userDesks = userDesksIds.length > 0
+    ? DESKS.filter(d => userDesksIds.includes(d.id))
     : [];
 
   return (
-    <DeskPage userDesks={userDesks} />
+    <RestrictedPage Page={<DeskPage userDesks={userDesks} />} />
   )
 }
 
 /* View */
 export function DeskPage({ userDesks }) {
   return (
-    <Box title="" sx={{ boxShadow: 2 }}>
+    <Box component='main' id='desk-page' sx={{ boxShadow: 2 }}>
       <Typography
+        component='h4'
+        id='desk-page-header'
         variant="h4"
         sx={{
           fontWeight: 700,
@@ -41,15 +44,17 @@ export function DeskPage({ userDesks }) {
       >
         {'My Desk' + (userDesks.length > 1 ? 's' : '')}
       </Typography>
-      <Box sx={{ maxWidth: '1600px', margin: '0 auto' }}>
+      <Box component='section' id='user-desks-list-container' sx={{ maxWidth: '1600px', margin: '0 auto' }}>
         {userDesks.length > 0 ? (
-          <Stack spacing={2}>
-            {userDesks.map((desk) => (
-              <DeskView key={desk.id} desk={desk} />
+          <Stack component='ul' id='user-desks-list' spacing={2}>
+            {userDesks.map(desk => (
+              <DeskView id={'user-desk-' + desk.id} key={desk.id} desk={desk} />
             ))}
           </Stack>
         ) : (
           <Typography
+            component='h6'
+            id='no-desks-header'
             variant="h6"
             color="text.secondary"
             sx={{ textAlign: 'center', mt: 4 }}

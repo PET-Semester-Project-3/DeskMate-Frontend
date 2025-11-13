@@ -14,9 +14,9 @@ export default function LayoutController() {
 /* View */
 export function Layout() {
   return (
-    <Box>
+    <Box component='main' id='basic-web-layout' >
       <NavBar/>
-      <Box sx={{ p: 3, pt: 18 }}>
+      <Box component='section' id='basic-web-layout-page-container' sx={{ p: 3, pt: 18 }} >
           <Outlet />
       </Box>
       <Footer/>

@@ -4,12 +4,15 @@ import { createBrowserRouter, RouterProvider } from 'react-router';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import App from './App';
-import Layout from './layouts/BasicWebLayout';
+import Layout from './layouts/basicWebLayout';
 import DashboardPage from './pages/dashboard/DashboardPage';
 import DatabasePage from './pages/database/DatabasePage';
 import DeskPage from './pages/desk/DeskPage';
 import MaintenancePage from './pages/maintenance/MaintenancePage';
+import AboutPage from './pages/about/AboutPage';
+import HowToUsePage from './pages/howtouse/HowToUsePage';
 import theme from './theme';
+
 
 const router = createBrowserRouter([
   {
@@ -34,6 +37,14 @@ const router = createBrowserRouter([
           {
             path: 'database',
             Component: DatabasePage,
+          },
+          {
+            path: 'about',
+            Component: AboutPage
+          },
+          {
+            path: 'howtouse',
+            Component: HowToUsePage
           },
         ]
       }

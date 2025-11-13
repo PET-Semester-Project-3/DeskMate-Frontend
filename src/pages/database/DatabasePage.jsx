@@ -1,4 +1,6 @@
 import * as React from 'react';
+import useSession from '../../models/SessionContext'
+import RestrictedPage from '../restricted/RestrictedPage'
 import { Box, Typography } from '@mui/material';
 import DatabaseDataSelection from './components/DatabaseDataSelection'
 import DatabaseDataGrid from './components/DatabaseDataGrid'
@@ -92,16 +94,20 @@ export default function DatabasePageController() {
   }, [selectedTable])
 
   return (
-    <DatabasePage 
-      dbSelection={[...DBTABLESELECTION]} 
-      onSelectionChanged={onSelectionChanged} 
-      rows={tableRows} 
-      onRowSelectionModelChange={onRowSelectionModelChange}
-      selectedRow={selectedRow}
-      isEditing={isEditing}
-      onEditingStateChange={onEditingStateChange}
-      onRemoveSelectedClick={onRemoveSelectedClick}
-      onSaveObjectClick={onSaveObjectClick}
+    <RestrictedPage 
+      Page={(
+        <DatabasePage 
+          dbSelection={[...DBTABLESELECTION]} 
+          onSelectionChanged={onSelectionChanged} 
+          rows={tableRows} 
+          onRowSelectionModelChange={onRowSelectionModelChange}
+          selectedRow={selectedRow}
+          isEditing={isEditing}
+          onEditingStateChange={onEditingStateChange}
+          onRemoveSelectedClick={onRemoveSelectedClick}
+          onSaveObjectClick={onSaveObjectClick}
+        />
+      )}
     />
   )
 }
@@ -109,8 +115,10 @@ export default function DatabasePageController() {
 /* View */
 export function DatabasePage({ dbSelection, onSelectionChanged, rows, onRowSelectionModelChange, selectedRow, isEditing, onEditingStateChange, onRemoveSelectedClick, onSaveObjectClick }) {
   return (
-    <Box sx={{ boxShadow: 2 }}>
+    <Box component='main' id='database-page' sx={{ boxShadow: 2 }}>
       <Typography
+        component='h4'
+        id='database-page-header'
         variant="h4"
         sx={{
           fontWeight: 700,
@@ -120,15 +128,15 @@ export function DatabasePage({ dbSelection, onSelectionChanged, rows, onRowSelec
       >
         Database Management
       </Typography>
-      <Box>
-        <Box sx={{ display: 'flex', flexDirection: 'row' }} >
-          <Box sx={{ width: '80%' }} >
+      <Box component='section' id='database-data-container' >
+        <Box component='section' id='database-data-selector-actions-container' sx={{ display: 'flex', flexDirection: 'row' }} >
+          <Box component='section' id='database-data-selector-container' sx={{ width: '70%' }} >
             <DatabaseDataSelection 
               dbSelection={dbSelection} 
               onSelectionChanged={onSelectionChanged}
             />
           </Box>
-          <Box sx={{ width: '20%', display: 'flex', alignItems: 'flex-end' }} >
+          <Box component='section' id='database-data-actions-container' sx={{ width: '30%', display: 'flex', alignItems: 'flex-end' }} >
             <DatabaseActionButtons 
               selectedEntry={selectedRow} 
               onEditingStateChange={onEditingStateChange}
@@ -136,20 +144,23 @@ export function DatabasePage({ dbSelection, onSelectionChanged, rows, onRowSelec
             />
           </Box>
         </Box>
-        <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+        <Box component='section' id='database-data-grid-container' sx={{ display: 'flex', flexWrap: 'wrap' }}>
           <DatabaseDataGrid 
             rows={rows} 
             onRowSelectionModelChange={onRowSelectionModelChange} 
           />
         </Box>
       </Box>
-      <DatabaseObjectPopout 
-        selectedEntry={selectedRow} 
-        isOpen={isEditing} 
-        onEditingStateChange={onEditingStateChange} 
-        schematicObject={rows[0] != null ? rows[0] : null} 
-        onSaveClick={onSaveObjectClick}
-      />
+      <Box component='section' id='database-data-object-popout-container' >
+        <DatabaseObjectPopout 
+          selectedEntry={selectedRow} 
+          isOpen={isEditing} 
+          onEditingStateChange={onEditingStateChange} 
+          schematicObject={rows[0] != null ? rows[0] : null} 
+          onSaveClick={onSaveObjectClick}
+        />
+      </Box>
+      
     </Box>
   );
 }

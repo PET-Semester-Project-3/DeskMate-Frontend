@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { useSessionContext } from '../../SessionContext';
+import useSession from '../../models/SessionContext';
+import { getRoutesForUser } from '../../models/RoutePermissions'
 import { FormControl, OutlinedInput, InputLabel, InputAdornment, FormHelperText, Box, TextField, Button, IconButton, Card, CardContent, CardActions, Stack } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import useWindowDimensions from '../../useWindowDimensions'
+import useWindowDimensions from '../../models/WindowDimensions'
 import DeskmateInverseSVG from '../../assets/DeskMateInverse.svg'
 import DeskmateSVG from '../../assets/DeskMate.svg'
 import { useTheme } from '@mui/material/styles';
@@ -12,7 +13,7 @@ import { USERS } from '../../../dummyData/dummyData';
 export default function SignInPageController() {
   
   const { height, width } = useWindowDimensions();
-  const sessionContext = useSessionContext();
+  const { session, setSession } = useSession();
 
   const theme = useTheme();
   const imageSrc = theme.palette.mode == 'dark' ? DeskmateInverseSVG : DeskmateSVG;
@@ -36,15 +37,17 @@ export default function SignInPageController() {
   const handleClickShowPassword = () => setShowPassword(() => !showPassword);
 
   const handleSignInClick = () => {
-    if (!USERS.map(user => user.username).includes(username)) {
+    const user = USERS.find(user => user.username == username);
+    if (user == undefined) {
       setUsernameErrorText('Could not find user')
       return;
     }
-    if (!USERS.map(user => user.password).includes(password)){
+    if (user.password != password){
       setPasswordErrorText('Wrong password')
       return;
     }
-    sessionContext.setSession({ username: username, password: password });
+    console.log({ user: user, pages: getRoutesForUser(user.id) })
+    setSession({ user: user, pages: getRoutesForUser(user.id) });
   };
 
   return (
@@ -67,7 +70,10 @@ export default function SignInPageController() {
 /* View */
 export function SignInPage({ windowHeight, imageSrc, username, changeUsername, usernameErrorText, password, changePassword, passwordErrorText, showPassword, handleClickShowPassword, signinButtonClick }) {
   return (
-    <Box sx={{ 
+    <Box
+      component='main'
+      id='signin-page'
+      sx={{
         height: windowHeight, 
         boxShadow: 2, 
         display: 'flex', 
@@ -75,13 +81,21 @@ export function SignInPage({ windowHeight, imageSrc, username, changeUsername, u
         alignItems: 'center', 
         justifyContent: 'center'
       }}>
-      <Card>
-        <CardContent>
-          <Box sx={{ m: 1 }}>
-            <img height='200' src={imageSrc} />
+      <Card
+        component='section'
+        id='signin-form-card'
+      >
+        <CardContent
+          component='section'
+          id='signin-form-content'
+        >
+          <Box component='div' id='deskmake-logo-image-container' sx={{ m: 1 }}>
+            <img id='deskmate-logo-image' height='200' src={imageSrc} />
           </Box>
-          <Stack spacing={1} sx={{ alignItems: 'center', ml: 4, mr: 4 }} >
+          <Stack component='ol' id='signin-textfield-stack' spacing={1} sx={{ alignItems: 'center', mr: 5 }} >
             <TextField
+              component='form'
+              id='signin-username-textfield'
               error={usernameErrorText == '' ? false : true}
               label='Username'
               value={username} 
@@ -90,17 +104,19 @@ export function SignInPage({ windowHeight, imageSrc, username, changeUsername, u
               helperText={usernameErrorText}
               sx={{ width: '100%' }} 
             />
-            <FormControl sx={{ m: 1, width: '100%' }} variant="outlined">
-              <InputLabel>Password</InputLabel>
+            <FormControl component='form' id='signin-password-textfield' sx={{ m: 1, width: '100%' }} variant="outlined">
+              <InputLabel component='label' id='signin-password-textfield-inputlabel' >Password</InputLabel>
               <OutlinedInput
+                id='signin-password-textfield-outlinedinput'
                 error={passwordErrorText == '' ? false : true}
                 label="Password"
                 value={password} 
                 type={showPassword ? 'text' : 'password'}
                 onChange={changePassword} 
                 endAdornment={
-                  <InputAdornment position="end">
+                  <InputAdornment id='signin-password-textfield-inputadronment' position="end">
                     <IconButton
+                      id='signin-password-textfield-iconbutton'
                       onClick={handleClickShowPassword}
                       edge="end"
                     >
@@ -109,12 +125,14 @@ export function SignInPage({ windowHeight, imageSrc, username, changeUsername, u
                   </InputAdornment>
                 }
               />
-              <FormHelperText>{passwordErrorText}</FormHelperText>
+              <FormHelperText id='signin-password-textfield-formhelptertext'>{passwordErrorText}</FormHelperText>
             </FormControl>
           </Stack>
         </CardContent>
-        <CardActions sx={{ justifyContent: 'center' }}>
+        <CardActions component='section' id='signin-form-actions' sx={{ justifyContent: 'center' }}>
           <Button
+            component='button'
+            id='signin-button'
             variant='contained'
             size='large'
             onClick={signinButtonClick}
