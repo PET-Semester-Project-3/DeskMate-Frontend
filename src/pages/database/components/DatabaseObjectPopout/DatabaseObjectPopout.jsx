@@ -52,11 +52,13 @@ export default function DatabaseObjectPopoutController({ selectedEntry, isOpen, 
 export function DatabaseObjectPopout({ isOpen, onEditingStateChange, propertiesSchematic, onSaveClick, object, onPropertyEdit }) {
   return (
     <Backdrop
+      component='div'
       id='database-data-object-popout'
       open={isOpen}
       sx={{ zIndex: 200 }}
     >
       <Box
+        component='section'
         id='database-data-object-popout-sized-container'
         sx={{
             display: 'flex',
@@ -70,6 +72,7 @@ export function DatabaseObjectPopout({ isOpen, onEditingStateChange, propertiesS
       >
         {/* Close Button */}
         <Box
+          component='section'
           id='database-data-object-popout-close-button-container'
           sx={{
             display: 'flex',
@@ -78,6 +81,7 @@ export function DatabaseObjectPopout({ isOpen, onEditingStateChange, propertiesS
           }}
         >
           <Button
+            component='button'
             id='database-data-object-popout-close-button'
             variant='contained'
             onClick={onEditingStateChange}
@@ -86,14 +90,16 @@ export function DatabaseObjectPopout({ isOpen, onEditingStateChange, propertiesS
         </Box>
         {/* Window */}
         <Paper
+          component='section'
           id='database-data-object-popout-window-container'
           sx={{ 
             width: '100%',
             height: '100%',
           }}
         >
-          <Box id='database-data-object-popout-window-header-container' sx={{ height: '87%' }}>
+          <Box component='section' id='database-data-object-popout-window-header-container' sx={{ height: '87%' }}>
             <Typography
+              component='h4'
               id='database-data-object-popout-window-header'
               variant="h4"
               sx={{
@@ -102,7 +108,7 @@ export function DatabaseObjectPopout({ isOpen, onEditingStateChange, propertiesS
                 color: '#667eea'
               }}
             >Object Schema</Typography>
-            <Box id='database-data-object-popout-window-form-container' sx={{ m: 1, display: 'flex', flexWrap: 'wrap', overflow: 'auto' }} >
+            <Box component='section' id='database-data-object-popout-window-form-container' sx={{ m: 1, display: 'flex', flexWrap: 'wrap', overflow: 'auto' }} >
               {propertiesSchematic.map(schematic => {
                   return (
                     <ObjectPropertyFieldCard 
@@ -119,6 +125,7 @@ export function DatabaseObjectPopout({ isOpen, onEditingStateChange, propertiesS
           </Box>
           {/* Save Button */}
           <Box
+            component='section'
             id='database-data-object-popout-window-save-button-container'
             sx={{
               display: 'flex',
@@ -128,6 +135,7 @@ export function DatabaseObjectPopout({ isOpen, onEditingStateChange, propertiesS
             }}
           >
             <Button
+              component='button'
               id='database-data-object-popout-window-save-button'
               variant='contained'
               onClick={() => onSaveClick(object)}

@@ -30,19 +30,20 @@ export default function DatabaseDataGridController({ rows, onRowSelectionModelCh
 export function DatabaseDataGrid({ rows, columns, onRowSelectionModelChange }) {
   return (
     <DataGrid
-        id='database-data-grid'
-        rows={rows}
-        columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: 15,
-            },
+      component='table'
+      id='database-data-grid'
+      rows={rows}
+      columns={columns}
+      initialState={{
+        pagination: {
+          paginationModel: {
+            pageSize: 15,
           },
-        }}
-        pageSizeOptions={[15, 25, 50, 100]}
-        onRowSelectionModelChange={onRowSelectionModelChange}
-        sx={{ width: '100%' }}
+        },
+      }}
+      pageSizeOptions={[15, 25, 50, 100]}
+      onRowSelectionModelChange={onRowSelectionModelChange}
+      sx={{ width: '100%' }}
     />
   );
 }

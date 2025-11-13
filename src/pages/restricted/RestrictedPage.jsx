@@ -8,7 +8,7 @@ export default function RestrictedPageController({ Page }) {
   const { session, setSession } = useSession();
   const location = useLocation();
   return (
-    <Box id='restricted-page-control-container' >
+    <Box component='main' id='restricted-page-container' >
         {session.pages.map(p => p.route).includes(location.pathname) ? 
             Page
             : <RestrictedPage session={session} route={location.pathname} />
@@ -21,6 +21,7 @@ export default function RestrictedPageController({ Page }) {
 export function RestrictedPage({ session, route }) {
   return (
     <Box
+        component='section'
         id='restricted-page'
         sx={{
             display: 'flex',
@@ -30,6 +31,7 @@ export function RestrictedPage({ session, route }) {
         }}
     >
         <Typography
+            component='h2'
             id='restricted-page-header'
             variant='h2'
             sx={{
@@ -40,6 +42,7 @@ export function RestrictedPage({ session, route }) {
             Oops . . .
         </Typography>
         <Typography
+            component='p'
             id='restricted-page-text'
             align='center'
             sx={{

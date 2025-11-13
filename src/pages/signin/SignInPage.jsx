@@ -71,6 +71,7 @@ export default function SignInPageController() {
 export function SignInPage({ windowHeight, imageSrc, username, changeUsername, usernameErrorText, password, changePassword, passwordErrorText, showPassword, handleClickShowPassword, signinButtonClick }) {
   return (
     <Box
+      component='main'
       id='signin-page'
       sx={{
         height: windowHeight, 
@@ -81,16 +82,19 @@ export function SignInPage({ windowHeight, imageSrc, username, changeUsername, u
         justifyContent: 'center'
       }}>
       <Card
+        component='section'
         id='signin-form-card'
       >
         <CardContent
+          component='section'
           id='signin-form-content'
         >
-          <Box id='deskmake-logo-image-container' sx={{ m: 1 }}>
+          <Box component='div' id='deskmake-logo-image-container' sx={{ m: 1 }}>
             <img id='deskmate-logo-image' height='200' src={imageSrc} />
           </Box>
-          <Stack id='signin-textfield-stack' spacing={1} sx={{ alignItems: 'center', ml: 4, mr: 4 }} >
+          <Stack component='ol' id='signin-textfield-stack' spacing={1} sx={{ alignItems: 'center', mr: 5 }} >
             <TextField
+              component='form'
               id='signin-username-textfield'
               error={usernameErrorText == '' ? false : true}
               label='Username'
@@ -100,8 +104,8 @@ export function SignInPage({ windowHeight, imageSrc, username, changeUsername, u
               helperText={usernameErrorText}
               sx={{ width: '100%' }} 
             />
-            <FormControl id='signin-password-textfield' sx={{ m: 1, width: '100%' }} variant="outlined">
-              <InputLabel id='signin-password-textfield-inputlabel' >Password</InputLabel>
+            <FormControl component='form' id='signin-password-textfield' sx={{ m: 1, width: '100%' }} variant="outlined">
+              <InputLabel component='label' id='signin-password-textfield-inputlabel' >Password</InputLabel>
               <OutlinedInput
                 id='signin-password-textfield-outlinedinput'
                 error={passwordErrorText == '' ? false : true}
@@ -125,8 +129,9 @@ export function SignInPage({ windowHeight, imageSrc, username, changeUsername, u
             </FormControl>
           </Stack>
         </CardContent>
-        <CardActions id='signin-form-actions' sx={{ justifyContent: 'center' }}>
+        <CardActions component='section' id='signin-form-actions' sx={{ justifyContent: 'center' }}>
           <Button
+            component='button'
             id='signin-button'
             variant='contained'
             size='large'

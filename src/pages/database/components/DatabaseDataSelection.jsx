@@ -24,9 +24,10 @@ export default function DatabaseDataSelectionController({ dbSelection, onSelecti
 /* View */
 export function DatabaseDataSelection({ dbDataSelections, selected, handleChangeSelected }) {
   return (
-    <FormControl id='database-data-selector' >
-      <FormLabel id='database-data-selector-label' >Available</FormLabel>
+    <FormControl component='div' id='database-data-selector' >
+      <FormLabel component='label' id='database-data-selector-label' >Available</FormLabel>
       <RadioGroup
+        component='ul'
         id='database-data-selector-radiogroup'
         row
         value={selected}
@@ -35,10 +36,12 @@ export function DatabaseDataSelection({ dbDataSelections, selected, handleChange
         {
             dbDataSelections.map(selecter => {
                 return (
-                <FormControlLabel 
+                <FormControlLabel
+                  component='label'
                   id={'database-data-selector-control-' + selecter.name.toLowerCase()} 
                   value={selecter.name} control={
-                    <Radio 
+                    <Radio
+                      component='form'
                       id={'database-data-selector-control-' + selecter.name.toLowerCase() +'-radio'} 
                     />
                   } 

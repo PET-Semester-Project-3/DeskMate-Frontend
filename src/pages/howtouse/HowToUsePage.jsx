@@ -11,8 +11,9 @@ export default function HowToUsePageController() {
 /* View */
 export function HowToUsePage() {
     return (
-        <Box id='howtouse-page' sx={{ boxShadow: 2 }}>
+        <Box component='main' id='howtouse-page' sx={{ boxShadow: 2 }}>
             <Typography
+                component='h4'
                 id='howtouse-page-header'
                 variant="h4"
                 sx={{
@@ -24,6 +25,7 @@ export function HowToUsePage() {
                 Welcome to DeskMate
             </Typography>
             <Box
+                component='section'
                 id='howtouse-welcome-container'
                 sx={{
                 bgcolor: 'rgba(102, 126, 234, 0.1)',
@@ -33,20 +35,20 @@ export function HowToUsePage() {
                 borderLeft: '4px solid #667eea'
                 }}
             >
-                <Typography id='howtouse-welcome-text' >
-                Welcome to your dashboard.  <br/>
-                <i>
-                    This page is a Work-In-Progress. Elements might/will change base on user priviliges. <br/>
-                    Additional elements will also be added later to give a user a quick overview of their desk (or desks, if admin)
-                </i>
+                <Typography component='p' id='howtouse-welcome-text' >
+                    Welcome to your dashboard.  <br/>
+                    <i>
+                        This page is a Work-In-Progress. Elements might/will change base on user priviliges. <br/>
+                        Additional elements will also be added later to give a user a quick overview of their desk (or desks, if admin)
+                    </i>
                 </Typography>
             </Box>
     
-            <section id='howtouse-introduction-container'>
+            <Box component='article' id='howtouse-introduction-container'>
                 <Typography
+                    component="h5"
                     id='howtouse-introduction-header'
                     variant="h5"
-                    component="h2"
                     sx={{
                         fontWeight: 600,
                         mt: 3,
@@ -54,7 +56,7 @@ export function HowToUsePage() {
                         color: '#4facfe'
                     }}
                 >
-                Introduction
+                    Introduction
                 </Typography>
 
                 <Box
@@ -72,13 +74,13 @@ export function HowToUsePage() {
                     Your will be able to see what position the desk is in, how long until required maintenance, <br/>
                     and any errors the desk might be reporting.
                 </Box>
-            </section>
+            </Box>
     
-            <section id='howtouse-usage-container'>
+            <Box component='article' id='howtouse-usage-container'>
                 <Typography
+                    component="h5"
                     id='howtouse-usage-header'
                     variant="h5"
-                    component="h2"
                     sx={{
                         fontWeight: 600,
                         mt: 3,
@@ -86,11 +88,11 @@ export function HowToUsePage() {
                         color: '#fa709a'
                     }}
                 >
-                Usage
+                    Usage
                 </Typography>
                 <Box
-                    id='howtouse-usage-container'
                     component="p"
+                    id='howtouse-usage-text'
                     sx={{
                         bgcolor: 'rgba(250, 112, 154, 0.1)',
                         borderRadius: 2,
@@ -115,69 +117,69 @@ export function HowToUsePage() {
                     </ul>
     
                 </Box>
+            </Box>
     
-                <Box id='howtouse-desk-container' sx={{ mt: 3 }}>
-                    <Typography id='howtouse-desk-header' variant="h6" sx={{ fontWeight: 600, mb: 1, color: '#ec4899' }}>
-                        Desk
-                    </Typography>
-                    <Box
-                        id='howtouse-desk-text'
-                        component="p"
-                        sx={{
+            <Box component='article' id='howtouse-desk-container' sx={{ mt: 3 }}>
+                <Typography component='h6' id='howtouse-desk-header' variant="h6" sx={{ fontWeight: 600, mb: 1, color: '#ec4899' }}>
+                    Desk
+                </Typography>
+                <Box
+                    component="p"
+                    id='howtouse-desk-text'
+                    sx={{
                         bgcolor: 'rgba(236, 72, 153, 0.1)',
                         borderRadius: 2,
                         p: 2,
                         borderLeft: '4px solid #ec4899'
-                        }}
-                    >
-                        On this page you will be able to see and control your own desk. <br/>
-                        You will be able to see general information about the desk, like what its position is, what is called, etc. <br/>
-                        On this page you will also be able to give commands to the desk, like to move up or down.
-                    </Box>
+                    }}
+                >
+                    On this page you will be able to see and control your own desk. <br/>
+                    You will be able to see general information about the desk, like what its position is, what is called, etc. <br/>
+                    On this page you will also be able to give commands to the desk, like to move up or down.
                 </Box>
+            </Box>
     
-                <Box id='howtouse-desk-container' sx={{ mt: 3 }}>
-                    <Typography id='howtouse-desk-header' variant="h6" sx={{ fontWeight: 600, mb: 1, color: '#8b5cf6' }}>
-                        Maintenance
-                    </Typography>
-                    <Box
-                        id='howtouse-desk-text'
-                        component="p"
-                        sx={{
+            <Box component='article' id='howtouse-desk-container' sx={{ mt: 3 }}>
+                <Typography component='h6' id='howtouse-desk-header' variant="h6" sx={{ fontWeight: 600, mb: 1, color: '#8b5cf6' }}>
+                    Maintenance
+                </Typography>
+                <Box
+                    component="p"
+                    id='howtouse-desk-text'
+                    sx={{
                         bgcolor: 'rgba(139, 92, 246, 0.1)',
                         borderRadius: 2,
                         p: 2,
                         borderLeft: '4px solid #8b5cf6'
-                        }}
-                    >
-                        On this page multiple desks <i>(WIP)</i> will be shown. <br/>
-                        This page will show every desk that is being administratet, and will show more information about the individual desk. <br/>
-                        This info includes the manufacture, the current position, how many times it has been activated, etc.
-                        If a desk is reporting an error, this is where it will be shown.
-                    </Box>
+                    }}
+                >
+                    On this page multiple desks <i>(WIP)</i> will be shown. <br/>
+                    This page will show every desk that is being administratet, and will show more information about the individual desk. <br/>
+                    This info includes the manufacture, the current position, how many times it has been activated, etc.
+                    If a desk is reporting an error, this is where it will be shown.
                 </Box>
+            </Box>
     
-                <Box id='howtouse-database-container' sx={{ mt: 3 }}>
-                    <Typography id='howtouse-database-header' variant="h6" sx={{ fontWeight: 600, mb: 1, color: '#10b981' }}>
-                        Database
-                    </Typography>
-                    <Box
-                        id='howtouse-database-text'
-                        component="p"
-                        sx={{
+            <Box component='article' id='howtouse-database-container' sx={{ mt: 3 }}>
+                <Typography component='h6' id='howtouse-database-header' variant="h6" sx={{ fontWeight: 600, mb: 1, color: '#10b981' }}>
+                    Database
+                </Typography>
+                <Box
+                    component="p"
+                    id='howtouse-database-text'
+                    sx={{
                         bgcolor: 'rgba(16, 185, 129, 0.1)',
                         borderRadius: 2,
                         p: 2,
                         borderLeft: '4px solid #10b981'
-                        }}
-                    >
-                        On this page data from the database can be accessed. <br/>
-                        New desks and users can be added and deleted, permissions for users can be updated <br/>
-                        and the relation between users, desks and permissions can be modified. <br/>
-                        This is where CRUD (Create, Read, Update, Delete) will be implemented and utilized.
-                    </Box>
+                    }}
+                >
+                    On this page data from the database can be accessed. <br/>
+                    New desks and users can be added and deleted, permissions for users can be updated <br/>
+                    and the relation between users, desks and permissions can be modified. <br/>
+                    This is where CRUD (Create, Read, Update, Delete) will be implemented and utilized.
                 </Box>
-            </section>
+            </Box>
         </Box>
     )
 }

@@ -31,8 +31,9 @@ export default function DeskPageController() {
 /* View */
 export function DeskPage({ userDesks }) {
   return (
-    <Box id='desk-page' sx={{ boxShadow: 2 }}>
+    <Box component='main' id='desk-page' sx={{ boxShadow: 2 }}>
       <Typography
+        component='h4'
         id='desk-page-header'
         variant="h4"
         sx={{
@@ -43,15 +44,16 @@ export function DeskPage({ userDesks }) {
       >
         {'My Desk' + (userDesks.length > 1 ? 's' : '')}
       </Typography>
-      <Box id='user-desks-list-container' sx={{ maxWidth: '1600px', margin: '0 auto' }}>
+      <Box component='section' id='user-desks-list-container' sx={{ maxWidth: '1600px', margin: '0 auto' }}>
         {userDesks.length > 0 ? (
-          <Stack id='user-desks-list' spacing={2}>
+          <Stack component='ul' id='user-desks-list' spacing={2}>
             {userDesks.map(desk => (
               <DeskView id={'user-desk-' + desk.id} key={desk.id} desk={desk} />
             ))}
           </Stack>
         ) : (
           <Typography
+            component='h6'
             id='no-desks-header'
             variant="h6"
             color="text.secondary"
