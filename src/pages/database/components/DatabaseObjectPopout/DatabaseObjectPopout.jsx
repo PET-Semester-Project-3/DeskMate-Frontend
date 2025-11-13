@@ -1,4 +1,5 @@
 import * as React from 'react';
+import dayjs from 'dayjs';
 import { Paper, Box, Backdrop, Button, Typography } from '@mui/material';
 import ObjectPropertyFieldCard from './ObjectPropertyFieldCard'
 
@@ -26,10 +27,15 @@ export default function DatabaseObjectPopoutController({ selectedEntry, isOpen, 
       return;
     var properties = [];
     Object.getOwnPropertyNames(o).forEach(property => {
+      const headerName = property.toUpperCase();
+      const type = o[property].constructor.name;
+      var value = '';
+      if (selectedEntry != null)
+        value = o[property]
       properties.push({
-        headerName: property.toUpperCase(),
-        type: typeof o[property],
-        value: selectedEntry != null ? o[property] : ''
+        headerName: headerName,
+        type: type,
+        value: value
       });
     });
     setProperties(properties);

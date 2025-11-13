@@ -21,8 +21,8 @@ export const USERS =
 export const USERSTODESKS = 
 [
     { id: 1, userid: 1, deskid: 1,  since: new Date('2025-11-12T18:12') },
-    { id: 1, userid: 2, deskid: 1,  since: new Date('2025-11-12T18:12') },
-    { id: 2, userid: 2, deskid: 2,  since: new Date('2025-11-27T14:42') }
+    { id: 2, userid: 2, deskid: 1,  since: new Date('2025-11-12T18:12') },
+    { id: 3, userid: 2, deskid: 2,  since: new Date('2025-11-27T14:42') }
 ];
 
 export const PERMISSIONS =

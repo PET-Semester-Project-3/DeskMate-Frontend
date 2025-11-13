@@ -71,6 +71,7 @@ export default function DatabasePageController() {
     else 
       console.log('Object was null')
     // BACKEND --> DB CONNECTION HERE
+    setIsEditing(false);
   }
 
   React.useEffect(() => {

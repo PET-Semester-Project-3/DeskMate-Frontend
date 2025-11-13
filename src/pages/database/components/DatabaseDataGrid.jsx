@@ -15,7 +15,7 @@ export default function DatabaseDataGridController({ rows, onRowSelectionModelCh
             propertyColumns.push({
                 field: property,
                 headerName: property.toUpperCase(),
-                width: 50 + property.length * 10
+                width: 100 + property.length * 15
             })
         });
         setGridColumns(propertyColumns);
