@@ -29,8 +29,8 @@ export default function DatabaseDataGridController({ rows, onRowSelectionModelCh
 /* View */
 export function DatabaseDataGrid({ rows, columns, onRowSelectionModelChange }) {
   return (
-    <Box sx={{ width: '100%' }}>
-      <DataGrid
+    <DataGrid
+        id='database-data-grid'
         rows={rows}
         columns={columns}
         initialState={{
@@ -42,7 +42,7 @@ export function DatabaseDataGrid({ rows, columns, onRowSelectionModelChange }) {
         }}
         pageSizeOptions={[15, 25, 50, 100]}
         onRowSelectionModelChange={onRowSelectionModelChange}
-      />
-    </Box>
+        sx={{ width: '100%' }}
+    />
   );
 }

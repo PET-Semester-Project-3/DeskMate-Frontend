@@ -57,14 +57,15 @@ export default function ObjectPropertyFieldCardController({ propertyName, proper
 /* View */
 export function ObjectPropertyFieldCard({ name, type, value, errorText, onValueChange }) {
   return (
-    <Box>
+    <Box id='object-property-field-card' >
       {type == 'object' ?
             null
             : (
-              <Box sx={{ m: 1, width: 230 }}>
+              <Box id='object-property-field-card-input-container' sx={{ m: 1, width: 230 }}>
                 {type == 'date' ?
-                      <DatePicker />
+                      <DatePicker id='object-property-field-card-input-datepicker' />
                     : <TextField
+                        id='object-property-field-card-input-textfield'
                         error={errorText == '' ? false : true}
                         label={name}
                         value={value} 

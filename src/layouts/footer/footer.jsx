@@ -1,11 +1,19 @@
 import * as React from 'react';
 import { Box, Typography, Link} from '@mui/material';
 import useSession from '../../models/SessionContext';
+import { useNavigate } from 'react-router';
 
 /* Controller */
 export default function FooterController(){
   
-  // TODO: Session context to handle vissible links.  
+  // TODO: Session context to handle vissible links.
+  const { session, setSession } = useSession();
+  const pages = session.pages != null ? [...session.pages] : [];
+  // session.user gives u the user = { id: 1, name: "Guest", username: 'ThisGuest', email: "guest@guest.com", password: "guest" }, 
+  // session.pages gives you pages for the user; pages = { id: 1, label: 'Database', route: "/database" }
+
+  const navigate = useNavigate();
+  // Use like so: navigate('/') goes to localhost:5173, navigate('/database') goes to localhost:5173/database
 
   return (
     <Footer/>

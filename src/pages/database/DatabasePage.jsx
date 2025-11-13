@@ -115,8 +115,9 @@ export default function DatabasePageController() {
 /* View */
 export function DatabasePage({ dbSelection, onSelectionChanged, rows, onRowSelectionModelChange, selectedRow, isEditing, onEditingStateChange, onRemoveSelectedClick, onSaveObjectClick }) {
   return (
-    <Box sx={{ boxShadow: 2 }}>
+    <Box id='database-page' sx={{ boxShadow: 2 }}>
       <Typography
+        id='database-page-header'
         variant="h4"
         sx={{
           fontWeight: 700,
@@ -126,15 +127,15 @@ export function DatabasePage({ dbSelection, onSelectionChanged, rows, onRowSelec
       >
         Database Management
       </Typography>
-      <Box>
-        <Box sx={{ display: 'flex', flexDirection: 'row' }} >
-          <Box sx={{ width: '80%' }} >
+      <Box id='database-data-container' >
+        <Box id='database-data-selector-actions-container' sx={{ display: 'flex', flexDirection: 'row' }} >
+          <Box id='database-data-selector-container' sx={{ width: '70%' }} >
             <DatabaseDataSelection 
               dbSelection={dbSelection} 
               onSelectionChanged={onSelectionChanged}
             />
           </Box>
-          <Box sx={{ width: '20%', display: 'flex', alignItems: 'flex-end' }} >
+          <Box id='database-data-actions-container' sx={{ width: '30%', display: 'flex', alignItems: 'flex-end' }} >
             <DatabaseActionButtons 
               selectedEntry={selectedRow} 
               onEditingStateChange={onEditingStateChange}
@@ -142,20 +143,23 @@ export function DatabasePage({ dbSelection, onSelectionChanged, rows, onRowSelec
             />
           </Box>
         </Box>
-        <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+        <Box id='database-data-grid-container' sx={{ display: 'flex', flexWrap: 'wrap' }}>
           <DatabaseDataGrid 
             rows={rows} 
             onRowSelectionModelChange={onRowSelectionModelChange} 
           />
         </Box>
       </Box>
-      <DatabaseObjectPopout 
-        selectedEntry={selectedRow} 
-        isOpen={isEditing} 
-        onEditingStateChange={onEditingStateChange} 
-        schematicObject={rows[0] != null ? rows[0] : null} 
-        onSaveClick={onSaveObjectClick}
-      />
+      <Box id='database-data-object-popout-container' >
+        <DatabaseObjectPopout 
+          selectedEntry={selectedRow} 
+          isOpen={isEditing} 
+          onEditingStateChange={onEditingStateChange} 
+          schematicObject={rows[0] != null ? rows[0] : null} 
+          onSaveClick={onSaveObjectClick}
+        />
+      </Box>
+      
     </Box>
   );
 }
