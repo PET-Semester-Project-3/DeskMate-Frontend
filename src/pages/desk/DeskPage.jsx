@@ -3,28 +3,25 @@ import RestrictedPage from '../restricted/RestrictedPage'
 import { Box, Typography, Stack } from '@mui/material';
 import useSession from '../../models/SessionContext';
 import DeskView from './components/DeskView';
-import { DESKS, USERSTODESKS } from '../../../dummyData/dummyData';
+import { asyncGetUserDesks } from '../../models/api-comm/APIUsers'
 
 
 /* Controller */
 export default function DeskPageController() {
   
+  const [desks, setDesks] = React.useState([]);
   const { session, setSession } = useSession();
 
-  // Filter desks based on user's assigned desks
-  const userDesksIds = session.user
-    ? USERSTODESKS.map(utd => {
-      if (utd.userid == session.user.id)
-        return utd.deskid;
-    })
-    : [];
-
-  const userDesks = userDesksIds.length > 0
-    ? DESKS.filter(d => userDesksIds.includes(d.id))
-    : [];
+  React.useEffect(() => {
+    async function getDesks(id) {
+      const desks = await asyncGetUserDesks(id);
+      setDesks(desks);
+    }
+    getDesks(session?.user?.id);
+  }, []);
 
   return (
-    <RestrictedPage Page={<DeskPage userDesks={userDesks} />} />
+    <RestrictedPage Page={<DeskPage userDesks={desks} />} />
   )
 }
 

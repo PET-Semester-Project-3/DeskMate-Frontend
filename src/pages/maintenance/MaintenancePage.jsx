@@ -1,19 +1,31 @@
 import * as React from 'react';
-import useSession from '../../models/SessionContext'
+import useSession from '../../models/SessionContext';
 import { Typography, Box } from '@mui/material';
 import RestrictedPage from '../restricted/RestrictedPage'
 import DeskCard from './components/DeskCard';
-import { DESKS } from '../../../dummyData/dummyData';
+import { asyncGetUserDesks } from '../../models/api-comm/APIUsers'
 
 /* Controller */
 export default function MaintenancePageController() {
+
+  const [desks, setDesks] = React.useState([]);
+  const { session, setSession } = useSession();
+
+  React.useEffect(() => {
+    async function getDesks(id) {
+      const desks = await asyncGetUserDesks(id);
+      setDesks(desks);
+    }
+    getDesks(session?.user?.id);
+  }, []);
+
   return (
-    <RestrictedPage Page={<MaintenancePage />} />
+    <RestrictedPage Page={<MaintenancePage desks={desks} />} />
   )
 }
 
 /* View */
-export function MaintenancePage() {
+export function MaintenancePage({ desks }) {
   return (
     <Box component='main' id='maintenance-page' sx={{ boxShadow: 2 }}>
       <Typography
@@ -29,7 +41,7 @@ export function MaintenancePage() {
         Desk Maintenance
       </Typography>
       <Box component='ul' id='maintenance-page-desks-container' sx={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
-        {DESKS.map((desk) => (
+        {desks.map((desk) => (
           <DeskCard key={desk.id} desk={desk} />
         ))}
       </Box>

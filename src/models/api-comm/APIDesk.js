@@ -10,6 +10,10 @@ export async function asyncGetDesks() {
 // 404 returns: { success: false, message: "Desk not found" }
 // 500 returns: { success: false, message: "Failed to fetch desk" }
 export async function asyncGetDesk(id) {
+  if (!id) {
+    console.log(`id (${id}) was null or empty`)
+    return null;
+  }
   return asyncFetch(`${APIDESKSURL}/${id}`, 'GET');
 }
 
@@ -18,12 +22,12 @@ export async function asyncGetDesk(id) {
 // 400 returns: { success: false, message: "id, controllerId, name and manufacturer required" }
 // 404 returns: { success: false, message: "Controller not found" }
 // 500 returns: { success: false, message: "Failed to create desk" }
-export async function asyncPostDesk(controllerId, name, manufacturer, is_locked, last_data) {
-  if (controllerId || name || manufacturer || last_data) {
-    console.log(`controllerId (${controllerId}), name (${name}), manufacturer (${manufacturer}), is_locked (${is_locked}) or last_data (${last_data}) was null or empty`)
+export async function asyncPostDesk(id, controllerId, name, manufacturer, is_locked, last_data) {
+  if (!id || !name || !manufacturer || !last_data) {
+    console.log(`id (${id}), name (${name}), manufacturer (${manufacturer}), is_locked (${is_locked}) or last_data (${last_data}) was null or empty`)
     return null;
   }
-  return asyncFetch(`${APIDESKSURL}`, 'POST', { controllerId, name, manufacturer, is_locked, last_data });
+  return asyncFetch(`${APIDESKSURL}`, 'POST', { id, controllerId, name, manufacturer, is_locked, last_data });
 }
 
 // 200 returns: { success: true, data: desk }
@@ -31,8 +35,8 @@ export async function asyncPostDesk(controllerId, name, manufacturer, is_locked,
 // 404 returns: { success: false, message: "Controller not found" }
 // 500 returns: { success: false, message: "Failed to update desk" }
 export async function asyncPutDesk(id, controllerId, name, manufacturer, is_locked, last_data) {
-  if (id || controllerId || name || manufacturer || last_data) {
-    console.log(`id (${id}), controllerId (${controllerId}), name (${name}), manufacturer (${manufacturer}), is_locked (${is_locked}) or last_data (${last_data}) was null or empty`)
+  if (!id || !name || !manufacturer || !last_data) {
+    console.log(`id (${id}), name (${name}), manufacturer (${manufacturer}), is_locked (${is_locked}) or last_data (${last_data}) was null or empty`)
     return null;
   }
   return asyncFetch(`${APIDESKSURL}/${id}`, 'PUT', { controllerId, name, manufacturer, is_locked, last_data });
@@ -42,7 +46,7 @@ export async function asyncPutDesk(id, controllerId, name, manufacturer, is_lock
 // 404 returns: { success: false, message: "Desk not found" }
 // 500 returns: { success: false, message: "Failed to delete desk" }
 export async function asyncDeleteDesk(id) {
-  if (id) {
+  if (!id) {
     console.log(`id (${id}) was null or empty`)
     return null;
   }

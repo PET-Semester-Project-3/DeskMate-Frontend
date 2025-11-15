@@ -1,6 +1,6 @@
 import * as React from 'react';
 import useSession from '../../models/SessionContext';
-import { getRoutesForUser } from '../../models/RoutePermissions'
+import { asyncGetUserPermissions } from '../../models/api-comm/APIUsers';
 import { FormControl, OutlinedInput, InputLabel, InputAdornment, FormHelperText, Box, TextField, Button, IconButton, Card, CardContent, CardActions, Stack } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import useWindowDimensions from '../../models/WindowDimensions'
@@ -18,15 +18,15 @@ export default function SignInPageController() {
   const theme = useTheme();
   const imageSrc = theme.palette.mode == 'dark' ? DeskmateInverseSVG : DeskmateSVG;
 
-  const [username, setUsername] = React.useState('');
-  const [usernameErrorText, setUsernameErrorText] = React.useState('');
+  const [email, setEmail] = React.useState('');
+  const [emailErrorText, setEmailErrorText] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [passwordErrorText, setPasswordErrorText] = React.useState('');
   const [showPassword, setShowPassword] = React.useState(false);
 
   const handleUsernameChange = (e) => {
-    setUsername(e.target.value)
-    if (usernameErrorText != '') setUsernameErrorText('');
+    setEmail(e.target.value)
+    if (emailErrorText != '') setEmailErrorText('');
   };
 
   const handlePasswordChange = (e) => {
@@ -36,27 +36,27 @@ export default function SignInPageController() {
 
   const handleClickShowPassword = () => setShowPassword(() => !showPassword);
 
-  const handleSignInClick = () => {
-    const user = USERS.find(user => user.username == username);
+  const handleSignInClick = async () => {
+    const user = USERS.find(user => user.email == email);
     if (user == undefined) {
-      setUsernameErrorText('Could not find user')
+      setEmailErrorText('Could not find user')
       return;
     }
     if (user.password != password){
       setPasswordErrorText('Wrong password')
       return;
     }
-    console.log({ user: user, pages: getRoutesForUser(user.id) })
-    setSession({ user: user, pages: getRoutesForUser(user.id) });
+    console.log({ user: user, pages: await await asyncGetUserPermissions(user.id) })
+    setSession({ user: user, pages: await await asyncGetUserPermissions(user.id) });
   };
 
   return (
     <SignInPage 
       windowHeight={height}
       imageSrc={imageSrc}
-      username={username} 
+      username={email} 
       changeUsername={handleUsernameChange}
-      usernameErrorText={usernameErrorText}
+      usernameErrorText={emailErrorText}
       password={password} 
       changePassword={handlePasswordChange}
       passwordErrorText={passwordErrorText}

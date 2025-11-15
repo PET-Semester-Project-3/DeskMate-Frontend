@@ -15,13 +15,14 @@ export async function asyncFetch(url, method, body) {
             throw new Error(`Method was: ${method ? 'null' : method}, use either \'GET\', \'POST\', \'PUT\', or \'DELETE\'`);
         const response = await fetch(url, { 
           method: method,
-          body: body ? JSON.stringify(body) : undefined
+          body: body ? JSON.stringify(body) : undefined,
         });
-        if (!response.ok)
-            throw new Error(`Response status: ${response.status}`);
-
+        if (!response.ok){
+            console.error(response);
+        }
         const result = await response.json();
-        return result;
+        console.log(`fetch -[ ${url} ]- result: `, result)
+        return result.success ? result.data != null ? result.data : result.message : result;;
     } catch (error) {
         console.error(error.message);
     }
