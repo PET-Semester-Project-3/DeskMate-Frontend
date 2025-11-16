@@ -22,53 +22,6 @@ export function HowToUsePage() {
             >
                 Welcome to DeskMate
             </Typography>
-            <Box
-                sx={{
-                bgcolor: 'rgba(102, 126, 234, 0.1)',
-                borderRadius: 2,
-                p: 2,
-                mb: 3,
-                borderLeft: '4px solid #667eea'
-                }}
-            >
-                <Typography>
-                Welcome to your dashboard.  <br/>
-                <i>
-                    This page is a Work-In-Progress. Elements might/will change base on user priviliges. <br/>
-                    Additional elements will also be added later to give a user a quick overview of their desk (or desks, if admin)
-                </i>
-                </Typography>
-            </Box>
-    
-            <section>
-                <Typography
-                    variant="h5"
-                    component="h2"
-                    sx={{
-                        fontWeight: 600,
-                        mt: 3,
-                        mb: 1,
-                        color: '#4facfe'
-                    }}
-                >
-                Introduction
-                </Typography>
-
-                <Box
-                    component="p"
-                    sx={{
-                        bgcolor: 'rgba(79, 172, 254, 0.1)',
-                        borderRadius: 2,
-                        p: 2,
-                        borderLeft: '4px solid #4facfe'
-                    }}
-                >
-                    On this page you can see an overview of your desk. <br/>
-                    In the future this is where you can get a quick overview of the status of your desk. <br/>
-                    Your will be able to see what position the desk is in, how long until required maintenance, <br/>
-                    and any errors the desk might be reporting.
-                </Box>
-            </section>
     
             <section>
                 <Typography
@@ -92,9 +45,12 @@ export function HowToUsePage() {
                     borderLeft: '4px solid #fa709a'
                 }}
                 >
-                This webapp is easy to use, and to begin using. <br/>
-                Just click any of the taps on left to navigate to a desired page. <br/>
+                This webapp is easy to use, and easy to begin using. <br/>
+                Just click any of the taps on the top to navigate to a desired page. <br/>
+                Alternatively, the links in the footer at the bottom of the page can be used.
     
+                <br/>
+                The pages that you will have access to, and can navigate to, will be dependent on what you have access to.
                 <br/>
                 If you are a regular user, you will have access to the taps:
                 <ul style={{listStyle: 'disc'}}>
@@ -107,7 +63,8 @@ export function HowToUsePage() {
                     <li>Maintenance</li>
                     <li>Database</li>
                 </ul>
-    
+                
+                All users have access to the dashboard, where an overview of assigned desk(s) can be seen. <br/>
     
                 </Box>
     
