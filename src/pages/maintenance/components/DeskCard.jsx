@@ -54,6 +54,7 @@ export default function DeskCardController({ desk }) {
 export function DeskCard({ desk, anchorEl, isOnline, handleClick, handleClose, handleSwitchChange, open, id }) {
   return (
     <Card
+      component='div'
       id='desk-card'
       sx={{
         minWidth: 275,
@@ -69,10 +70,11 @@ export function DeskCard({ desk, anchorEl, isOnline, handleClick, handleClose, h
         },
       }}
     >
-      <CardContent id='desk-card-content' sx={{ position: 'relative' }}>
+      <CardContent component='section' id='desk-card-content' sx={{ position: 'relative' }}>
         {desk.lasterrors && desk.lasterrors.length > 0 && (
-          <Box id='desk-errors-container' sx={{ position: 'absolute', top: 16, left: 16 }}>
+          <Box component='section' id='desk-errors-container' sx={{ position: 'absolute', top: 16, left: 16 }}>
             <IconButton
+              component='button'
               id='desk-errors-button'
               aria-describedby={id}
               onClick={handleClick}
@@ -83,6 +85,7 @@ export function DeskCard({ desk, anchorEl, isOnline, handleClick, handleClose, h
               </Badge>
             </IconButton>
             <Popover
+              component='section'
               id={'desk-errors-popover-' + id}
               open={open}
               anchorEl={anchorEl}
@@ -92,13 +95,14 @@ export function DeskCard({ desk, anchorEl, isOnline, handleClick, handleClose, h
                 horizontal: 'left',
               }}
             >
-              <Box id='desk-errors-popover-header-container' sx={{ p: 2, maxWidth: 300 }}>
-                <Typography id='desk-errors-popover-header' variant="subtitle2" sx={{ mb: 1, fontWeight: 'bold' }}>
+              <Box component='section' id='desk-errors-popover-header-container' sx={{ p: 2, maxWidth: 300 }}>
+                <Typography component='h6' id='desk-errors-popover-header' variant="subtitle2" sx={{ mb: 1, fontWeight: 'bold' }}>
                   Last Errors:
                 </Typography>
-                <Box id='desk-errors-popover-list-container' sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                <Box component='span' id='desk-errors-popover-list-container' sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
                   {desk.lasterrors.map((error, index) => (
                     <Chip
+                      component='div'
                       id={'desk-errors-popover-list-element-' + error}
                       key={index}
                       label={error}
@@ -114,6 +118,7 @@ export function DeskCard({ desk, anchorEl, isOnline, handleClick, handleClose, h
         )}
 
         <Box
+          component='section'
           id='desk-image-container'
           sx={{
             display: 'flex',
@@ -128,9 +133,9 @@ export function DeskCard({ desk, anchorEl, isOnline, handleClick, handleClose, h
 
         {/* Desk Name */}
         <Typography
+          component='h5'
           id='desk-name-header'
           variant="h5"
-          component="div"
           sx={{
             textAlign: 'center',
             fontWeight: 'bold',
@@ -142,11 +147,12 @@ export function DeskCard({ desk, anchorEl, isOnline, handleClick, handleClose, h
         </Typography>
 
         {/* Status Switch */}
-        <Box id='desk-status-container' sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2, gap: 1 }}>
-          <Typography id='desk-status-header' variant="body2" color={isOnline ? 'success.main' : 'error.main'}>
+        <Box component='section' id='desk-status-container' sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2, gap: 1 }}>
+          <Typography component='p' id='desk-status-header' variant="body2" color={isOnline ? 'success.main' : 'error.main'}>
             {isOnline ? 'Online' : 'Offline'}
           </Typography>
           <Switch
+            component='form'
             id='desk-status-switch'
             checked={isOnline}
             onChange={handleSwitchChange}
@@ -165,39 +171,39 @@ export function DeskCard({ desk, anchorEl, isOnline, handleClick, handleClose, h
         <Divider sx={{ mb: 2 }} />
 
         {/* Desk Details */}
-        <Box id='desk-details-container' sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-          <Box id='desk-details-manufacturer-container' sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Typography id='desk-details-manufacturer-header' variant="body2" color="text.secondary">
+        <Box component='section' id='desk-details-container' sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+          <Box component='span' id='desk-details-manufacturer-container' sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Typography component='label' id='desk-details-manufacturer-header' variant="body2" color="text.secondary">
               Manufacturer:
             </Typography>
-            <Typography id='desk-details-manufacturer-value' variant="body2" fontWeight="medium">
+            <Typography component='p' id='desk-details-manufacturer-value' variant="body2" fontWeight="medium">
               {desk.manufacturer}
             </Typography>
           </Box>
 
-          <Box id='desk-details-position-container' sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Typography id='desk-details-position-header' variant="body2" color="text.secondary">
+          <Box component='span' id='desk-details-position-container' sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Typography component='label' id='desk-details-position-header' variant="body2" color="text.secondary">
               Position:
             </Typography>
-            <Typography id='desk-details-position-value' variant="body2" fontWeight="medium">
+            <Typography component='p' id='desk-details-position-value' variant="body2" fontWeight="medium">
               {desk.position} cm
             </Typography>
           </Box>
 
-          <Box id='desk-details-activationcount-container' sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Typography id='desk-details-activationcount-header' variant="body2" color="text.secondary">
+          <Box component='span' id='desk-details-activationcount-container' sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Typography component='label' id='desk-details-activationcount-header' variant="body2" color="text.secondary">
               Activation Count:
             </Typography>
-            <Typography id='desk-details-activationcount-value' variant="body2" fontWeight="medium">
+            <Typography component='p' id='desk-details-activationcount-value' variant="body2" fontWeight="medium">
               {desk.activationcounter}
             </Typography>
           </Box>
 
-          <Box id='desk-details-sitstandcount-container' sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Typography id='desk-details-sitstandcount-header' variant="body2" color="text.secondary">
+          <Box component='span' id='desk-details-sitstandcount-container' sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Typography component='label' id='desk-details-sitstandcount-header' variant="body2" color="text.secondary">
               Sit/Stand Count:
             </Typography>
-            <Typography id='desk-details-sitstandcount-value' variant="body2" fontWeight="medium">
+            <Typography component='p' id='desk-details-sitstandcount-value' variant="body2" fontWeight="medium">
               {desk.sitstandcounter}
             </Typography>
           </Box>

@@ -11,9 +11,10 @@ export default function AboutPageController() {
 /* View */
 export function AboutPage() {
     return (
-        <Box id='about-page' sx={{ boxShadow: 2}}>
+        <Box component='main' id='about-page' sx={{ boxShadow: 2}}>
 
             <Typography
+                component='h4'
                 id='about-page-header'
                 variant='h4'
                 sx={{
@@ -25,6 +26,7 @@ export function AboutPage() {
             </Typography>
 
             <Box
+                component='section'
                 id='about-page-text-container'
                 sx={{
                     bgcolor: 'rgba(102, 126, 234, 0.1)',
@@ -34,7 +36,7 @@ export function AboutPage() {
                     borderLeft: '4px solid #667eea'
                 }}
             >
-                <Typography id='about-page-text' sx={{ maxWidth: 1280}}>
+                <Typography component='p' id='about-page-text' sx={{ maxWidth: 1280}}>
                     This application was developed to facilitate and easy and convienient way to manage a desk in an office enviroment. <br/>
                 </Typography>
             </Box>

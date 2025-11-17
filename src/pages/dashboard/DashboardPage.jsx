@@ -12,7 +12,7 @@ export default function DashboardPageController() {
 /* View */
 export function DashboardPage() {
   return (
-    <Box id='dashboard' sx={{ boxShadow: 2 }}>
+    <Box id='dashboard-page' sx={{ boxShadow: 2 }}>
         <Typography
           variant="h4"
           sx={{
