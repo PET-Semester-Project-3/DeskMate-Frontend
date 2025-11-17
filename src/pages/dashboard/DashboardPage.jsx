@@ -38,7 +38,5 @@ export function DashboardPage() {
 
     </Box>
 
-    
-
   )
 }
