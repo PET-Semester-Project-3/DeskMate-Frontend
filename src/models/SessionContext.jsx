@@ -5,6 +5,6 @@ export const SessionContext = React.createContext({
   setSession: () => {},
 });
 
-export function useSessionContext() {
+export default function useSessionContext() {
   return React.useContext(SessionContext);
 }

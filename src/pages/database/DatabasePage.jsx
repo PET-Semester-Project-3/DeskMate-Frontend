@@ -1,4 +1,6 @@
 import * as React from 'react';
+import useSession from '../../models/SessionContext'
+import RestrictedPage from '../restricted/RestrictedPage'
 import { Box, Typography } from '@mui/material';
 import DatabaseDataSelection from './components/DatabaseDataSelection'
 import DatabaseDataGrid from './components/DatabaseDataGrid'
@@ -92,16 +94,20 @@ export default function DatabasePageController() {
   }, [selectedTable])
 
   return (
-    <DatabasePage 
-      dbSelection={[...DBTABLESELECTION]} 
-      onSelectionChanged={onSelectionChanged} 
-      rows={tableRows} 
-      onRowSelectionModelChange={onRowSelectionModelChange}
-      selectedRow={selectedRow}
-      isEditing={isEditing}
-      onEditingStateChange={onEditingStateChange}
-      onRemoveSelectedClick={onRemoveSelectedClick}
-      onSaveObjectClick={onSaveObjectClick}
+    <RestrictedPage 
+      Page={(
+        <DatabasePage 
+          dbSelection={[...DBTABLESELECTION]} 
+          onSelectionChanged={onSelectionChanged} 
+          rows={tableRows} 
+          onRowSelectionModelChange={onRowSelectionModelChange}
+          selectedRow={selectedRow}
+          isEditing={isEditing}
+          onEditingStateChange={onEditingStateChange}
+          onRemoveSelectedClick={onRemoveSelectedClick}
+          onSaveObjectClick={onSaveObjectClick}
+        />
+      )}
     />
   )
 }

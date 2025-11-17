@@ -1,17 +1,18 @@
 import * as React from 'react';
+import RestrictedPage from '../restricted/RestrictedPage'
 import { Typography, Box } from '@mui/material';
 
 /* Controller */
 export default function DashboardPageController() {
   return (
-    <DashboardPage/>
+    <RestrictedPage Page={<DashboardPage/>} />
   )
 }
 
 /* View */
 export function DashboardPage() {
   return (
-    <Box title="" sx={{ boxShadow: 2 }}>
+    <Box id='dashboard' sx={{ boxShadow: 2 }}>
         <Typography
           variant="h4"
           sx={{
