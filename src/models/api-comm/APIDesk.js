@@ -36,12 +36,21 @@ export async function asyncPostDesk(id, controllerId, name, manufacturer, is_loc
 // 404 returns: { success: false, message: "Desk not found" }
 // 404 returns: { success: false, message: "Controller not found" }
 // 500 returns: { success: false, message: "Failed to update desk" }
-export async function asyncPutDesk(id, controllerId, name, manufacturer, is_locked, last_data) {
-  if (!id || !name || !manufacturer || !last_data) {
-    console.log(`id (${id}), name (${name}), manufacturer (${manufacturer}), is_locked (${is_locked}) or last_data (${last_data}) was null or empty`)
+export async function asyncPutDesk(id, updates) {
+  if (!id) {
+    console.log(`id (${id}) was null or empty`)
     return null;
   }
-  return asyncFetch(`${APIDESKSURL}/${id}`, 'PUT', { controllerId, name, manufacturer, is_locked, last_data });
+  
+  // Build body object with only provided fields
+  const body = {};
+  if (updates.controllerId !== undefined && updates.controllerId !== null) body.controllerId = updates.controllerId;
+  if (updates.name !== undefined && updates.name !== null) body.name = updates.name;
+  if (updates.manufacturer !== undefined && updates.manufacturer !== null) body.manufacturer = updates.manufacturer;
+  if (updates.is_locked !== undefined && updates.is_locked !== null) body.is_locked = updates.is_locked;
+  if (updates.last_data !== undefined && updates.last_data !== null) body.last_data = updates.last_data;
+  
+  return asyncFetch(`${APIDESKSURL}/${id}`, 'PUT', body);
 }
 
 // 200 returns: { success: true, message: "Desk deleted successfully" }

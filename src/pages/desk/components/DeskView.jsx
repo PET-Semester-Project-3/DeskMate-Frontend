@@ -15,6 +15,7 @@ import {
 import CheckIcon from '@mui/icons-material/Check';
 import EditIcon from '@mui/icons-material/Edit';
 import deskImage from '../../../assets/desk.png';
+import { asyncPutDesk } from '../../../models/api-comm/APIDesk';
 
 /* Controller */
 export default function DeskViewController({ desk }){
@@ -25,8 +26,9 @@ export default function DeskViewController({ desk }){
   const [height, setHeight] = React.useState(desk.position);
   const [isOnline, setIsOnline] = React.useState(desk.status === 'Online');
 
-  const handleNameConfirm = () => {
+  const handleNameConfirm = async () => {
     setDeskName(tempName);
+    await asyncPutDesk(desk.id, { name: tempName });
     setIsEditingName(false);
   };
 
