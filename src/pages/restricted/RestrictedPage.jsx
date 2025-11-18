@@ -50,7 +50,7 @@ export function RestrictedPage({ session, route }) {
                 maxWidth: 450,
             }}
         >
-            {session?.user?.username}
+            {session?.user?.email}
             , You have found a page that you do not have access to. Try to contact an Administrator if you need to have access to:
             {' [ ' + route + ' ]'}
         </Typography>

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Box, Button } from '@mui/material';
 
 /* Controller */
-export default function DatabaseActionButtonsController({ selectedEntry, onEditingStateChange, onRemoveSelectedClick }) {
+export default function DatabaseActionButtonsController({ selectedEntry, onEditingStateChange, onRemoveSelectedClick, canCreateNew }) {
     
     const [entry, setEntry] = React.useState();
     
@@ -15,12 +15,13 @@ export default function DatabaseActionButtonsController({ selectedEntry, onEditi
           entry={entry} 
           onEditingStateChange={onEditingStateChange}
           onRemoveSelectedClick={onRemoveSelectedClick}
+          canCreateNew={canCreateNew}
         />
     )
 }
 
 /* View */
-export function DatabaseActionButtons({ entry, onEditingStateChange, onRemoveSelectedClick }) {
+export function DatabaseActionButtons({ entry, onEditingStateChange, onRemoveSelectedClick, canCreateNew }) {
   return (
     <Box component='div' id='database-data-actions' sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
       {
@@ -44,6 +45,7 @@ export function DatabaseActionButtons({ entry, onEditingStateChange, onRemoveSel
             </Box>
         )
         : (
+          canCreateNew ?
           <Button
             component='button'
             id='database-data-actions-create-button'
@@ -51,6 +53,7 @@ export function DatabaseActionButtons({ entry, onEditingStateChange, onRemoveSel
             onClick={onEditingStateChange}
             sx={{ mb: 1 }} 
           >Create New</Button>
+          : null
         )
       }
     </Box>

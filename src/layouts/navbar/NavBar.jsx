@@ -18,7 +18,7 @@ export default function NavBarController(){
   const pages = session.pages != null ? [...session.pages] : [];
 
   const handleLogoClick = () => {
-    navigate('/');
+    navigate('/howtouse');
   };
 
   const handlePageClick = (pages) => {

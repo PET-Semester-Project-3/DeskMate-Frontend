@@ -15,6 +15,7 @@ import {
 import CheckIcon from '@mui/icons-material/Check';
 import EditIcon from '@mui/icons-material/Edit';
 import deskImage from '../../../assets/desk.png';
+import { asyncPutDesk } from '../../../models/api-comm/APIDesk';
 
 /* Controller */
 export default function DeskViewController({ desk }){
@@ -22,12 +23,26 @@ export default function DeskViewController({ desk }){
   const [deskName, setDeskName] = React.useState(desk.name);
   const [tempName, setTempName] = React.useState(desk.name);
   const [isEditingName, setIsEditingName] = React.useState(false);
-  const [height, setHeight] = React.useState(desk.position);
-  const [isOnline, setIsOnline] = React.useState(desk.status === 'Online');
+  const [height, setHeight] = React.useState(desk.height);
+  const [isOnline, setIsOnline] = React.useState(desk.is_online);
 
-  const handleNameConfirm = () => {
+  const handleNameConfirm = async () => {
     setDeskName(tempName);
+    await asyncPutDesk(desk.id, { name: tempName });
     setIsEditingName(false);
+  };
+
+  const handleHeightChange = (_, newValue) => {
+    setHeight(newValue);
+  };
+
+  const handleSwitchChange = async (_, newValue) => {
+    setIsOnline(newValue);
+    await asyncPutDesk(desk.id, { is_online: newValue });
+  };
+
+  const handleHeightCommit = async (_, newValue) => {
+    await asyncPutDesk(desk.id, { height: newValue });
   };
 
   const handleNameEdit = () => {
@@ -35,24 +50,25 @@ export default function DeskViewController({ desk }){
   };
 
   return (
-    <DeskView 
+    <DeskView
       deskName={deskName}
       desk={desk}
       tempName={tempName}
-      isEditingName={isEditingName} 
-      height={height} 
-      isOnline={isOnline} 
+      isEditingName={isEditingName}
+      height={height}
+      isOnline={isOnline}
       setTempName={setTempName}
-      setHeight={setHeight}
-      setIsOnline={setIsOnline}
-      handleNameConfirm={handleNameConfirm} 
+      setHeight={handleHeightChange}
+      setHeightCommit={handleHeightCommit}
+      setIsOnline={handleSwitchChange}
+      handleNameConfirm={handleNameConfirm}
       handleNameEdit={handleNameEdit}
     />
   )
 }
 
 /* View */
-export function DeskView({ deskName, desk, tempName, isEditingName, height, isOnline, setTempName, setHeight, setIsOnline, handleNameConfirm, handleNameEdit }) {
+export function DeskView({ deskName, desk, tempName, isEditingName, height, isOnline, setTempName, setHeight, setHeightCommit, setIsOnline, handleNameConfirm, handleNameEdit }) {
   return (
     <Card component='div' id='desk-view' sx={{ mb: 3, p: 3 }}>
       <Grid component='section' id='desk-view-grid' container spacing={4}>
@@ -106,7 +122,8 @@ export function DeskView({ deskName, desk, tempName, isEditingName, height, isOn
                 component='form'
                 id='desk-view-left-panel-height-slider'
                 value={height}
-                onChange={(_, newValue) => setHeight(newValue)}
+                onChange={setHeight}
+                onChangeCommitted={setHeightCommit}
                 min={60}
                 max={130}
                 valueLabelDisplay="auto"
@@ -122,7 +139,7 @@ export function DeskView({ deskName, desk, tempName, isEditingName, height, isOn
                   component='form'
                   id='desk-view-left-panel-power-switch'
                   checked={isOnline}
-                  onChange={(e) => setIsOnline(e.target.checked)}
+                  onChange={setIsOnline}
                   color="primary"
                 />
               }

@@ -4,18 +4,24 @@ import { Box, Card, CardContent, TextField  } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 /* Controller */
-export default function ObjectPropertyFieldCardController({ propertyName, propertyType, propertyValue, originalSchematic, onPropertyEdit }) {
+export default function ObjectPropertyFieldCardController({ propertyName, propertyType, propertyValue, onPropertyEdit, required }) {
   
   const [value, setValue] = React.useState('');
   const [valueErrorText, setValueErrorText] = React.useState('');
   
   const onValueChange = (e) => {
-    const newValue = e.target.value;
+    if (propertyType == 'Date') {
+      const newValue = e;
+      setValue(newValue);
+      onPropertyEdit(propertyName, newValue);
+      return;
+    }
+    let newValue = e.target.value;
     switch (propertyType){
-      case 'string':
+      case 'String':
         setValue(newValue);
         break;
-      case 'number':
+      case 'Number':
         if (!isNaN(newValue)){
             setValue(newValue);
             if (valueErrorText != '') setValueErrorText('');
@@ -23,8 +29,14 @@ export default function ObjectPropertyFieldCardController({ propertyName, proper
         else
           setValueErrorText(`${newValue} is not a Number`);
         break;
-      case 'date':
-        //setValue(dayjs(newValue));
+      case 'Array':
+        newValue = newValue.split(',')
+        if (Array.isArray(newValue)){
+          setValue(newValue);
+          if (valueErrorText != '') setValueErrorText('');
+        }
+        else
+          setValueErrorText(`${newValue} is not an Array`);
         break;
       default:
         setValue(newValue);
@@ -34,13 +46,16 @@ export default function ObjectPropertyFieldCardController({ propertyName, proper
   }
 
   React.useEffect(() => {
-    if (propertyType == 'date')
-      setValue(undefined);
+    if (propertyType == 'Date' && propertyValue){
+      setValue(dayjs(propertyValue.toISOString()));
+    }
+    else if (propertyValue == ' ')
+      setValue('');
     else
       setValue(propertyValue);
-    if (valueErrorText != '')
+    if (valueErrorText)
       setValueErrorText('');
-    onPropertyEdit(propertyName, value);
+    onPropertyEdit(propertyName, propertyValue);
   }, [propertyValue])
 
   return (
@@ -50,23 +65,30 @@ export default function ObjectPropertyFieldCardController({ propertyName, proper
       value={value}
       errorText={valueErrorText}
       onValueChange={onValueChange}
+      required={required}
     />
   )
 }
 
 /* View */
-export function ObjectPropertyFieldCard({ name, type, value, errorText, onValueChange }) {
+export function ObjectPropertyFieldCard({ name, type, value, errorText, onValueChange, required }) {
   return (
     <Box component='div' id='object-property-field-card' >
       {type == 'object' ?
             null
             : (
               <Box component='section' id='object-property-field-card-input-container' sx={{ m: 1, width: 230 }}>
-                {type == 'date' ?
-                      <DatePicker component='form' id='object-property-field-card-input-datepicker' />
+                {type == 'Date' ?
+                      <DatePicker 
+                        component='form' 
+                        id='object-property-field-card-input-datepicker' 
+                        value={value == '' ? dayjs('2001-01-01T00:00') : value}
+                        onChange={onValueChange}
+                      />
                     : <TextField
                         component='form'
                         id='object-property-field-card-input-textfield'
+                        required={required}
                         error={errorText == '' ? false : true}
                         label={name}
                         value={value} 

@@ -3,7 +3,7 @@ import { Paper, Box, Backdrop, Button, Typography } from '@mui/material';
 import ObjectPropertyFieldCard from './ObjectPropertyFieldCard'
 
 /* Controller */
-export default function DatabaseObjectPopoutController({ selectedEntry, isOpen, onEditingStateChange, schematicObject, onSaveClick }) {
+export default function DatabaseObjectPopoutController({ selectedEntry, isOpen, onEditingStateChange, schematicObject, onSaveClick, blackListedProperties, requiredProperties }) {
     
   const [properties, setProperties] = React.useState([]);
   const [object, setObject] = React.useState({});
@@ -14,6 +14,14 @@ export default function DatabaseObjectPopoutController({ selectedEntry, isOpen, 
     let o = {...object};
     o[name.toLowerCase()] = value;
     setObject(o);
+  }
+
+  const onSaveClickInternal = (obj) => {
+    properties.forEach(prop => {
+      if (prop.value != null)
+        prop.value = ' ';
+    });
+    onSaveClick(obj);
   }
   
   React.useEffect(() => {
@@ -26,22 +34,30 @@ export default function DatabaseObjectPopoutController({ selectedEntry, isOpen, 
       return;
     var properties = [];
     Object.getOwnPropertyNames(o).forEach(property => {
+      if (blackListedProperties != null && blackListedProperties.includes(property))
+        return;
+      const headerName = property.toUpperCase();
+      const type = o[property] != null ? o[property].constructor.name : 'Undefined';
+      var value = '';
+      if (selectedEntry)
+        value = o[property] != null ? o[property] : '';
       properties.push({
-        headerName: property.toUpperCase(),
-        type: typeof o[property],
-        value: selectedEntry != null ? o[property] : ''
+        headerName: headerName,
+        type: type,
+        value: value,
+        required: requiredProperties != null ? requiredProperties.includes(property) : false
       });
     });
     setProperties(properties);
     setObject(selectedEntry != null ? {...selectedEntry} : {});
-  }, [selectedEntry, schematicObject]);
+  }, [selectedEntry, schematicObject, blackListedProperties, requiredProperties]);
   
   return (
     <DatabaseObjectPopout 
       isOpen={isOpen} 
       onEditingStateChange={onEditingStateChange} 
       propertiesSchematic={properties}
-      onSaveClick={onSaveClick}
+      onSaveClick={onSaveClickInternal}
       object={object}
       onPropertyEdit={onPropertyEdit}
     />
@@ -117,6 +133,7 @@ export function DatabaseObjectPopout({ isOpen, onEditingStateChange, propertiesS
                       propertyValue={schematic.value}
                       originalSchematic={schematic}
                       onPropertyEdit={onPropertyEdit}
+                      required={schematic.required}
                     />
                   )
                 })

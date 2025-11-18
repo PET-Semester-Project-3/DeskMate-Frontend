@@ -1,74 +1,110 @@
 import * as React from 'react';
 import useSession from '../../models/SessionContext';
-import { getRoutesForUser } from '../../models/RoutePermissions'
-import { FormControl, OutlinedInput, InputLabel, InputAdornment, FormHelperText, Box, TextField, Button, IconButton, Card, CardContent, CardActions, Stack } from '@mui/material';
+import { asyncGetUserPermissions, asyncPostUser } from '../../models/api-comm/APIUsers';
+import { FormControl, OutlinedInput, InputLabel, InputAdornment, 
+  FormHelperText, Box, TextField, Button, IconButton, Card, 
+  CardContent, CardActions, Stack, CircularProgress, Radio
+} from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import useWindowDimensions from '../../models/WindowDimensions'
 import DeskmateInverseSVG from '../../assets/DeskMateInverse.svg'
 import DeskmateSVG from '../../assets/DeskMate.svg'
 import { useTheme } from '@mui/material/styles';
-import { USERS } from '../../../dummyData/dummyData';
+import { asyncPostLoginUser } from '../../models/api-comm/APIUsers';
+import { asyncGetAPIReady } from '../../models/api-comm/APIReady';
 
 /* Controller */
 export default function SignInPageController() {
   
+  const [waitingForResponse, setWaitingForResponse] = React.useState(false);
+
   const { height, width } = useWindowDimensions();
-  const { session, setSession } = useSession();
+  const { setSession } = useSession();
 
   const theme = useTheme();
   const imageSrc = theme.palette.mode == 'dark' ? DeskmateInverseSVG : DeskmateSVG;
 
-  const [username, setUsername] = React.useState('');
-  const [usernameErrorText, setUsernameErrorText] = React.useState('');
+  const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
-  const [passwordErrorText, setPasswordErrorText] = React.useState('');
+  const [errorText, setErrorText] = React.useState('');
   const [showPassword, setShowPassword] = React.useState(false);
 
+  const [apiReady, setAPIReady] = React.useState(false);
+
   const handleUsernameChange = (e) => {
-    setUsername(e.target.value)
-    if (usernameErrorText != '') setUsernameErrorText('');
+    setEmail(e.target.value)
+    if (errorText != '') setErrorText('');
   };
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value)
-    if (passwordErrorText != '') setPasswordErrorText('');
+    if (errorText != '') setErrorText('');
   };
 
   const handleClickShowPassword = () => setShowPassword(() => !showPassword);
 
-  const handleSignInClick = () => {
-    const user = USERS.find(user => user.username == username);
-    if (user == undefined) {
-      setUsernameErrorText('Could not find user')
+  const handleSignInClick = async () => {
+    setWaitingForResponse(true);
+    const user = await asyncPostLoginUser(email, password);
+    if (!user) {
+      setErrorText('Could not find user or wrong password')
+      setWaitingForResponse(false);
       return;
     }
-    if (user.password != password){
-      setPasswordErrorText('Wrong password')
-      return;
-    }
-    console.log({ user: user, pages: getRoutesForUser(user.id) })
-    setSession({ user: user, pages: getRoutesForUser(user.id) });
+    const session = { user: user, pages: await asyncGetUserPermissions(user.id) };
+    setSession(session);
+    setWaitingForResponse(false);
   };
 
+  const signupButtonClick = async () => {
+    setWaitingForResponse(true);
+    const user = await asyncPostUser(email, password);
+    if (!user) {
+      setErrorText('Could not create user with those credentials')
+      setWaitingForResponse(false);
+      return;
+    }
+    const session = { user: user, pages: []};
+    setSession(session);
+    setWaitingForResponse(false);
+  }
+
+  React.useEffect(() => {
+    async function checkAPIReady() {
+      setWaitingForResponse(true);
+      const apiReady = await asyncGetAPIReady();
+      if (apiReady.message.includes('Ready'))
+        setAPIReady(true);
+      else
+        setAPIReady(false);
+      setWaitingForResponse(false);
+    }
+    checkAPIReady();
+  }, []);
+
   return (
-    <SignInPage 
+    <SignInPage
+      apiReady={apiReady}
       windowHeight={height}
+      windowWidth={width}
       imageSrc={imageSrc}
-      username={username} 
+      username={email} 
       changeUsername={handleUsernameChange}
-      usernameErrorText={usernameErrorText}
+      usernameErrorText={errorText}
       password={password} 
       changePassword={handlePasswordChange}
-      passwordErrorText={passwordErrorText}
+      passwordErrorText={errorText}
       showPassword={showPassword}
       handleClickShowPassword={handleClickShowPassword}
       signinButtonClick={handleSignInClick}
+      signupButtonClick={signupButtonClick}
+      waitingForResponse={waitingForResponse}
     />
   );
 }
 
 /* View */
-export function SignInPage({ windowHeight, imageSrc, username, changeUsername, usernameErrorText, password, changePassword, passwordErrorText, showPassword, handleClickShowPassword, signinButtonClick }) {
+export function SignInPage({ apiReady, windowHeight, imageSrc, username, changeUsername, usernameErrorText, password, changePassword, passwordErrorText, showPassword, handleClickShowPassword, signinButtonClick, signupButtonClick,waitingForResponse }) {
   return (
     <Box
       component='main'
@@ -125,28 +161,94 @@ export function SignInPage({ windowHeight, imageSrc, username, changeUsername, u
                   </InputAdornment>
                 }
               />
-              <FormHelperText id='signin-password-textfield-formhelptertext'>{passwordErrorText}</FormHelperText>
+              <FormHelperText id='signin-password-textfield-formhelptertext' error={passwordErrorText == '' ? false : true} >{passwordErrorText}</FormHelperText>
             </FormControl>
           </Stack>
         </CardContent>
         <CardActions component='section' id='signin-form-actions' sx={{ justifyContent: 'center' }}>
-          <Button
-            component='button'
-            id='signin-button'
-            variant='contained'
-            size='large'
-            onClick={signinButtonClick}
-            sx={{
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              '&:hover': {
-                background: 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)',
-              },
-              width: '75%',
-              ml: 4, mr: 4, mb: 4,
-            }}
-          >Sign in</Button>
+          <Box component='div' id='signin-button-container' sx={{ m: 2, position: 'relative' }}>
+            <Button
+              component='button'
+              id='signin-button'
+              variant='contained'
+              size='large'
+              onClick={signinButtonClick}
+              sx={{
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                '&:hover': {
+                  background: 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)',
+                },
+                width: '100%',
+                pl: 4, pr: 4, mb: 2,
+              }}
+            >
+              {waitingForResponse ?
+                <CircularProgress 
+                  component='div' 
+                  id='signin-button-circularprogress'
+                  size={24}
+                  sx={{
+                    color: 'white',
+                  }}
+                />
+                : 'Sign in'
+              }
+            </Button>
+            <Button
+              component='button'
+              id='signup-button'
+              variant='contained'
+              size='small'
+              onClick={signupButtonClick}
+              sx={{
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                '&:hover': {
+                  background: 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)',
+                },
+                width: '75%',
+                ml: 4, mr: 4, mb: 4,
+              }}
+            >
+              {waitingForResponse ?
+                <CircularProgress 
+                  component='div' 
+                  id='signup-button-circularprogress'
+                  size={18}
+                  sx={{
+                    color: 'white',
+                  }}
+                />
+                : 'Sign up'
+              }
+            </Button>
+          </Box>
         </CardActions>
       </Card>
+        <Box component='footer' id='signin-page-footer' sx={{ position: 'absolute', bottom: 10, textAlign: 'center', width: '100%' }}>
+          {
+            apiReady ?
+              <Radio
+                component='span'
+                id='signin-api-ready-indicator'
+                checked
+                color='success'
+                size='small'
+              /> :
+              <Radio
+                component='span'
+                id='signin-api-not-ready-indicator'
+                checked
+                color='error'
+                size='small'
+              />
+          }
+          <Box component='span' id='signin-api-status-text' sx={{ fontSize: 12, ml: 1 }}>
+            { apiReady
+              ? 'API is available'
+              : 'API is not available'
+            }
+          </Box>
+        </Box>
     </Box>
   );
 }

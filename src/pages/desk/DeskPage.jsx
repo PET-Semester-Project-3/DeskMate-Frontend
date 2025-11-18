@@ -1,35 +1,36 @@
 import * as React from 'react';
 import RestrictedPage from '../restricted/RestrictedPage'
-import { Box, Typography, Stack } from '@mui/material';
+import { Box, Typography, Stack, CircularProgress } from '@mui/material';
 import useSession from '../../models/SessionContext';
 import DeskView from './components/DeskView';
-import { DESKS, USERSTODESKS } from '../../../dummyData/dummyData';
+import { asyncGetUserDesks } from '../../models/api-comm/APIUsers'
 
 
 /* Controller */
 export default function DeskPageController() {
   
-  const { session, setSession } = useSession();
+  const [waitingForResponse, setWaitingForResponse] = React.useState(false);
 
-  // Filter desks based on user's assigned desks
-  const userDesksIds = session.user
-    ? USERSTODESKS.map(utd => {
-      if (utd.userid == session.user.id)
-        return utd.deskid;
-    })
-    : [];
+  const [desks, setDesks] = React.useState([]);
+  const { session } = useSession();
 
-  const userDesks = userDesksIds.length > 0
-    ? DESKS.filter(d => userDesksIds.includes(d.id))
-    : [];
+  React.useEffect(() => {
+    async function getDesks(id) {
+      setWaitingForResponse(true);
+      const desks = await asyncGetUserDesks(id);
+      setDesks(desks);
+      setWaitingForResponse(false);
+    }
+    getDesks(session?.user?.id);
+  }, []);
 
   return (
-    <RestrictedPage Page={<DeskPage userDesks={userDesks} />} />
+    <RestrictedPage Page={<DeskPage userDesks={desks} waitingForResponse={waitingForResponse} />} />
   )
 }
 
 /* View */
-export function DeskPage({ userDesks }) {
+export function DeskPage({ userDesks, waitingForResponse }) {
   return (
     <Box component='main' id='desk-page' sx={{ boxShadow: 2 }}>
       <Typography
@@ -45,7 +46,19 @@ export function DeskPage({ userDesks }) {
         {'My Desk' + (userDesks.length > 1 ? 's' : '')}
       </Typography>
       <Box component='section' id='user-desks-list-container' sx={{ maxWidth: '1600px', margin: '0 auto' }}>
-        {userDesks.length > 0 ? (
+        {userDesks.length > 0 || waitingForResponse ? (
+          waitingForResponse ?
+          <Box component={'section'} id='desk-page-loading-container' sx={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', p: 5 }}>
+            <CircularProgress
+              component='div'
+              id='desk-page-circularprogress'
+              size={60}
+              sx={{
+                color: 'primary.main',
+              }}
+            />
+          </Box>
+          :
           <Stack component='ul' id='user-desks-list' spacing={2}>
             {userDesks.map(desk => (
               <DeskView id={'user-desk-' + desk.id} key={desk.id} desk={desk} />

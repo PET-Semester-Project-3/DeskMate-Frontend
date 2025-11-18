@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Outlet } from 'react-router';
 import { Box } from '@mui/material';
-import Footer from './footer/footer'
+import Footer from './footer/Footer'
 import NavBar from './navbar/NavBar';
 
 /* Controller */
