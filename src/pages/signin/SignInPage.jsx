@@ -19,7 +19,7 @@ export default function SignInPageController() {
   const [waitingForResponse, setWaitingForResponse] = React.useState(false);
 
   const { height, width } = useWindowDimensions();
-  const { session, setSession } = useSession();
+  const { setSession } = useSession();
 
   const theme = useTheme();
   const imageSrc = theme.palette.mode == 'dark' ? DeskmateInverseSVG : DeskmateSVG;
@@ -86,6 +86,7 @@ export default function SignInPageController() {
     <SignInPage
       apiReady={apiReady}
       windowHeight={height}
+      windowWidth={width}
       imageSrc={imageSrc}
       username={email} 
       changeUsername={handleUsernameChange}

@@ -12,7 +12,7 @@ export default function DeskPageController() {
   const [waitingForResponse, setWaitingForResponse] = React.useState(false);
 
   const [desks, setDesks] = React.useState([]);
-  const { session, setSession } = useSession();
+  const { session } = useSession();
 
   React.useEffect(() => {
     async function getDesks(id) {

@@ -45,6 +45,8 @@ export async function asyncPutDesk(id, updates) {
   const body = {};
   if (updates.controllerId !== undefined && updates.controllerId !== null) body.controllerId = updates.controllerId;
   if (updates.name !== undefined && updates.name !== null) body.name = updates.name;
+  if (updates.height !== undefined && updates.height !== null) body.height = updates.height;
+  if (updates.is_online !== undefined && updates.is_online !== null) body.is_online = updates.is_online;
   if (updates.manufacturer !== undefined && updates.manufacturer !== null) body.manufacturer = updates.manufacturer;
   if (updates.is_locked !== undefined && updates.is_locked !== null) body.is_locked = updates.is_locked;
   if (updates.last_data !== undefined && updates.last_data !== null) body.last_data = updates.last_data;

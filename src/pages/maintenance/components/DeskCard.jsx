@@ -186,7 +186,7 @@ export function DeskCard({ desk, anchorEl, isOnline, handleClick, handleClose, h
               Position:
             </Typography>
             <Typography component='p' id='desk-details-position-value' variant="body2" fontWeight="medium">
-              {desk.position} cm
+              {desk.height} cm
             </Typography>
           </Box>
 
