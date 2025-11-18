@@ -1,51 +1,67 @@
 import * as React from 'react';
-import useSession from '../../models/SessionContext'
 import RestrictedPage from '../restricted/RestrictedPage'
 import { Box, Typography } from '@mui/material';
 import DatabaseDataSelection from './components/DatabaseDataSelection'
 import DatabaseDataGrid from './components/DatabaseDataGrid'
 import DatabaseActionButtons from './components/DatabaseActionButtons'
 import DatabaseObjectPopout from './components/DatabaseObjectPopout/DatabaseObjectPopout';
-import { DESKS, USERSTODESKS, USERS, PERMISSIONS, USERTOPERMISSONS } from '../../../dummyData/dummyData';
-import { asyncGetDesks } from '../../models/api-comm/APIDesk';
-import { asyncGetUsers } from '../../models/api-comm/APIUsers';
-import { asyncGetPermissions } from '../../models/api-comm/APIPermission';
+import { USERSTODESKS, USERTOPERMISSONS } from '../../../dummyData/dummyData';
+import { asyncDeleteDesk, asyncGetDesks, asyncPostDesk, asyncPutDesk } from '../../models/api-comm/APIDesk';
+import { asyncDeleteUser, asyncGetUsers, asyncPostUser, asyncPutUser } from '../../models/api-comm/APIUsers';
+import { asyncDeletePermission, asyncGetPermissions, asyncPostPermission, asyncPutPermission } from '../../models/api-comm/APIPermission';
+import { asyncDeleteController, asyncGetControllers, asyncPostController, asyncPutController } from '../../models/api-comm/APIController';
+import { asyncDeleteScheduledTask, asyncGetScheduledTasks, asyncPostScheduledTask, asyncPutScheduledTask } from '../../models/api-comm/APIScheduleTask';
 
 const DBTABLESELECTION = [
     {
         name: 'Desks',
         canCreateNew: true,
-        blackListedProperties: ['id', 'last_data', 'last_data_at' , 'created_at', 'updated_at'],
-        requiredProperties: ['name', 'manufacturer'],
-        getAll: asyncGetDesks
+        blackListedProperties: ['last_data', 'last_data_at' , 'created_at', 'updated_at'],
+        requiredProperties: ['id', 'name', 'manufacturer'],
+        getAll: asyncGetDesks,
+        post: asyncPostDesk,
+        put: asyncPutDesk,
+        delete: asyncDeleteDesk
       },
     {
         name: 'Users',
         canCreateNew: false,
         blackListedProperties: ['id', 'created_at', 'updated_at'],
         requiredProperties: ['email'],
-        getAll: asyncGetUsers
+        getAll: asyncGetUsers,
+        post: asyncPostUser,
+        put: asyncPutUser,
+        delete: asyncDeleteUser
     },
     {
         name: 'Controllers',
         canCreateNew: false,
         blackListedProperties: ['id'],
         requiredProperties: ['name'],
-        getAll:  /*asyncGetScheduledTasks()*/ () => { return [] }
+        getAll: asyncGetControllers,
+        post: asyncPostController,
+        put: asyncPutController,
+        delete: asyncDeleteController
     },
     {
         name: 'Permissions',
         canCreateNew: true,
         blackListedProperties: ['id', 'created_at', 'updated_at'],
         requiredProperties: ['label', 'route'],
-        getAll: asyncGetPermissions
+        getAll: asyncGetPermissions,
+        post: asyncPostPermission,
+        put: asyncPutPermission,
+        delete: asyncDeletePermission
     },
     {
         name: 'Scheduled Tasks',
         canCreateNew: true,
         blackListedProperties: ['id', 'created_at', 'updated_at'],
         requiredProperties: ['desk_id', 'user_id', 'description', 'new_height', 'scheduled_at', 'status'],
-        getAll: /*asyncGetScheduledTasks()*/ () => { return [] }
+        getAll: asyncGetScheduledTasks,
+        post: asyncPostScheduledTask,
+        put: asyncPutScheduledTask,
+        delete: asyncDeleteScheduledTask
     },
     {
         name: 'User To Desks',
@@ -80,7 +96,7 @@ export default function DatabasePageController() {
     setSelectedRow(null);
   };
 
-  const onRowSelectionModelChange = (rowSelectionModel, details) => {
+  const onRowSelectionModelChange = (rowSelectionModel) => {
     const selectedRows = tableRows.filter(row => {
       return rowSelectionModel.ids.has(row.id);
     });
@@ -94,10 +110,15 @@ export default function DatabasePageController() {
     setIsEditing(!isEditing)
   }
 
-  const onRemoveSelectedClick = () => {
+  const onRemoveSelectedClick = async () => {
     if (selectedRow != null){
       console.log(`Remove[${selectedTable.name}] (Id = ${selectedRow.id})`, selectedRow)
-      // BACKEND --> DB CONNECTION HERE
+      const response = await selectedTable.delete(selectedRow.id);
+      if (response.success != null && !response.success){
+        console.log('Failed to delete object');
+        return;
+      }
+      getTableData();
     }
     else {
       console.log('No selected row to remove')
@@ -105,16 +126,31 @@ export default function DatabasePageController() {
     }
   }
 
-  function onSaveObjectClick(object, newObject){
+  async function onSaveObjectClick(object){
     if (object != null){
-      if (newObject){
+      const missingProperties = selectedTable.requiredProperties.filter(prop => {
+        return object[prop] == null || object[prop] == ''
+    });
+      if (missingProperties.length > 0)
+        return;
+      if (selectedRow == null){
         console.log(`Create New[${selectedTable.name}]`, object)
+        const response = await selectedTable.post(object);
+        if (response.success != null && !response.success){
+          console.log('Failed to create new object');
+          return;
+        }
       }
       else{
         console.log(`Update[${selectedTable.name}] (Id = ${object.id})`, object)
+        const response = await selectedTable.put(object);
+        if (response.success != null && !response.success){
+          console.log('Failed to create new object');
+          return;
+        }
       }
-      // BACKEND --> DB CONNECTION HERE
       setIsEditing(false);
+      getTableData();
     }
     else{
       console.log('Object was null')
@@ -122,18 +158,19 @@ export default function DatabasePageController() {
     }
   }
 
-  React.useEffect(() => {
-    async function getTableData() {
-      setWaitingForResponse(true);
-      setTableRows([]);
-      var rows = [];
-      rows = await selectedTable.getAll();
-      console.log('Fetched Data for Table:', selectedTable.name, rows);
-      if (rows != null && rows.success == null){
-        setTableRows(rows);
-      }
-      setWaitingForResponse(false);
+  async function getTableData() {
+    setWaitingForResponse(true);
+    setTableRows([]);
+    var rows = [];
+    rows = await selectedTable.getAll();
+    console.log('Fetched Data for Table:', selectedTable.name, rows);
+    if (rows != null && rows.success == null){
+      setTableRows(rows);
     }
+    setWaitingForResponse(false);
+  }
+
+  React.useEffect(() => {
     getTableData();
   }, [selectedTable])
 

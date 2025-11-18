@@ -23,7 +23,7 @@ export async function asyncGetPermission(id) {
 // 201 returns: { success: true, data: permission }
 // 400 returns: { success: false, message: "label and route required" }
 // 500 returns: { success: false, message: "Failed to create permission" }
-export async function asyncPostPermission(label, route) {
+export async function asyncPostPermission({label, route}) {
   if (!label || !route) {
     console.log(`label (${label}) or route (${route}) was null or empty`)
     return null;
@@ -34,7 +34,7 @@ export async function asyncPostPermission(label, route) {
 // 200 returns: { success: true, data: permission }
 // 404 returns: { success: false, message: "Permission not found" }
 // 500 returns: { success: false, message: "Failed to update permission" }
-export async function asyncPutPermission(id, label, route) {
+export async function asyncPutPermission({id, label, route}) {
   if (!id || !label || !route) {
     console.log(`id (${id}), label (${label}) or route (${route}) was null or empty`)
     return null;
