@@ -4,7 +4,7 @@ import { Box, Card, CardContent, TextField  } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 /* Controller */
-export default function ObjectPropertyFieldCardController({ propertyName, propertyType, propertyValue, onPropertyEdit }) {
+export default function ObjectPropertyFieldCardController({ propertyName, propertyType, propertyValue, onPropertyEdit, required }) {
   
   const [value, setValue] = React.useState('');
   const [valueErrorText, setValueErrorText] = React.useState('');
@@ -46,12 +46,12 @@ export default function ObjectPropertyFieldCardController({ propertyName, proper
   }
 
   React.useEffect(() => {
-    if (propertyType == 'Date' && propertyValue != ''){
+    if (propertyType == 'Date' && propertyValue){
       setValue(dayjs(propertyValue.toISOString()));
     }
     else
       setValue(propertyValue);
-    if (valueErrorText != '')
+    if (valueErrorText)
       setValueErrorText('');
     onPropertyEdit(propertyName, propertyValue);
   }, [propertyValue])
@@ -61,15 +61,15 @@ export default function ObjectPropertyFieldCardController({ propertyName, proper
       name={propertyName}
       type={propertyType}
       value={value}
-      setValue={setValue}
       errorText={valueErrorText}
       onValueChange={onValueChange}
+      required={required}
     />
   )
 }
 
 /* View */
-export function ObjectPropertyFieldCard({ name, type, value, setValue, errorText, onValueChange }) {
+export function ObjectPropertyFieldCard({ name, type, value, errorText, onValueChange, required }) {
   return (
     <Box component='div' id='object-property-field-card' >
       {type == 'object' ?
@@ -86,6 +86,7 @@ export function ObjectPropertyFieldCard({ name, type, value, setValue, errorText
                     : <TextField
                         component='form'
                         id='object-property-field-card-input-textfield'
+                        required={required}
                         error={errorText == '' ? false : true}
                         label={name}
                         value={value} 

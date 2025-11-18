@@ -1,5 +1,7 @@
 import { APIPERMISSIONSURL, asyncFetch } from './APIComm'
 
+//#region Permissions
+
 // 200 returns: { success: true, data: permissions }
 // 500 returns: { success: false, message: "Failed to fetch permissions" }
 export async function asyncGetPermissions() {
@@ -50,3 +52,5 @@ export async function asyncDeletePermission(id) {
   }
   return asyncFetch(`${APIPERMISSIONSURL}/${id}`, 'DELETE');
 }
+
+//#endregion

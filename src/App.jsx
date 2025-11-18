@@ -15,6 +15,7 @@ export default function AppController() {
   });
 
   React.useEffect(() => {
+    console.log(session)
     if (session) {
       Cookies.set('session', JSON.stringify(session), { expires: 7 });
     } else {

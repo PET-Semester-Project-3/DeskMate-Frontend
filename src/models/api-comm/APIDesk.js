@@ -1,5 +1,7 @@
 import { APIDESKSURL, asyncFetch } from './APIComm'
 
+//#region Desks
+
 // 200 returns: { success: true, data: desks }
 // 500 returns: { success: false, message: "Failed to fetch desks" }
 export async function asyncGetDesks() {
@@ -52,3 +54,5 @@ export async function asyncDeleteDesk(id) {
   }
   return asyncFetch(`${APIDESKSURL}/${id}`, 'DELETE');
 }
+
+//#endregion

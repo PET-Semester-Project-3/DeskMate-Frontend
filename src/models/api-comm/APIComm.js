@@ -1,11 +1,17 @@
 export const SERVERBASEURL = 'http://localhost:3000';
 export const APIBASEURL = SERVERBASEURL + '/api';
 
+//#region API Endpoints
+
 export const APIUSERSURL = APIBASEURL + '/users'
 export const APIDESKSURL = APIBASEURL + '/desks'
 export const APIPERMISSIONSURL = APIBASEURL + '/permissions'
 export const APISCHEDULEDTASKSURL = APIBASEURL + '/scheduled-tasks'
 export const APICONTROLLERSURL = APIBASEURL + '/controllers'
+
+//#endregion
+
+//#region Generic async fetch function
 
 export async function asyncFetch(url, method, body) {
     try {
@@ -16,6 +22,10 @@ export async function asyncFetch(url, method, body) {
         const response = await fetch(url, { 
           method: method,
           body: body ? JSON.stringify(body) : undefined,
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
         });
         if (!response.ok){
             console.error(response);
@@ -27,3 +37,5 @@ export async function asyncFetch(url, method, body) {
         console.error(error.message);
     }
 }
+
+//#endregion

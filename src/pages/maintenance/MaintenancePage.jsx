@@ -1,6 +1,6 @@
 import * as React from 'react';
 import useSession from '../../models/SessionContext';
-import { Typography, Box } from '@mui/material';
+import { Typography, Box, CircularProgress } from '@mui/material';
 import RestrictedPage from '../restricted/RestrictedPage'
 import DeskCard from './components/DeskCard';
 import { asyncGetUserDesks } from '../../models/api-comm/APIUsers'
@@ -8,24 +8,28 @@ import { asyncGetUserDesks } from '../../models/api-comm/APIUsers'
 /* Controller */
 export default function MaintenancePageController() {
 
+  const [waitingForResponse, setWaitingForResponse] = React.useState(false);
+
   const [desks, setDesks] = React.useState([]);
   const { session, setSession } = useSession();
 
   React.useEffect(() => {
     async function getDesks(id) {
+      setWaitingForResponse(true);
       const desks = await asyncGetUserDesks(id);
       setDesks(desks);
+      setWaitingForResponse(false);
     }
     getDesks(session?.user?.id);
   }, []);
 
   return (
-    <RestrictedPage Page={<MaintenancePage desks={desks} />} />
+    <RestrictedPage Page={<MaintenancePage desks={desks} waitingForResponse={waitingForResponse} />} />
   )
 }
 
 /* View */
-export function MaintenancePage({ desks }) {
+export function MaintenancePage({ desks, waitingForResponse }) {
   return (
     <Box component='main' id='maintenance-page' sx={{ boxShadow: 2 }}>
       <Typography
@@ -41,9 +45,24 @@ export function MaintenancePage({ desks }) {
         Desk Maintenance
       </Typography>
       <Box component='ul' id='maintenance-page-desks-container' sx={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
-        {desks.map((desk) => (
-          <DeskCard key={desk.id} desk={desk} />
-        ))}
+        {
+          waitingForResponse ?
+          <Box component={'section'} id='maintenance-page-loading-container' sx={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', p: 5 }}>
+            <CircularProgress 
+              component='div' 
+              id='maintenance-page-circularprogress'
+              size={60}
+              sx={{
+                color: 'primary.main',
+              }}
+            />
+          </Box>
+          : 
+          desks.map((desk) => (
+            <DeskCard key={desk.id} desk={desk} />
+          ))
+        }
+        
       </Box>
     </Box>
   );

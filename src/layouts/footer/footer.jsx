@@ -8,7 +8,7 @@ export default function FooterController(){
   
   // TODO: Session context to handle vissible links.
   const { session, setSession } = useSession();
-  const pages = session.pages != null ? [...session.pages] : [];
+  const pages = session.pages ? [...session.pages] : [];
   // session.user gives u the user = { id: 1, name: "Guest", username: 'ThisGuest', email: "guest@guest.com", password: "guest" }, 
   // session.pages gives you pages for the user; pages = { id: 1, label: 'Database', route: "/database" }
 

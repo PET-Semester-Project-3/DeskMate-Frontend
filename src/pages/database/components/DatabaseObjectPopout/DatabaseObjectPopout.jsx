@@ -1,10 +1,9 @@
 import * as React from 'react';
-import dayjs from 'dayjs';
 import { Paper, Box, Backdrop, Button, Typography } from '@mui/material';
 import ObjectPropertyFieldCard from './ObjectPropertyFieldCard'
 
 /* Controller */
-export default function DatabaseObjectPopoutController({ selectedEntry, isOpen, onEditingStateChange, schematicObject, onSaveClick }) {
+export default function DatabaseObjectPopoutController({ selectedEntry, isOpen, onEditingStateChange, schematicObject, onSaveClick, blackListedProperties, requiredProperties }) {
     
   const [properties, setProperties] = React.useState([]);
   const [object, setObject] = React.useState({});
@@ -13,7 +12,8 @@ export default function DatabaseObjectPopoutController({ selectedEntry, isOpen, 
     if (name == null || value == null)
       return;
     let o = {...object};
-    o[name.toLowerCase()] = value;
+    if (o[name.toLowerCase()])
+      o[name.toLowerCase()] = value;
     setObject(o);
   }
   
@@ -27,20 +27,23 @@ export default function DatabaseObjectPopoutController({ selectedEntry, isOpen, 
       return;
     var properties = [];
     Object.getOwnPropertyNames(o).forEach(property => {
+      if (blackListedProperties != null && blackListedProperties.includes(property))
+        return;
       const headerName = property.toUpperCase();
-      const type = o[property].constructor.name;
+      const type = o[property] != null ? o[property].constructor.name : 'Undefined';
       var value = '';
-      if (selectedEntry != null)
-        value = o[property]
+      if (selectedEntry)
+        value = o[property] != null ? o[property] : '';
       properties.push({
         headerName: headerName,
         type: type,
-        value: value
+        value: value,
+        required: requiredProperties != null ? requiredProperties.includes(property) : false
       });
     });
     setProperties(properties);
     setObject(selectedEntry != null ? {...selectedEntry} : {});
-  }, [selectedEntry, schematicObject]);
+  }, [selectedEntry, schematicObject, blackListedProperties, requiredProperties]);
   
   return (
     <DatabaseObjectPopout 
@@ -123,6 +126,7 @@ export function DatabaseObjectPopout({ isOpen, onEditingStateChange, propertiesS
                       propertyValue={schematic.value}
                       originalSchematic={schematic}
                       onPropertyEdit={onPropertyEdit}
+                      required={schematic.required}
                     />
                   )
                 })
@@ -144,7 +148,7 @@ export function DatabaseObjectPopout({ isOpen, onEditingStateChange, propertiesS
               component='button'
               id='database-data-object-popout-window-save-button'
               variant='contained'
-              onClick={() => onSaveClick(object)}
+              onClick={() => onSaveClick(object, object.id == null)}
               sx={{ width: 75, height: 35, m: 2 }}
             >Save</Button>
         </Box>
