@@ -5,11 +5,9 @@ import { Route, useNavigate } from 'react-router';
 
 /* Controller */
 export default function FooterController(){
-  
-  // TODO: Session context to handle vissible links.
+
   const { session, setSession } = useSession();
   const pages = session.pages != null ? [...session.pages] : [];
-  // session.user gives u the user = { id: 1, name: "Guest", username: 'ThisGuest', email: "guest@guest.com", password: "guest" }, 
   // session.pages gives you pages for the user; pages = { id: 1, label: 'Database', route: "/database" }
 
   const navigate = useNavigate();
@@ -82,73 +80,21 @@ export function Footer({navigate, pages}) {
             pl: 5
           }}
         >
-            {/* KEEP component='nav' AND ids, DO NOT CHANGE THEM */}
-            <Typography component='h6' id="footer-links-header" variant='h6'>Links</Typography>
+          <Typography component='h6' id="footer-links-header" variant='h6'>Links</Typography>
 
-{/* Does not properly work with user permissions, but works with button clicks.
-    Most likly (I am fairly certain this is the case) the condition for displaying is the problem.
-*/}
-            <Button 
-              component='nav' 
-              id="footer-links-link-dashboard" 
-              onClick={() => navigate('/')} 
-              sx={{
-                color: 'text.secondary', 
-                //display: pages ? 'none' : 'block'
-              }}>
-            Dashboard</Button>
-
-            <Button 
-              component='nav' 
-              id="footer-links-link-desk" 
-              onClick={() => navigate('/desk')} 
-              sx={{
-                color: 'text.secondary', 
-                //display: pages ? 'none' : 'block'
-              }}>
-            Desk</Button>
-
-            <Button 
-              component='nav' 
-              id="footer-links-link-maintenance" 
-              onClick={() => navigate('/maintenance')} 
-              sx={{
-                color: 'text.secondary', 
-                //display: pages ? 'none' : 'block'
-              }}>
-            Maintenance</Button>
-
-            <Button 
-              component='nav' 
-              id="footer-links-link-database" 
-              onClick={() => navigate('/database')} 
-              sx={{
-                color: 'text.secondary', 
-                //display: pages ? 'none' : 'block'
-              }}>
-            Database</Button>
-
-{/* Works with user permissions, but button clicks does not work and formatting looks a bit weird.
-            <ButtonGroup
-              component='ul'
-              id='footer-doormatnav-buttongroup'
-              variant='string' 
-              fullWidth='true' 
-              sx={{flexDirection: 'column' }}
-            >
-              {
-                pages.map(page => {
-                  return (
-                    <Button
-                      component='nav'
-                      id={'footer-links-link-' + page.label}
-                      onClick={() => navigate(pages)}
-                    >{page.label}</Button>
-                  )
-                })
-              }
-            </ButtonGroup>
-*/}
+          {pages.map(page => {
+              return (
+                <Button
+                  component='nav'
+                  id={'footer-links-link-' + page.label}
+                  onClick={() => navigate(page.route)}
+                  sx={{
+                    color: 'text.secondary'
+                  }}
+                >{page.label}</Button>
+              )
+            })
+          }
 
         </Box>
 

@@ -36,44 +36,10 @@ export function HowToUsePage() {
                 }}
             >
                 <Typography component='p' id='howtouse-welcome-text' >
-                    Welcome to your dashboard.  <br/>
-                    <i>
-                        This page is a Work-In-Progress. Elements might/will change base on user priviliges. <br/>
-                        Additional elements will also be added later to give a user a quick overview of their desk (or desks, if admin)
-                    </i>
+                    Welcome to your DeskMate.  <br/>
+                    This page will explain how to use DeskMate, and give a short explanation of the different pages available. <br/>
+                    Be aware that not all pages described here might be accesable to you.
                 </Typography>
-            </Box>
-    
-            <Box component='article' id='howtouse-introduction-container'>
-                <Typography
-                    component="h5"
-                    id='howtouse-introduction-header'
-                    variant="h5"
-                    sx={{
-                        fontWeight: 600,
-                        mt: 3,
-                        mb: 1,
-                        color: '#4facfe'
-                    }}
-                >
-                    Introduction
-                </Typography>
-
-                <Box
-                    id='howtouse-introduction-text'
-                    component="p"
-                    sx={{
-                        bgcolor: 'rgba(79, 172, 254, 0.1)',
-                        borderRadius: 2,
-                        p: 2,
-                        borderLeft: '4px solid #4facfe'
-                    }}
-                >
-                    On this page you can see an overview of your desk. <br/>
-                    In the future this is where you can get a quick overview of the status of your desk. <br/>
-                    Your will be able to see what position the desk is in, how long until required maintenance, <br/>
-                    and any errors the desk might be reporting.
-                </Box>
             </Box>
     
             <Box component='article' id='howtouse-usage-container'>
@@ -102,24 +68,29 @@ export function HowToUsePage() {
                 >
                     This webapp is easy to use, and easy to begin using. <br/>
                     Just click any of the taps on the top to navigate to a desired page. <br/>
-                Alternatively, the links in the footer at the bottom of the page can be used.
+                    Alternatively, the links in the footer at the bottom of the page can be used. <br/>
         
-                <br/>
-                The pages that you will have access to, and can navigate to, will be dependent on what you have access to.
                     <br/>
-                    If you are a regular user, you will have access to the taps:
+                    The pages that you will have access to, and can navigate to, will be dependent on what you have access to.
+                    <br/>
+                    If you are a regular user, you will have access to the folowing pages:
                     <ul id='howtouse-usage-link-list-regular' style={{listStyle: 'disc'}}>
                         <li id='howtouse-usage-link-desk-regular' >Desk</li>
                     </ul>
         
-                    If you are a admin, you will have access to the taps:
+                    If you are a admin, you will have access to the following pages:
                     <ul id='howtouse-usage-link-list-admin' style={{listStyle: 'disc'}}>
                         <li id='howtouse-usage-link-desk-admin'>Desk</li>
                         <li id='howtouse-usage-link-maintenance-admin'>Maintenance</li>
                         <li id='howtouse-usage-link-database-admin'>Database</li>
                     </ul>
-                
-                All users have access to the dashboard, where an overview of assigned desk(s) can be seen. <br/>
+                    
+                    All users have access to: <br/>
+                    <ul>
+                        <li>The dashboard, where an overview of assigned desk(s) can be seen. </li>
+                        <li>This page, describing how to use the app. </li>
+                        <li>The about page, describing what the purpose of this web app is.</li>
+                    </ul>
                 </Box>
             </Box>
     
