@@ -8,6 +8,8 @@ export const APIDESKSURL = APIBASEURL + '/desks'
 export const APIPERMISSIONSURL = APIBASEURL + '/permissions'
 export const APISCHEDULEDTASKSURL = APIBASEURL + '/scheduled-tasks'
 export const APICONTROLLERSURL = APIBASEURL + '/controllers'
+export const APIUSERDESKURL = APIBASEURL + '/user-desks'
+export const APIUSERPERMISSIONURL = APIBASEURL + '/user-permissions'
 
 //#endregion
 

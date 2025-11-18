@@ -11,6 +11,8 @@ import { asyncDeleteUser, asyncGetUsers, asyncPostUser, asyncPutUser } from '../
 import { asyncDeletePermission, asyncGetPermissions, asyncPostPermission, asyncPutPermission } from '../../models/api-comm/APIPermission';
 import { asyncDeleteController, asyncGetControllers, asyncPostController, asyncPutController } from '../../models/api-comm/APIController';
 import { asyncDeleteScheduledTask, asyncGetScheduledTasks, asyncPostScheduledTask, asyncPutScheduledTask } from '../../models/api-comm/APIScheduleTask';
+import { asyncGetUserDesks } from '../../models/api-comm/APIUserDesk';
+import { asyncGetUserPermissions } from '../../models/api-comm/APIUserPermission';
 
 const DBTABLESELECTION = [
     {
@@ -66,16 +68,16 @@ const DBTABLESELECTION = [
     {
         name: 'User To Desks',
         canCreateNew: true,
-        blackListedProperties: ['id', 'created_at', 'updated_at'],
+        blackListedProperties: ['id', 'created_at', 'updated_at', 'user', 'desk'],
         requiredProperties: ['user_id', 'desk_id'],
-        getAll: () => [...USERSTODESKS]
+        getAll: asyncGetUserDesks
     },
     {
         name: 'User To Permissions',
         canCreateNew: true,
-        blackListedProperties: ['id', 'created_at', 'updated_at'],
+        blackListedProperties: ['id', 'created_at', 'updated_at', 'user', 'permission'],
         requiredProperties: ['user_id', 'permission_id'],
-        getAll: () => [...USERTOPERMISSONS]
+        getAll: asyncGetUserPermissions
     }
 ]
 
