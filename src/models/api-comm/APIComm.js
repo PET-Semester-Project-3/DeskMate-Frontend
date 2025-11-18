@@ -18,7 +18,7 @@ export async function asyncFetch(url, method, body) {
         if (url == null)
             throw new Error(`Url was: null`);
         if (method == null || !(method == 'GET' || method == 'POST' || method == 'PUT' || method == 'DELETE'))
-            throw new Error(`Method was: ${method ? 'null' : method}, use either \'GET\', \'POST\', \'PUT\', or \'DELETE\'`);
+            throw new Error(`Method was: ${method ? 'null' : method}, use either 'GET', 'POST', 'PUT', or 'DELETE'`);
         const response = await fetch(url, { 
           method: method,
           body: body ? JSON.stringify(body) : undefined,

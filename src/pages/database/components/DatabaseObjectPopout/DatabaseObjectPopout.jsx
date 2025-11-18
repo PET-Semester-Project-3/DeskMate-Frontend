@@ -12,9 +12,16 @@ export default function DatabaseObjectPopoutController({ selectedEntry, isOpen, 
     if (name == null || value == null)
       return;
     let o = {...object};
-    if (o[name.toLowerCase()])
-      o[name.toLowerCase()] = value;
+    o[name.toLowerCase()] = value;
     setObject(o);
+  }
+
+  const onSaveClickInternal = (obj) => {
+    properties.forEach(prop => {
+      if (prop.value != null)
+        prop.value = ' ';
+    });
+    onSaveClick(obj);
   }
   
   React.useEffect(() => {
@@ -50,7 +57,7 @@ export default function DatabaseObjectPopoutController({ selectedEntry, isOpen, 
       isOpen={isOpen} 
       onEditingStateChange={onEditingStateChange} 
       propertiesSchematic={properties}
-      onSaveClick={onSaveClick}
+      onSaveClick={onSaveClickInternal}
       object={object}
       onPropertyEdit={onPropertyEdit}
     />
@@ -148,7 +155,7 @@ export function DatabaseObjectPopout({ isOpen, onEditingStateChange, propertiesS
               component='button'
               id='database-data-object-popout-window-save-button'
               variant='contained'
-              onClick={() => onSaveClick(object, object.id == null)}
+              onClick={() => onSaveClick(object)}
               sx={{ width: 75, height: 35, m: 2 }}
             >Save</Button>
         </Box>

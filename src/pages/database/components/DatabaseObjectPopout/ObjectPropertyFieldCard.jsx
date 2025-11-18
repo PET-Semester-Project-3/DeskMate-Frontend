@@ -49,6 +49,8 @@ export default function ObjectPropertyFieldCardController({ propertyName, proper
     if (propertyType == 'Date' && propertyValue){
       setValue(dayjs(propertyValue.toISOString()));
     }
+    else if (propertyValue == ' ')
+      setValue('');
     else
       setValue(propertyValue);
     if (valueErrorText)

@@ -3,7 +3,7 @@ import useSession from '../../models/SessionContext';
 import { asyncGetUserPermissions, asyncPostUser } from '../../models/api-comm/APIUsers';
 import { FormControl, OutlinedInput, InputLabel, InputAdornment, 
   FormHelperText, Box, TextField, Button, IconButton, Card, 
-  CardContent, CardActions, Stack, CircularProgress
+  CardContent, CardActions, Stack, CircularProgress, Radio
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import useWindowDimensions from '../../models/WindowDimensions'
@@ -11,6 +11,7 @@ import DeskmateInverseSVG from '../../assets/DeskMateInverse.svg'
 import DeskmateSVG from '../../assets/DeskMate.svg'
 import { useTheme } from '@mui/material/styles';
 import { asyncPostLoginUser } from '../../models/api-comm/APIUsers';
+import { asyncGetAPIReady } from '../../models/api-comm/APIReady';
 
 /* Controller */
 export default function SignInPageController() {
@@ -27,6 +28,8 @@ export default function SignInPageController() {
   const [password, setPassword] = React.useState('');
   const [errorText, setErrorText] = React.useState('');
   const [showPassword, setShowPassword] = React.useState(false);
+
+  const [apiReady, setAPIReady] = React.useState(false);
 
   const handleUsernameChange = (e) => {
     setEmail(e.target.value)
@@ -66,8 +69,22 @@ export default function SignInPageController() {
     setWaitingForResponse(false);
   }
 
+  React.useEffect(() => {
+    async function checkAPIReady() {
+      setWaitingForResponse(true);
+      const apiReady = await asyncGetAPIReady();
+      if (apiReady.message.includes('Ready'))
+        setAPIReady(true);
+      else
+        setAPIReady(false);
+      setWaitingForResponse(false);
+    }
+    checkAPIReady();
+  }, []);
+
   return (
-    <SignInPage 
+    <SignInPage
+      apiReady={apiReady}
       windowHeight={height}
       imageSrc={imageSrc}
       username={email} 
@@ -86,7 +103,7 @@ export default function SignInPageController() {
 }
 
 /* View */
-export function SignInPage({ windowHeight, imageSrc, username, changeUsername, usernameErrorText, password, changePassword, passwordErrorText, showPassword, handleClickShowPassword, signinButtonClick, signupButtonClick,waitingForResponse }) {
+export function SignInPage({ apiReady, windowHeight, imageSrc, username, changeUsername, usernameErrorText, password, changePassword, passwordErrorText, showPassword, handleClickShowPassword, signinButtonClick, signupButtonClick,waitingForResponse }) {
   return (
     <Box
       component='main'
@@ -206,6 +223,31 @@ export function SignInPage({ windowHeight, imageSrc, username, changeUsername, u
           </Box>
         </CardActions>
       </Card>
+        <Box component='footer' id='signin-page-footer' sx={{ position: 'absolute', bottom: 10, textAlign: 'center', width: '100%' }}>
+          {
+            apiReady ?
+              <Radio
+                component='span'
+                id='signin-api-ready-indicator'
+                checked
+                color='success'
+                size='small'
+              /> :
+              <Radio
+                component='span'
+                id='signin-api-not-ready-indicator'
+                checked
+                color='error'
+                size='small'
+              />
+          }
+          <Box component='span' id='signin-api-status-text' sx={{ fontSize: 12, ml: 1 }}>
+            { apiReady
+              ? 'API is available'
+              : 'API is not available'
+            }
+          </Box>
+        </Box>
     </Box>
   );
 }

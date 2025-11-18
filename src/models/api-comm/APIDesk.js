@@ -19,14 +19,13 @@ export async function asyncGetDesk(id) {
   return asyncFetch(`${APIDESKSURL}/${id}`, 'GET');
 }
 
-// TODO: ERROR this should be able to be created without a ControllerId
 // 201 returns: { success: true, data: desk }
 // 400 returns: { success: false, message: "id, controllerId, name and manufacturer required" }
 // 404 returns: { success: false, message: "Controller not found" }
 // 500 returns: { success: false, message: "Failed to create desk" }
-export async function asyncPostDesk(id, controllerId, name, manufacturer, is_locked, last_data) {
-  if (!id || !name || !manufacturer || !last_data) {
-    console.log(`id (${id}), name (${name}), manufacturer (${manufacturer}), is_locked (${is_locked}) or last_data (${last_data}) was null or empty`)
+export async function asyncPostDesk({ id, controllerId, name, manufacturer, is_locked, last_data }) {
+  if (!id || !name) {
+    console.log(`id (${id}), name (${name}), or manufacturer (${manufacturer}) was null or empty`)
     return null;
   }
   return asyncFetch(`${APIDESKSURL}`, 'POST', { id, controllerId, name, manufacturer, is_locked, last_data });

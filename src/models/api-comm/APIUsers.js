@@ -23,7 +23,7 @@ export async function asyncGetUser(id) {
 // 400 returns: { success: false, message: "Email and password required" }
 // 409 returns: { success: false, message: "User exists" }
 // 500 returns: { success: false, message: "Failed to create user" }
-export async function asyncPostUser(email, password) {
+export async function asyncPostUser({email, password}) {
   if (!email || !password) {
     console.log(`email (${email}) or password (${password}) was null or empty`)
     return null;
@@ -34,9 +34,9 @@ export async function asyncPostUser(email, password) {
 // 200 returns: { success: true, data: user }
 // 409 returns: { success: false, message: "Email already in use" }
 // 500 returns: { success: false, message: "Failed to update user" }
-export async function asyncPutUser(id, email, password) {
-  if (!id || !email || !password) {
-    console.log(`id (${id}), email (${email}), or password (${password}) was null or empty`)
+export async function asyncPutUser({id, email, password}) {
+  if (!id) {
+    console.log(`id (${id}) was null or empty`)
     return null;
   }
   return asyncFetch(`${APIUSERSURL}/${id}`, 'PUT', { email, password });
