@@ -35,7 +35,7 @@ export default function NavBarController(){
 }
 
 /* View */
-export function NavBar({ imageSrc, logoClick, pageClick, signoutClick, pages }) {
+export function NavBar({ imageSrc, logoClick, pageClick, signoutClick, pages}) {
 
   return (
     <Paper 
@@ -76,8 +76,8 @@ export function NavBar({ imageSrc, logoClick, pageClick, signoutClick, pages }) 
         }
 
         {/* Buttons navigate, but only the the dashboard ('/') */}
-        <Button component='button' id="footer-information-link-howtouse" onClick={() => pageClick('./howtouse')} sx={{width: '115px'}}>How To Use</Button>
-        <Button component='button' id="footer-information-link-about" onClick={() => pageClick('./about')}>About</Button>
+        <Button component='button' id="footer-information-link-howtouse" onClick={() => pageClick({route: './howtouse'})} sx={{width: '115px'}}>How To Use</Button>
+        <Button component='button' id="footer-information-link-about" onClick={() => pageClick({route: './about'})}>About</Button>
       </ButtonGroup>
       <Box
         component='section'

@@ -6,7 +6,7 @@ import { Route, useNavigate } from 'react-router';
 /* Controller */
 export default function FooterController(){
 
-  const { session, setSession } = useSession();
+  const { session } = useSession();
   const pages = session.pages != null ? [...session.pages] : [];
   // session.pages gives you pages for the user; pages = { id: 1, label: 'Database', route: "/database" }
 
