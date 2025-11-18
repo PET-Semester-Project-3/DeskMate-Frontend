@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { Box, Typography, Link} from '@mui/material';
+import { Box, Typography, Button, ButtonGroup} from '@mui/material';
 import useSession from '../../models/SessionContext';
-import { useNavigate } from 'react-router';
+import { Route, useNavigate } from 'react-router';
 
 /* Controller */
 export default function FooterController(){
@@ -16,12 +16,13 @@ export default function FooterController(){
   // Use like so: navigate('/') goes to localhost:5173, navigate('/database') goes to localhost:5173/database
 
   return (
-    <Footer/>
+    <Footer navigate={navigate} pages={pages}/>
   )
 }
 
 /* View */
-export function Footer() {
+export function Footer({navigate, pages}) {
+
   return (
     <Box
       component='footer'
@@ -81,12 +82,74 @@ export function Footer() {
             pl: 5
           }}
         >
-            {/* CHANGE LINKS TO BUTTONS OR TYPOGRAPHY WITH onClick={() => navigate('/')}, KEEP component='nav' AND ids */}
+            {/* KEEP component='nav' AND ids, DO NOT CHANGE THEM */}
             <Typography component='h6' id="footer-links-header" variant='h6'>Links</Typography>
-            <Link component='nav' id="footer-links-link-dashboard" href='/' sx={{color: 'text.secondary'}}>Dashboard</Link>
-            <Link component='nav' id="footer-links-link-desk" href='desk' sx={{color: 'text.secondary'}}>Desk</Link>
-            <Link component='nav' id="footer-links-link-maintenance" href='maintenance' sx={{color: 'text.secondary'}}>Maintenance</Link>
-            <Link component='nav' id="footer-links-link-database" href='database' sx={{color: 'text.secondary'}}>Database</Link>
+
+{/* Does not properly work with user permissions, but works with button clicks.
+    Most likly (I am fairly certain this is the case) the condition for displaying is the problem.
+*/}
+            <Button 
+              component='nav' 
+              id="footer-links-link-dashboard" 
+              onClick={() => navigate('/')} 
+              sx={{
+                color: 'text.secondary', 
+                //display: pages ? 'none' : 'block'
+              }}>
+            Dashboard</Button>
+
+            <Button 
+              component='nav' 
+              id="footer-links-link-desk" 
+              onClick={() => navigate('/desk')} 
+              sx={{
+                color: 'text.secondary', 
+                //display: pages ? 'none' : 'block'
+              }}>
+            Desk</Button>
+
+            <Button 
+              component='nav' 
+              id="footer-links-link-maintenance" 
+              onClick={() => navigate('/maintenance')} 
+              sx={{
+                color: 'text.secondary', 
+                //display: pages ? 'none' : 'block'
+              }}>
+            Maintenance</Button>
+
+            <Button 
+              component='nav' 
+              id="footer-links-link-database" 
+              onClick={() => navigate('/database')} 
+              sx={{
+                color: 'text.secondary', 
+                //display: pages ? 'none' : 'block'
+              }}>
+            Database</Button>
+
+{/* Works with user permissions, but button clicks does not work and formatting looks a bit weird.
+            <ButtonGroup
+              component='ul'
+              id='footer-doormatnav-buttongroup'
+              variant='string' 
+              fullWidth='true' 
+              sx={{flexDirection: 'column' }}
+            >
+              {
+                pages.map(page => {
+                  return (
+                    <Button
+                      component='nav'
+                      id={'footer-links-link-' + page.label}
+                      onClick={() => navigate(pages)}
+                    >{page.label}</Button>
+                  )
+                })
+              }
+            </ButtonGroup>
+*/}
+
         </Box>
 
         <Box
@@ -100,8 +163,9 @@ export function Footer() {
           }}
         >
           <Typography component='h6' id="footer-information-header" variant='h6'>Information</Typography>
-          <Link component='nav' id="footer-information-link-howtouse" href='howtouse' sx={{color: 'text.secondary'}}>How To Use</Link>
-          <Link component='nav' id="footer-information-link-about" href='about' sx={{color: 'text.secondary'}}>About</Link>
+          <Button component='nav' id="footer-information-link-howtouse" onClick={() => navigate('/howtouse')} sx={{color: 'text.secondary'}}>How To Use</Button>
+          <Button component='nav' id="footer-information-link-about" onClick={() => navigate('/about')} sx={{color: 'text.secondary'}}>About</Button>
+
         </Box>
 
       </Box>

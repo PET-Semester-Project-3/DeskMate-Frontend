@@ -37,7 +37,7 @@ export function AboutPage() {
                 }}
             >
                 <Typography component='p' id='about-page-text' sx={{ maxWidth: 1280}}>
-                    This application was developed to facilitate and easy and convienient way to manage a desk. <br/>
+                    This application was developed to facilitate and easy and convienient way to manage a desk in an office enviroment. <br/>
                 </Typography>
             </Box>
 

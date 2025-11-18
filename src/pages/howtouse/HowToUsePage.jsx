@@ -100,9 +100,12 @@ export function HowToUsePage() {
                         borderLeft: '4px solid #fa709a'
                     }}
                 >
-                    This webapp is easy to use, and to begin using. <br/>
-                    Just click any of the taps on left to navigate to a desired page. <br/>
+                    This webapp is easy to use, and easy to begin using. <br/>
+                    Just click any of the taps on the top to navigate to a desired page. <br/>
+                Alternatively, the links in the footer at the bottom of the page can be used.
         
+                <br/>
+                The pages that you will have access to, and can navigate to, will be dependent on what you have access to.
                     <br/>
                     If you are a regular user, you will have access to the taps:
                     <ul id='howtouse-usage-link-list-regular' style={{listStyle: 'disc'}}>
@@ -115,7 +118,8 @@ export function HowToUsePage() {
                         <li id='howtouse-usage-link-maintenance-admin'>Maintenance</li>
                         <li id='howtouse-usage-link-database-admin'>Database</li>
                     </ul>
-    
+                
+                All users have access to the dashboard, where an overview of assigned desk(s) can be seen. <br/>
                 </Box>
             </Box>
     
