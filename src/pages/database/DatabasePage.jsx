@@ -38,7 +38,7 @@ const DBTABLESELECTION = [
     {
         name: 'Controllers',
         canCreateNew: false,
-        blackListedProperties: ['id'],
+        blackListedProperties: ['id', 'desks'],
         requiredProperties: ['name'],
         getAll: asyncGetControllers,
         post: asyncPostController,
@@ -58,7 +58,7 @@ const DBTABLESELECTION = [
     {
         name: 'Scheduled Tasks',
         canCreateNew: true,
-        blackListedProperties: ['id', 'created_at', 'updated_at'],
+        blackListedProperties: ['id', 'created_at', 'updated_at', 'desk', 'user'],
         requiredProperties: ['desk_id', 'user_id', 'description', 'new_height', 'scheduled_at', 'status'],
         getAll: asyncGetScheduledTasks,
         post: asyncPostScheduledTask,
