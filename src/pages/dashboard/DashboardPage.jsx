@@ -3,19 +3,16 @@ import RestrictedPage from '../restricted/RestrictedPage'
 import { Typography, Box } from '@mui/material';
 
 /* Controller */
-export default function DashboardPageController({ desk }) {
+export default function DashboardPageController() {
 
-  return (
-    <RestrictedPage Page={
-      <DashboardPage 
-        desk={desk}
-      />} 
-    />
-  )
+  
+
+  return (<RestrictedPage Page={<DashboardPage/>} />)
+
 }
 
 /* View */
-export function DashboardPage( desk ) {
+export function DashboardPage() {
   return (
     <Box id='dashboard-page' sx={{ boxShadow: 2 }}>
       <Typography
@@ -42,8 +39,10 @@ export function DashboardPage( desk ) {
           mb: 2
           }}
         >
+        Hello <i>user</i> <br/> {/* "user" should be taken from the database/API */}
         Welcome to the DeskMate Dashboard! <br/>
-        You have been gone for: <i>TBD</i> {/* This should pull last logoff time from the database */}
+        You have been gone for: <i>TBD</i> 
+        {/* "TBD" should pull last logoff time from the database/API and calculate how long it has been since last access to the page */}
       </Box>
       
       {/* Desk position */}
@@ -75,7 +74,7 @@ export function DashboardPage( desk ) {
           }}
         >
           <Typography component='p' id='dashboard-desk-position-value'>
-            
+            {/* Get desk height from API */} cm
           </Typography>
           
           <i>TBD</i>
@@ -111,7 +110,7 @@ export function DashboardPage( desk ) {
           }}
         >
           <i>TBD</i>
-          {/* Insert list of errors from desk(s) here */}
+          {/* Get list of errors for desk(s) here, from API */}
 
         </Box>
       </Box>
@@ -146,6 +145,8 @@ export function DashboardPage( desk ) {
           }}
         >
           <i>WIP</i>
+          {/* Insert graphs and other data visualization here */}
+
         </Box>
       </Box>
       
