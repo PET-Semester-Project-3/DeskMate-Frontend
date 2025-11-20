@@ -133,6 +133,20 @@ export async function asyncDeleteUserPermissions(id, permissionId) {
 
 //#endregion
 
+//#region User Scheduled Tasks
+
+// 200 returns: { success: true, data: tasks }
+// 500 returns: { success: false, message: "Failed to fetch scheduled tasks" }
+export async function asyncGetUserScheduledTasks(id) {
+  if (!id) {
+    console.log(`id (${id}) was null or empty`)
+    return null;
+  }
+  return asyncFetch(`${APIUSERSURL}/${id}/scheduled-tasks`, 'GET');
+}
+
+//#endregion
+
 //#region User Authentication
 
 // 200 returns: { success: true, message: "Password changed" }

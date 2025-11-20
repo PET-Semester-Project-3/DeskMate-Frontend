@@ -34,12 +34,11 @@ export function DashboardPage( desk ) {
         component='p' 
         id='dashboard-greeting-text' 
         sx={{
-          bgcolor: 'rgba(20, 50, 136, 0.55)',
-          borderRadius: 2,
-          p: 2,
-          borderLeft: '4px solid rgba(20, 150, 255, 0.55)',
-          mt: 2,
-          mb: 2
+            bgcolor: 'rgba(102, 126, 234, 0.1)',
+            borderRadius: 2,
+            p: 2,
+            mb: 3,
+            borderLeft: '4px solid #667eea'
           }}
         >
         Welcome to the DeskMate Dashboard! <br/>

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router';
 import useSession from '../../models/SessionContext';
-import { Box, Paper, Button, Link, ButtonGroup } from '@mui/material';
+import { Box, Paper, Button, Link, ButtonGroup, Avatar } from '@mui/material';
 import DeskmateInverseSVG from '../../assets/DeskMateInverse.svg'
 import DeskmateSVG from '../../assets/DeskMate.svg'
 import { useTheme } from '@mui/material/styles';

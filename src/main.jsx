@@ -11,6 +11,7 @@ import DeskPage from './pages/desk/DeskPage';
 import MaintenancePage from './pages/maintenance/MaintenancePage';
 import AboutPage from './pages/about/AboutPage';
 import HowToUsePage from './pages/howtouse/HowToUsePage';
+import UserPage from './pages/user/UserPage';
 import theme from './theme';
 
 
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
           {
             path: 'howtouse',
             Component: HowToUsePage
+          },
+          {
+            path: 'user',
+            Component: UserPage
           },
         ]
       }

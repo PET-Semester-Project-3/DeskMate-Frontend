@@ -63,9 +63,8 @@ export function DeskCard({ desk, anchorEl, isOnline, handleClick, handleClose, h
         boxShadow: 3,
         border: '2px solid',
         borderImage: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%) 1',
-        transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-        '&:hover': {
-          transform: 'translateY(-8px)',
+        transition: 'transform 0.3s ease, box-shadow 0.3s ease','&:hover': {
+          transform: 'translateY(-2px)',
           boxShadow: '0 12px 24px rgba(102, 126, 234, 0.3)',
         },
       }}
