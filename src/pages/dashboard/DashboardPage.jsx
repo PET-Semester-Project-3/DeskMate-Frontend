@@ -144,26 +144,37 @@ export function DashboardPage({ desks, session }) {
             mb: 2
           }}>
 
-          Detected Errors for desks assigned to {session?.user?.email}
+          Detected Errors for desks assigned to {session?.user?.email} <br/>
           
-          { /* Insert check if there is a errors or not */
-          desks.map(desk =>(
-            <Box
-              component=''
-              id={'dashboard-error-list-' + desk.id}
+          { Object(desks.last_data).length > 0 ? (  /* Insert proper check if there is errors or not */
+            desks.map(desk =>(
+              <Box
+                component=''
+                id={'dashboard-error-list-' + desk.id}
+                sx={{
+                  bgcolor: 'rgba(250, 10, 10, 0.2)',
+                  borderLeft: '4px solid rgba(250, 50, 50, 0.75)',
+                  borderRadius: 2,
+                  p: 2,
+                  mt: 2,
+                  mb: 2
+                }}
+              >
+                {desk.name} <br/>
+                {desk.last_data} {/* Might need to map errors into a list for showing */}
+              </Box>
+            ))
+          ) : (
+            <Typography
+              component='p'
+              id='dashboard-error-list-no-errors'
               sx={{
-                bgcolor: 'rgba(250, 10, 10, 0.2)',
-                borderLeft: '4px solid rgba(250, 50, 50, 0.75)',
-                borderRadius: 2,
-                p: 2,
-                mt: 2,
-                mb: 2
+                color: 'rgba(0, 250, 0, 0.5)'
               }}
             >
-              {desk.name} <br/>
-              {desk.last_data} {/* Might need to map errors into a list for showing */}
-            </Box>
-          ))}
+              No errors was detected.
+            </Typography>
+          )}
 
         </Box>
       </Box>
