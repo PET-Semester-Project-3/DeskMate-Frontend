@@ -3,6 +3,7 @@ import RestrictedPage from '../restricted/RestrictedPage'
 import { Typography, Box, Stack } from '@mui/material';
 import { asyncGetUserDesks } from '../../models/api-comm/APIUsers';
 import useSession from '../../models/SessionContext';
+import dayjs from 'dayjs';
 
 /* Controller */
 export default function DashboardPageController() {
@@ -54,10 +55,12 @@ export function DashboardPage({ desks, session }) {
           mb: 2
           }}
         >
-        Hello {session?.user?.email} <br/>
-        <br/>
+        {/*Hello {String(session?.user?.email).replace('@deskmate.com', '')} <br/>*/} {/* Will say: Hello admin */}
+        Hello {session?.user?.email} <br/>                                            {/* Will say: Hello admin@deskmate.com */}
         Welcome to the DeskMate Dashboard! <br/>
-        You last used you username and password to login at: <i>TBD</i> <br/>
+        <br/>
+        Your account was created on: {dayjs(session?.user?.created_at).format('DD-MM-YYYY')} <br/>
+        Your account last had updates on: {dayjs(session?.user?.updated_at).format('DD-MM-YYYY')} <br/>
       </Box>
       
       {/* Desk position */}
