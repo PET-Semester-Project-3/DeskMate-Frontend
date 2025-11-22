@@ -1,18 +1,33 @@
 import * as React from 'react';
 import RestrictedPage from '../restricted/RestrictedPage'
-import { Typography, Box } from '@mui/material';
+import { Typography, Box, Stack } from '@mui/material';
+import { asyncGetUserDesks } from '../../models/api-comm/APIUsers';
+import useSession from '../../models/SessionContext';
 
 /* Controller */
 export default function DashboardPageController() {
 
-  
+  const [waitingForResponse, setWaitingForResponse] = React.useState(false);
 
-  return (<RestrictedPage Page={<DashboardPage/>} />)
+  const [desks, setDesks] = React.useState([]);
+  const { session } = useSession();
+
+  React.useEffect(() => {
+    async function getDesks(id) {
+      setWaitingForResponse(true);
+      const desks = await asyncGetUserDesks(id);
+      setDesks(desks);
+      setWaitingForResponse(false);
+    }
+    getDesks(session?.user?.id);
+  }, []);
+
+  return (<RestrictedPage Page={<DashboardPage desks={desks} session={session} />} />)
 
 }
 
 /* View */
-export function DashboardPage() {
+export function DashboardPage({ desks, session }) {
   return (
     <Box id='dashboard-page' sx={{ boxShadow: 2 }}>
       <Typography
@@ -39,17 +54,17 @@ export function DashboardPage() {
           mb: 2
           }}
         >
-        Hello <i>user</i> <br/> {/* "user" should be taken from the database/API */}
+        Hello {session?.user?.email} <br/>
+        <br/>
         Welcome to the DeskMate Dashboard! <br/>
-        You have been gone for: <i>TBD</i> 
-        {/* "TBD" should pull last logoff time from the database/API and calculate how long it has been since last access to the page */}
+        You last used you username and password to login at: <i>TBD</i> <br/>
       </Box>
       
       {/* Desk position */}
       <Box component='article' id='dashboard-desk-position-container'>
         <Typography 
           component='p' 
-          id='dashboard-error-list-title' 
+          id='dashboard-desk-position-title' 
           variant='h5'
           sx={{
             fontWeight: 600,
@@ -65,7 +80,7 @@ export function DashboardPage() {
           component='' 
           id='dashboard-desk-position'
           sx={{
-            bgcolor: 'rgba(100, 250, 100, 0.1)',
+            bgcolor: 'rgba(100, 250, 200, 0.1)',
             borderRadius: 2,
             p: 2,
             borderLeft: '4px solid rgba(100, 250, 0, 0.50)',
@@ -74,10 +89,27 @@ export function DashboardPage() {
           }}
         >
           <Typography component='p' id='dashboard-desk-position-value'>
-            {/* Get desk height from API */} cm
+
+            The current position of desks assigned to {session?.user?.email}
+            
+            {desks.map(desk => (
+              <Box 
+                component=''
+                id={'dashboard-desk-position-value-' + desk.id}
+                sx={{
+                  bgcolor: 'rgba(100, 200, 100, 0.2)',
+                  borderLeft: '4px solid rgba(100, 250, 0, 0.50)',
+                  borderRadius: 2,
+                  p: 2,
+                  mt: 2,
+                  mb: 2
+                }}
+              >
+                {desk.name} <br/>
+                Current height: {desk.height} cm
+              </Box>
+            ))}
           </Typography>
-          
-          <i>TBD</i>
         </Box>
       </Box>
 
@@ -101,16 +133,33 @@ export function DashboardPage() {
           component=''
           id='dashboard-error-list-list'
           sx={{
-            bgcolor: 'rgba(250, 112, 154, 0.1)',
+            bgcolor: 'rgba(250, 100, 100, 0.1)',
             borderRadius: 2,
             p: 2,
-            borderLeft: '4px solid rgba(250, 10, 0, 0.75)',
+            borderLeft: '4px solid rgba(250, 0, 0, 0.75)',
             mt: 2,
             mb: 2
-          }}
-        >
-          <i>TBD</i>
-          {/* Get list of errors for desk(s) here, from API */}
+          }}>
+
+          Detected Errors for desks assigned to {session?.user?.email}
+          
+          {desks.map(desk =>(
+            <Box
+              component=''
+              id={'dashboard-error-list-' + desk.id}
+              sx={{
+                bgcolor: 'rgba(250, 10, 10, 0.2)',
+                borderLeft: '4px solid rgba(250, 50, 50, 0.75)',
+                borderRadius: 2,
+                p: 2,
+                mt: 2,
+                mb: 2
+              }}
+            >
+              {desk.name} <br/>
+              {desk.last_data}
+            </Box>
+          ))}
 
         </Box>
       </Box>
@@ -144,7 +193,7 @@ export function DashboardPage() {
             mb: 2
           }}
         >
-          <i>WIP</i>
+          <i>Will be implemented as part of an individual extension to the project.</i>
           {/* Insert graphs and other data visualization here */}
 
         </Box>
@@ -155,8 +204,6 @@ export function DashboardPage() {
       <ul style={{listStyle: 'disc', color: 'red'}}>
         <li>Add desk overview</li>
           <ul>
-            <li>Add current desk posistion</li>
-            <li>Add data visualization for desk(s)</li>
             <li>Add error warning for assigned desk</li>
           </ul>
       </ul>
