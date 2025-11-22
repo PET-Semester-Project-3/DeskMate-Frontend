@@ -146,7 +146,8 @@ export function DashboardPage({ desks, session }) {
 
           Detected Errors for desks assigned to {session?.user?.email}
           
-          {desks.map(desk =>(
+          { /* Insert check if there is a errors or not */
+          desks.map(desk =>(
             <Box
               component=''
               id={'dashboard-error-list-' + desk.id}
@@ -160,7 +161,7 @@ export function DashboardPage({ desks, session }) {
               }}
             >
               {desk.name} <br/>
-              {desk.last_data}
+              {desk.last_data} {/* Might need to map errors into a list for showing */}
             </Box>
           ))}
 
