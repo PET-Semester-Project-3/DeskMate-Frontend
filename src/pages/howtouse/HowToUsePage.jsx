@@ -17,9 +17,9 @@ export function HowToUsePage() {
                 id='howtouse-page-header'
                 variant="h4"
                 sx={{
-                fontWeight: 700,
-                mb: 2,
-                color: '#667eea'
+                    fontWeight: 700,
+                    mb: 2,
+                    color: '#667eea'
                 }}
             >
                 Welcome to DeskMate
@@ -28,11 +28,11 @@ export function HowToUsePage() {
                 component='section'
                 id='howtouse-welcome-container'
                 sx={{
-                bgcolor: 'rgba(102, 126, 234, 0.1)',
-                borderRadius: 2,
-                p: 2,
-                mb: 3,
-                borderLeft: '4px solid #667eea'
+                    bgcolor: 'rgba(102, 126, 234, 0.1)',
+                    borderRadius: 2,
+                    p: 2,
+                    mb: 3,
+                    borderLeft: '4px solid #667eea'
                 }}
             >
                 <Typography component='p' id='howtouse-welcome-text' >

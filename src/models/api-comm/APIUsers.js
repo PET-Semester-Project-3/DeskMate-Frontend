@@ -133,6 +133,20 @@ export async function asyncDeleteUserPermissions(id, permissionId) {
 
 //#endregion
 
+//#region User Scheduled Tasks
+
+// 200 returns: { success: true, data: tasks }
+// 500 returns: { success: false, message: "Failed to fetch scheduled tasks" }
+export async function asyncGetUserScheduledTasks(id) {
+  if (!id) {
+    console.log(`id (${id}) was null or empty`)
+    return null;
+  }
+  return asyncFetch(`${APIUSERSURL}/${id}/scheduled-tasks`, 'GET');
+}
+
+//#endregion
+
 //#region User Authentication
 
 // 200 returns: { success: true, message: "Password changed" }
@@ -140,6 +154,7 @@ export async function asyncDeleteUserPermissions(id, permissionId) {
 // 401 returns: { success: false, message: "Current password incorrect" }
 // 500 returns: { success: false, message: "Failed to change password" }
 export async function asyncPostNewPassword(id, currentPassword, newPassword) {
+  console.log(id, currentPassword, newPassword)
   if (!id || !currentPassword || !newPassword) {
     console.log(`id (${id}), currentPassword (${currentPassword}) or newPassword (${newPassword}) was null or empty`)
     return null;

@@ -14,14 +14,14 @@ export default function MaintenancePageController() {
   const { session, setSession } = useSession();
 
   React.useEffect(() => {
-    async function getDesks(id) {
+    const getDesks = async (id) => {
       setWaitingForResponse(true);
       const desks = await asyncGetUserDesks(id);
       setDesks(desks);
       setWaitingForResponse(false);
     }
     getDesks(session?.user?.id);
-  }, []);
+  }, [session?.user?.id]);
 
   return (
     <RestrictedPage Page={<MaintenancePage desks={desks} waitingForResponse={waitingForResponse} />} />
