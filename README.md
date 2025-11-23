@@ -34,15 +34,15 @@ Due to this being a demo, there has been set up 2 user types (1 Admin, 1 Guest) 
 Admin:
 
 ```bash
-Username: ThisAdmin
-Password: admin
+Username: admin@deskmate.com
+Password: password
 ```
 
 Guest:
 
 ```bash
-Username: ThisGuest
-Password: guest
+Username: user@deskmate.com
+Password: password
 ```
 
 ## Contributers
