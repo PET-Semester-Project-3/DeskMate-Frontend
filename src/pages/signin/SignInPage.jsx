@@ -35,7 +35,6 @@ export default function SignInPageController() {
   const [errorText, setErrorText] = React.useState('');
 
   const [apiReady, setAPIReady] = React.useState(false);
-  const [retryInterval, setRetryInterval] = React.useState(null);
   var retryCount = 0;
 
   const handleUsernameChange = (e) => {
@@ -93,6 +92,7 @@ export default function SignInPageController() {
       if (retryCount == 10) {
         clearInterval(interval);
         setErrorText(`Retried ${retryCount} times, cancelling further retries. Please ensure connections and try again.`);
+        setAPIFailed(true);
         return;
       }
       checkAPIReady();
