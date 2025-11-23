@@ -1,11 +1,11 @@
-import { APIUSERSURL, asyncFetch } from './APIComm'
+import { APIUSERSURL, asyncFetch } from "./APIComm"
 
 //#region Users
 
 // 200 returns: { success: true, data: users }
 // 500 returns: { success: false, message: "Failed to fetch users" }
 export async function asyncGetUsers() {
-  return asyncFetch(APIUSERSURL, 'GET');
+  return asyncFetch(APIUSERSURL, "GET")
 }
 
 // 200 returns: { success: true, data: safeUser }
@@ -14,32 +14,44 @@ export async function asyncGetUsers() {
 export async function asyncGetUser(id) {
   if (!id) {
     console.log(`id (${id}) was null or empty`)
-    return null;
+    return null
   }
-  return asyncFetch(`${APIUSERSURL}/${id}`, 'GET');
+  return asyncFetch(`${APIUSERSURL}/${id}`, "GET")
 }
 
 // 201 returns: { success: true, data: user }
 // 400 returns: { success: false, message: "Email and password required" }
 // 409 returns: { success: false, message: "User exists" }
 // 500 returns: { success: false, message: "Failed to create user" }
-export async function asyncPostUser({email, password}) {
+export async function asyncPostUser({ email, password }) {
   if (!email || !password) {
     console.log(`email (${email}) or password (${password}) was null or empty`)
-    return null;
+    return null
   }
-  return asyncFetch(`${APIUSERSURL}`, 'POST', { email, password });
+  return asyncFetch(`${APIUSERSURL}`, "POST", { email, password })
+}
+
+// 201 returns: { success: true, data: user }
+// 400 returns: { success: false, message: "Email required" }
+// 409 returns: { success: false, message: "User exists" }
+// 500 returns: { success: false, message: "Failed to create user with permissions" }
+export async function asyncPostUserWithPermissions({ email, permissionIds }) {
+  if (!email) {
+    console.log(`email (${email}) was null or empty`)
+    return null
+  }
+  return asyncFetch(`${APIUSERSURL}/with-permissions`, "POST", { email, permissionIds })
 }
 
 // 200 returns: { success: true, data: user }
 // 409 returns: { success: false, message: "Email already in use" }
 // 500 returns: { success: false, message: "Failed to update user" }
-export async function asyncPutUser({id, email, password}) {
+export async function asyncPutUser({ id, email, password }) {
   if (!id) {
     console.log(`id (${id}) was null or empty`)
-    return null;
+    return null
   }
-  return asyncFetch(`${APIUSERSURL}/${id}`, 'PUT', { email, password });
+  return asyncFetch(`${APIUSERSURL}/${id}`, "PUT", { email, password })
 }
 
 // 200 returns: { success: true, message: "User deleted successfully" }
@@ -48,9 +60,9 @@ export async function asyncPutUser({id, email, password}) {
 export async function asyncDeleteUser(id) {
   if (!id) {
     console.log(`id (${id}) was null or empty`)
-    return null;
+    return null
   }
-  return asyncFetch(`${APIUSERSURL}/${id}`, 'DELETE');
+  return asyncFetch(`${APIUSERSURL}/${id}`, "DELETE")
 }
 
 //#endregion
@@ -62,10 +74,10 @@ export async function asyncDeleteUser(id) {
 export async function asyncGetUserDesks(id) {
   if (!id) {
     console.log(`id (${id}) was null or empty`)
-    return null;
+    return null
   }
-  const relations = await asyncFetch(`${APIUSERSURL}/${id}/desks`, 'GET');
-  return relations.map(r => r.desk);
+  const relations = await asyncFetch(`${APIUSERSURL}/${id}/desks`, "GET")
+  return relations.map((r) => r.desk)
 }
 
 // 201 returns: { success: true, data: ud }
@@ -76,9 +88,9 @@ export async function asyncGetUserDesks(id) {
 export async function asyncPostUserDesk(id, deskId) {
   if (!id || !deskId) {
     console.log(`id (${id}) or deskId (${deskId}) was null or empty`)
-    return null;
+    return null
   }
-  return asyncFetch(`${APIUSERSURL}/${id}/desks`, 'POST', { deskId });
+  return asyncFetch(`${APIUSERSURL}/${id}/desks`, "POST", { deskId })
 }
 
 // 200 returns: { success: true, message: "User removed from desk" }
@@ -87,9 +99,9 @@ export async function asyncPostUserDesk(id, deskId) {
 export async function asyncDeleteUserDesk(id, deskId) {
   if (!id || !deskId) {
     console.log(`id (${id}) or deskId (${deskId}) was null or empty`)
-    return null;
+    return null
   }
-  return asyncFetch(`${APIUSERSURL}/${id}/desks/${deskId}`, 'DELETE');
+  return asyncFetch(`${APIUSERSURL}/${id}/desks/${deskId}`, "DELETE")
 }
 
 //#endregion
@@ -101,10 +113,10 @@ export async function asyncDeleteUserDesk(id, deskId) {
 export async function asyncGetUserPermissions(id) {
   if (!id) {
     console.log(`id (${id}) was null or empty`)
-    return null;
+    return null
   }
-  const relations = await asyncFetch(`${APIUSERSURL}/${id}/permissions`, 'GET');
-  return relations.map(r => r.permission);
+  const relations = await asyncFetch(`${APIUSERSURL}/${id}/permissions`, "GET")
+  return relations.map((r) => r.permission)
 }
 
 // 201 returns: { success: true, data: up }
@@ -115,9 +127,9 @@ export async function asyncGetUserPermissions(id) {
 export async function asyncPostUserPermissions(id, permissionId) {
   if (!id || !permissionId) {
     console.log(`id (${id}) or permissionId (${permissionId}) was null or empty`)
-    return null;
+    return null
   }
-  return asyncFetch(`${APIUSERSURL}/${id}/permissions`, 'POST', { permissionId });
+  return asyncFetch(`${APIUSERSURL}/${id}/permissions`, "POST", { permissionId })
 }
 
 // 200 returns: { success: true, message: "Permission removed from user" }
@@ -126,9 +138,9 @@ export async function asyncPostUserPermissions(id, permissionId) {
 export async function asyncDeleteUserPermissions(id, permissionId) {
   if (!id || !permissionId) {
     console.log(`id (${id}) or permissionId (${permissionId}) was null or empty`)
-    return null;
+    return null
   }
-  return asyncFetch(`${APIUSERSURL}/${id}/permissions/${permissionId}`, 'DELETE');
+  return asyncFetch(`${APIUSERSURL}/${id}/permissions/${permissionId}`, "DELETE")
 }
 
 //#endregion
@@ -140,9 +152,9 @@ export async function asyncDeleteUserPermissions(id, permissionId) {
 export async function asyncGetUserScheduledTasks(id) {
   if (!id) {
     console.log(`id (${id}) was null or empty`)
-    return null;
+    return null
   }
-  return asyncFetch(`${APIUSERSURL}/${id}/scheduled-tasks`, 'GET');
+  return asyncFetch(`${APIUSERSURL}/${id}/scheduled-tasks`, "GET")
 }
 
 //#endregion
@@ -156,10 +168,15 @@ export async function asyncGetUserScheduledTasks(id) {
 export async function asyncPostNewPassword(id, currentPassword, newPassword) {
   console.log(id, currentPassword, newPassword)
   if (!id || !currentPassword || !newPassword) {
-    console.log(`id (${id}), currentPassword (${currentPassword}) or newPassword (${newPassword}) was null or empty`)
-    return null;
+    console.log(
+      `id (${id}), currentPassword (${currentPassword}) or newPassword (${newPassword}) was null or empty`
+    )
+    return null
   }
-  return asyncFetch(`${APIUSERSURL}/${id}/password`, 'POST', { currentPassword, newPassword });
+  return asyncFetch(`${APIUSERSURL}/${id}/password`, "POST", {
+    currentPassword,
+    newPassword,
+  })
 }
 
 // 200 returns: { success: true, data: safeUser }
@@ -170,9 +187,9 @@ export async function asyncPostNewPassword(id, currentPassword, newPassword) {
 export async function asyncPostLoginUser(email, password) {
   if (!email || !password) {
     console.log(`email (${email}) or password (${password}) was null or empty`)
-    return null;
+    return null
   }
-  return asyncFetch(`${APIUSERSURL}/login`, 'POST', { email, password });
+  return asyncFetch(`${APIUSERSURL}/login`, "POST", { email, password })
 }
 
 //#endregion
