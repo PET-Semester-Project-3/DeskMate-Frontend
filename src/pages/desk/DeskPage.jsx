@@ -15,14 +15,14 @@ export default function DeskPageController() {
   const { session } = useSession();
 
   React.useEffect(() => {
-    async function getDesks(id) {
+    const getDesks = async (id) => {
       setWaitingForResponse(true);
       const desks = await asyncGetUserDesks(id);
       setDesks(desks);
       setWaitingForResponse(false);
     }
     getDesks(session?.user?.id);
-  }, []);
+  }, [session?.user?.id]);
 
   return (
     <RestrictedPage Page={<DeskPage userDesks={desks} waitingForResponse={waitingForResponse} />} />

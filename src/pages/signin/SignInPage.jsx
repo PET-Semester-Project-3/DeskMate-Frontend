@@ -3,7 +3,8 @@ import useSession from '../../models/SessionContext';
 import { asyncGetUserPermissions } from '../../models/api-comm/APIUsers';
 import { FormControl, OutlinedInput, InputLabel, InputAdornment, 
   FormHelperText, Box, TextField, Button, IconButton, Card, 
-  CardContent, CardActions, Stack, CircularProgress, Radio
+  CardContent, CardActions, Stack, CircularProgress, Radio,
+  Typography
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import useWindowDimensions from '../../models/WindowDimensions'
@@ -28,28 +29,38 @@ export default function SignInPageController() {
 
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
-  const [errorText, setErrorText] = React.useState('');
+  const [loginErrorText, setLoginErrorText] = React.useState('');
   const [showPassword, setShowPassword] = React.useState(false);
 
+  const [errorText, setErrorText] = React.useState('');
+
   const [apiReady, setAPIReady] = React.useState(false);
+  const [retryInterval, setRetryInterval] = React.useState(null);
+  var retryCount = 0;
 
   const handleUsernameChange = (e) => {
     setEmail(e.target.value)
-    if (errorText != '') setErrorText('');
+    if (loginErrorText != '') setLoginErrorText('');
   };
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value)
-    if (errorText != '') setErrorText('');
+    if (loginErrorText != '') setLoginErrorText('');
   };
 
   const handleClickShowPassword = () => setShowPassword(() => !showPassword);
 
   const handleSignInClick = async () => {
+    if (apiReady == false) {
+      setErrorText('No connection to API')
+      return;
+    } else {
+      setErrorText('');
+    }
     setWaitingForResponse(true);
     const result = await asyncPostLoginUser(email, password);
     if (result.success == false) {
-      setErrorText('Could not find user or wrong password')
+      setLoginErrorText('Could not find user or wrong password')
       setWaitingForResponse(false);
       return;
     }
@@ -60,16 +71,33 @@ export default function SignInPageController() {
   };
 
   React.useEffect(() => {
-    async function checkAPIReady() {
-      setWaitingForResponse(true);
-      const apiReady = await asyncGetAPIReady();
-      if (apiReady.message.includes('Ready'))
-        setAPIReady(true);
-      else
+    const checkAPIReady = async () =>  {
+      try {
+        const apiReady = await asyncGetAPIReady();
+        if (apiReady.message.includes('Ready')) {
+          setAPIReady(true);
+          if (retryCount != 1) retryCount = 1;
+          setErrorText('');
+          console.log("ERROR TEXT: " + errorText)
+        }
+        else
+          setAPIReady(false);
+      } catch {
+        setErrorText(`Could not connect to API, retrying in 5 seconds. (${retryCount}/10)`);
         setAPIReady(false);
-      setWaitingForResponse(false);
+        retryCount++;
+      }
     }
     checkAPIReady();
+    const interval = setInterval(() => {
+      if (retryCount == 10) {
+        clearInterval(interval);
+        setErrorText(`Retried ${retryCount} times, cancelling further retries. Please ensure connections and try again.`);
+        return;
+      }
+      checkAPIReady();
+    }, 5*1000);
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -80,20 +108,21 @@ export default function SignInPageController() {
       imageSrc={imageSrc}
       username={email} 
       changeUsername={handleUsernameChange}
-      usernameErrorText={errorText}
+      usernameErrorText={loginErrorText}
       password={password} 
       changePassword={handlePasswordChange}
-      passwordErrorText={errorText}
+      passwordErrorText={loginErrorText}
       showPassword={showPassword}
       handleClickShowPassword={handleClickShowPassword}
       signinButtonClick={handleSignInClick}
+      errorText={errorText}
       waitingForResponse={waitingForResponse}
     />
   );
 }
 
 /* View */
-export function SignInPage({ apiReady, windowHeight, imageSrc, username, changeUsername, usernameErrorText, password, changePassword, passwordErrorText, showPassword, handleClickShowPassword, signinButtonClick, waitingForResponse }) {
+export function SignInPage({ apiReady, windowHeight, imageSrc, username, changeUsername, usernameErrorText, password, changePassword, passwordErrorText, showPassword, handleClickShowPassword, signinButtonClick, errorText, waitingForResponse }) {
   return (
     <Box
       component='main'
@@ -130,7 +159,7 @@ export function SignInPage({ apiReady, windowHeight, imageSrc, username, changeU
               sx={{ width: '100%' }} 
             />
             <FormControl component='form' id='signin-password-textfield' sx={{ m: 1, width: '100%' }} variant="outlined">
-              <InputLabel component='label' id='signin-password-textfield-inputlabel' >Password</InputLabel>
+              <InputLabel component='label' id='signin-password-textfield-inputlabel' error={passwordErrorText == '' ? false : true} >Password</InputLabel>
               <OutlinedInput
                 id='signin-password-textfield-outlinedinput'
                 error={passwordErrorText == '' ? false : true}
@@ -152,10 +181,13 @@ export function SignInPage({ apiReady, windowHeight, imageSrc, username, changeU
               />
               <FormHelperText id='signin-password-textfield-formhelptertext' error={passwordErrorText == '' ? false : true} >{passwordErrorText}</FormHelperText>
             </FormControl>
+            <Typography component='label' id='signin-form-actions' sx={{ pt: 2, color: 'red', maxWidth: 350 }}>
+              {errorText}
+            </Typography>
           </Stack>
         </CardContent>
         <CardActions component='section' id='signin-form-actions' sx={{ justifyContent: 'center' }}>
-          <Box component='div' id='signin-button-container' sx={{ m: 2, position: 'relative' }}>
+          <Box component='div' id='signin-button-container' sx={{ mb: 1, position: 'relative' }}>
             <Button
               component='button'
               id='signin-button'
