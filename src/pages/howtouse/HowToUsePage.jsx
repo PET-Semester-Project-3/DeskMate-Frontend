@@ -38,7 +38,7 @@ export function HowToUsePage() {
                 <Typography component='p' id='howtouse-welcome-text' >
                     Welcome to your DeskMate.  <br/>
                     This page will explain how to use DeskMate, and give a short explanation of the different pages available. <br/>
-                    Be aware that not all pages described here might be accesable to you.
+                    Be aware that not all pages described here might be accessible to you.
                 </Typography>
             </Box>
     
@@ -71,9 +71,9 @@ export function HowToUsePage() {
                     Alternatively, the links in the footer at the bottom of the page can be used. <br/>
         
                     <br/>
-                    The pages that you will have access to, and can navigate to, will be dependent on what you have access to.
+                    The pages that you will have access to, and can navigate to, will be dependent on what your permission level is.
                     <br/>
-                    If you are a regular user, you will have access to the folowing pages:
+                    If you are a regular user, you will have access to the following pages:
                     <ul id='howtouse-usage-link-list-regular' style={{listStyle: 'disc'}}>
                         <li id='howtouse-usage-link-desk-regular' >Desk</li>
                     </ul>
@@ -110,7 +110,7 @@ export function HowToUsePage() {
                 >
                     On this page you will be able to see and control your own desk. <br/>
                     You will be able to see general information about the desk, like what its position is, what is called, etc. <br/>
-                    On this page you will also be able to give commands to the desk, like to move up or down.
+                    On this page you will also be able to give commands to the desk, like to move it up or down.
                 </Box>
             </Box>
     
@@ -128,10 +128,10 @@ export function HowToUsePage() {
                         borderLeft: '4px solid #8b5cf6'
                     }}
                 >
-                    On this page multiple desks <i>(WIP)</i> will be shown. <br/>
+                    On this page multiple desks will be shown. <br/>
                     This page will show every desk that is being administratet, and will show more information about the individual desk. <br/>
                     This info includes the manufacture, the current position, how many times it has been activated, etc.
-                    If a desk is reporting an error, this is where it will be shown.
+                    If a desk is reporting an error, this is where the details of said error will be shown.
                 </Box>
             </Box>
     
@@ -152,7 +152,6 @@ export function HowToUsePage() {
                     On this page data from the database can be accessed. <br/>
                     New desks and users can be added and deleted, permissions for users can be updated <br/>
                     and the relation between users, desks and permissions can be modified. <br/>
-                    This is where CRUD (Create, Read, Update, Delete) will be implemented and utilized.
                 </Box>
             </Box>
         </Box>
