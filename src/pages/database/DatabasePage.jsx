@@ -5,7 +5,6 @@ import DatabaseDataSelection from './components/DatabaseDataSelection'
 import DatabaseDataGrid from './components/DatabaseDataGrid'
 import DatabaseActionButtons from './components/DatabaseActionButtons'
 import DatabaseObjectPopout from './components/DatabaseObjectPopout/DatabaseObjectPopout';
-import { USERSTODESKS, USERTOPERMISSONS } from '../../../dummyData/dummyData';
 import { asyncDeleteDesk, asyncGetDesks, asyncPostDesk, asyncPutDesk } from '../../models/api-comm/APIDesk';
 import { asyncDeleteUser, asyncGetUsers, asyncPostUser, asyncPutUser } from '../../models/api-comm/APIUsers';
 import { asyncDeletePermission, asyncGetPermissions, asyncPostPermission, asyncPutPermission } from '../../models/api-comm/APIPermission';

@@ -77,7 +77,6 @@ export default function SignInPageController() {
           setAPIReady(true);
           if (retryCount != 1) retryCount = 1;
           setErrorText('');
-          console.log("ERROR TEXT: " + errorText)
         }
         else
           setAPIReady(false);
