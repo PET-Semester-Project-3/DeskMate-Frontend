@@ -146,6 +146,8 @@ export function DashboardPage({ desks, session }) {
 
           Detected Errors for desks assigned to {session?.user?.email} <br/>
           
+          {/* Due to time constrains, this section is not working properly. 
+          It will be rectified later, when the proper fields in the database has been implemented. */}
           { Object(desks.last_data).length > 0 ? (  /* Insert proper check if there is errors or not */
             desks.map(desk =>(
               <Box
