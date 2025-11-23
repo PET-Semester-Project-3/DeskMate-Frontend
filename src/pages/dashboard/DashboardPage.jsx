@@ -55,8 +55,8 @@ export function DashboardPage({ desks, session }) {
           mb: 2
           }}
         >
-        {/*Hello {String(session?.user?.email).replace('@deskmate.com', '')} <br/>*/} {/* Will say: Hello admin */}
-        Hello {session?.user?.email} <br/>                                            {/* Will say: Hello admin@deskmate.com */}
+        Hello {String(session?.user?.email).split('@')[0]} <br/> {/* Will say: Hello admin */}
+        {/*Hello {session?.user?.email} <br/> */}                {/* Will say: Hello admin@deskmate.com */}
         Welcome to the DeskMate Dashboard! <br/>
         <br/>
         Your account was created on: {dayjs(session?.user?.created_at).format('DD-MM-YYYY')} <br/>
@@ -92,27 +92,35 @@ export function DashboardPage({ desks, session }) {
           }}
         >
           <Typography component='p' id='dashboard-desk-position-value'>
-
             The current position of desks assigned to {session?.user?.email}
-            
-            {desks.map(desk => (
-              <Box 
-                component=''
-                id={'dashboard-desk-position-value-' + desk.id}
-                sx={{
-                  bgcolor: 'rgba(100, 200, 100, 0.2)',
-                  borderLeft: '4px solid rgba(100, 250, 0, 0.50)',
-                  borderRadius: 2,
-                  p: 2,
-                  mt: 2,
-                  mb: 2
-                }}
-              >
-                {desk.name} <br/>
-                Current height: {desk.height} cm
-              </Box>
-            ))}
           </Typography>
+
+          <Box 
+          sx={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            flexDirection: 'row',
+            gap: 3
+          }}>
+            {desks.map(desk => (
+                <Box 
+                  component=''
+                  id={'dashboard-desk-position-value-' + desk.id}
+                  sx={{
+                    bgcolor: 'rgba(100, 200, 100, 0.2)',
+                    borderLeft: '4px solid rgba(100, 250, 0, 0.50)',
+                    borderRadius: 2,
+                    width: 250,
+                    p: 2,
+                    mt: 2,
+                    mb: 2
+                  }}
+                >
+                  {desk.name} <br/>
+                  Current height: {desk.height} cm
+                </Box>
+              ))}
+          </Box>
         </Box>
       </Box>
 
@@ -148,7 +156,7 @@ export function DashboardPage({ desks, session }) {
           
           {/* Due to time constrains, this section is not working properly. 
           It will be rectified later, when the proper fields in the database has been implemented. */}
-          { Object(desks.last_data).length > 0 ? (  /* Insert proper check if there is errors or not */
+          { desks.last_data ? (  /* Insert proper check if there is errors or not */
             desks.map(desk =>(
               <Box
                 component=''
@@ -215,15 +223,6 @@ export function DashboardPage({ desks, session }) {
 
         </Box>
       </Box>
-      
-
-      <Typography variant='h5' sx={{ color: 'red', fontStyle: 'italic'}}>TODO:</Typography>
-      <ul style={{listStyle: 'disc', color: 'red'}}>
-        <li>Add desk overview</li>
-          <ul>
-            <li>Add error warning for assigned desk</li>
-          </ul>
-      </ul>
 
     </Box>
 
