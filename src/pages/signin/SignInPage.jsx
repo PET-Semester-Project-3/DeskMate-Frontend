@@ -1,6 +1,6 @@
 import * as React from 'react';
 import useSession from '../../models/SessionContext';
-import { asyncGetUserPermissions, asyncPostUser } from '../../models/api-comm/APIUsers';
+import { asyncGetUserPermissions } from '../../models/api-comm/APIUsers';
 import { FormControl, OutlinedInput, InputLabel, InputAdornment, 
   FormHelperText, Box, TextField, Button, IconButton, Card, 
   CardContent, CardActions, Stack, CircularProgress, Radio
@@ -12,6 +12,7 @@ import DeskmateSVG from '../../assets/DeskMate.svg'
 import { useTheme } from '@mui/material/styles';
 import { asyncPostLoginUser } from '../../models/api-comm/APIUsers';
 import { asyncGetAPIReady } from '../../models/api-comm/APIReady';
+import { useNavigate } from 'react-router';
 
 /* Controller */
 export default function SignInPageController() {
@@ -20,6 +21,7 @@ export default function SignInPageController() {
 
   const { height, width } = useWindowDimensions();
   const { setSession } = useSession();
+  const navigate = useNavigate();
 
   const theme = useTheme();
   const imageSrc = theme.palette.mode == 'dark' ? DeskmateInverseSVG : DeskmateSVG;
@@ -45,29 +47,17 @@ export default function SignInPageController() {
 
   const handleSignInClick = async () => {
     setWaitingForResponse(true);
-    const user = await asyncPostLoginUser(email, password);
-    if (!user) {
+    const result = await asyncPostLoginUser(email, password);
+    if (result.success == false) {
       setErrorText('Could not find user or wrong password')
       setWaitingForResponse(false);
       return;
     }
-    const session = { user: user, pages: await asyncGetUserPermissions(user.id) };
+    const session = { user: result, pages: await asyncGetUserPermissions(result.id) };
     setSession(session);
     setWaitingForResponse(false);
+    navigate('/howtouse');
   };
-
-  const signupButtonClick = async () => {
-    setWaitingForResponse(true);
-    const user = await asyncPostUser(email, password);
-    if (!user) {
-      setErrorText('Could not create user with those credentials')
-      setWaitingForResponse(false);
-      return;
-    }
-    const session = { user: user, pages: []};
-    setSession(session);
-    setWaitingForResponse(false);
-  }
 
   React.useEffect(() => {
     async function checkAPIReady() {
@@ -97,14 +87,13 @@ export default function SignInPageController() {
       showPassword={showPassword}
       handleClickShowPassword={handleClickShowPassword}
       signinButtonClick={handleSignInClick}
-      signupButtonClick={signupButtonClick}
       waitingForResponse={waitingForResponse}
     />
   );
 }
 
 /* View */
-export function SignInPage({ apiReady, windowHeight, imageSrc, username, changeUsername, usernameErrorText, password, changePassword, passwordErrorText, showPassword, handleClickShowPassword, signinButtonClick, signupButtonClick,waitingForResponse }) {
+export function SignInPage({ apiReady, windowHeight, imageSrc, username, changeUsername, usernameErrorText, password, changePassword, passwordErrorText, showPassword, handleClickShowPassword, signinButtonClick, waitingForResponse }) {
   return (
     <Box
       component='main'
@@ -179,7 +168,7 @@ export function SignInPage({ apiReady, windowHeight, imageSrc, username, changeU
                   background: 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)',
                 },
                 width: '100%',
-                pl: 4, pr: 4, mb: 2,
+                pl: 4, pr: 4, mb: 4,
               }}
             >
               {waitingForResponse ?
@@ -194,61 +183,34 @@ export function SignInPage({ apiReady, windowHeight, imageSrc, username, changeU
                 : 'Sign in'
               }
             </Button>
-            <Button
-              component='button'
-              id='signup-button'
-              variant='contained'
-              size='small'
-              onClick={signupButtonClick}
-              sx={{
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                '&:hover': {
-                  background: 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)',
-                },
-                width: '75%',
-                ml: 4, mr: 4, mb: 4,
-              }}
-            >
-              {waitingForResponse ?
-                <CircularProgress 
-                  component='div' 
-                  id='signup-button-circularprogress'
-                  size={18}
-                  sx={{
-                    color: 'white',
-                  }}
-                />
-                : 'Sign up'
-              }
-            </Button>
           </Box>
         </CardActions>
       </Card>
-        <Box component='footer' id='signin-page-footer' sx={{ position: 'absolute', bottom: 10, textAlign: 'center', width: '100%' }}>
-          {
-            apiReady ?
-              <Radio
-                component='span'
-                id='signin-api-ready-indicator'
-                checked
-                color='success'
-                size='small'
-              /> :
-              <Radio
-                component='span'
-                id='signin-api-not-ready-indicator'
-                checked
-                color='error'
-                size='small'
-              />
+      <Box component='footer' id='signin-page-footer' sx={{ position: 'absolute', bottom: 10, textAlign: 'center', width: '100%' }}>
+        {
+          apiReady ?
+            <Radio
+              component='span'
+              id='signin-api-ready-indicator'
+              checked
+              color='success'
+              size='small'
+            /> :
+            <Radio
+              component='span'
+              id='signin-api-not-ready-indicator'
+              checked
+              color='error'
+              size='small'
+            />
+        }
+        <Box component='span' id='signin-api-status-text' sx={{ fontSize: 12, ml: 1 }}>
+          { apiReady
+            ? 'API is available'
+            : 'API is not available'
           }
-          <Box component='span' id='signin-api-status-text' sx={{ fontSize: 12, ml: 1 }}>
-            { apiReady
-              ? 'API is available'
-              : 'API is not available'
-            }
-          </Box>
         </Box>
+      </Box>
     </Box>
   );
 }

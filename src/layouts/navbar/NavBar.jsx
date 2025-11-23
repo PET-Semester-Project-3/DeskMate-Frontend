@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router';
 import useSession from '../../models/SessionContext';
-import { Box, Paper, Button, Link, ButtonGroup, Avatar } from '@mui/material';
+import { Box, Paper, Button, Link, ButtonGroup, Avatar, Menu, MenuItem } from '@mui/material';
 import DeskmateInverseSVG from '../../assets/DeskMateInverse.svg'
 import DeskmateSVG from '../../assets/DeskMate.svg'
 import { useTheme } from '@mui/material/styles';
@@ -14,28 +14,31 @@ export default function NavBarController(){
 
   const navigate = useNavigate();
 
-  const { session, setSession} = useSession();
+  const [anchorElUserMenu, setAnchorElUserMenu] = React.useState(null);
+
+  const {session, setSession} = useSession();
   const pages = session.pages != null ? [...session.pages] : [];
 
-  const handleLogoClick = () => {
-    navigate('/howtouse');
-  };
-
-  const handlePageClick = (pages) => {
-    navigate(pages.route);
-  };
-
-  const handleSignOutClick = () => {
-    setSession(null);
-  };
+  const avatarClick = (event) => {
+    console.log(!anchorElUserMenu ? event.currentTarget : null)
+    setAnchorElUserMenu(!anchorElUserMenu ? event.currentTarget : null);
+  }
 
   return (
-    <NavBar imageSrc={imageSrc} logoClick={handleLogoClick} pageClick={handlePageClick} signoutClick={handleSignOutClick} pages={pages} />
+    <NavBar
+      imageSrc={imageSrc} 
+      navigate={navigate} 
+      userEmail={session?.user?.email}
+      avaterClick={avatarClick}
+      anchorElUserMenu={anchorElUserMenu}
+      pages={pages} 
+      setSession={setSession}
+      />
   );
 }
 
 /* View */
-export function NavBar({ imageSrc, logoClick, pageClick, signoutClick, pages}) {
+export function NavBar({ imageSrc, navigate, userEmail, avaterClick, anchorElUserMenu, pages, setSession}) {
 
   return (
     <Paper 
@@ -53,7 +56,7 @@ export function NavBar({ imageSrc, logoClick, pageClick, signoutClick, pages}) {
         zIndex: 100
       }} 
     >
-      <Link component='nav' id='navbar-logo-link' onClick={logoClick} >
+      <Link component='nav' id='navbar-logo-link' onClick={() => navigate('/howtouse')} >
         <img id='deskmate-logo-image' height='100' src={imageSrc} />
       </Link>
       <ButtonGroup
@@ -69,15 +72,15 @@ export function NavBar({ imageSrc, logoClick, pageClick, signoutClick, pages}) {
               <Button
                 component='button'
                 id={'navbar-navigation-pagebutton-' + page.label}
-                onClick={() => pageClick(page)}
+                onClick={() => navigate(page.route)}
               >{page.label}</Button>
             )
           })
         }
 
         {/* Buttons navigate, but only the the dashboard ('/') */}
-        <Button component='button' id="footer-information-link-howtouse" onClick={() => pageClick({route: './howtouse'})} sx={{width: '115px'}}>How To Use</Button>
-        <Button component='button' id="footer-information-link-about" onClick={() => pageClick({route: './about'})}>About</Button>
+        <Button component='button' id="footer-information-link-howtouse" onClick={() => navigate('/howtouse')} sx={{width: '115px'}}>How To Use</Button>
+        <Button component='button' id="footer-information-link-about" onClick={() => navigate('/about')}>About</Button>
       </ButtonGroup>
       <Box
         component='section'
@@ -89,11 +92,38 @@ export function NavBar({ imageSrc, logoClick, pageClick, signoutClick, pages}) {
           pr: 3
         }}
       >
-        <Button
-          component='button'
-          id='navbar-signout-button'
-          onClick={signoutClick}
-        >Sign-Out</Button>
+        <Box component='section' id='user-avatar-container' sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <Avatar
+            component='div' 
+            id='user-avatar'
+            variant="square"
+            onClick={avaterClick}
+            sx={{ 
+              width: 50, 
+              height: 50, 
+              fontSize: 20, 
+              bgcolor: '#667eea',
+              boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)',
+              cursor: 'pointer'
+          }}>
+            {userEmail ? userEmail.split('@').map(part => part[0].toUpperCase()) : '??'}
+          </Avatar>
+        </Box>
+        <Menu
+          component='div' 
+          id='user-avatar-menu'
+          anchorEl={anchorElUserMenu}
+          open={anchorElUserMenu ? true : false}
+          onClose={avaterClick}
+          slotProps={{
+            list: {
+              'aria-labelledby': 'basic-button',
+            },
+          }}
+        >
+          <MenuItem component='span' id='user-avatar-menuitem-profile' onClick={(e) => { avaterClick(e); navigate('/profile'); }}>Profile</MenuItem>
+          <MenuItem component='span' id='user-avatar-menuitem-sign-out' onClick={() => setSession(null)}>Sign-Out</MenuItem>
+        </Menu>
       </Box>
     </Paper>
   );

@@ -70,7 +70,7 @@ export default function DeskViewController({ desk }){
 /* View */
 export function DeskView({ deskName, desk, tempName, isEditingName, height, isOnline, setTempName, setHeight, setHeightCommit, setIsOnline, handleNameConfirm, handleNameEdit }) {
   return (
-    <Card component='div' id='desk-view' sx={{ mb: 3, p: 3 }}>
+    <Card component='div' id='desk-view' sx={{ pt: 3, width: 700 }}>
       <Grid component='section' id='desk-view-grid' container spacing={4}>
         {/* Left Panel - Controls */}
         <Grid component='section' id='desk-view-grid-left-panel' item xs={12} md={6}>
@@ -169,8 +169,7 @@ export function DeskView({ deskName, desk, tempName, isEditingName, height, isOn
               src={deskImage}
               alt="Desk"
               style={{
-                width: '100%',
-                maxWidth: '500px',
+                maxWidth: '300px',
                 height: 'auto',
               }}
           />

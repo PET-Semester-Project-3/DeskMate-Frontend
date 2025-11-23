@@ -45,7 +45,7 @@ export function DeskPage({ userDesks, waitingForResponse }) {
       >
         {'My Desk' + (userDesks.length > 1 ? 's' : '')}
       </Typography>
-      <Box component='section' id='user-desks-list-container' sx={{ maxWidth: '1600px', margin: '0 auto' }}>
+      <Box component='section' id='user-desks-list-container' sx={{ p: 5 }}>
         {userDesks.length > 0 || waitingForResponse ? (
           waitingForResponse ?
           <Box component={'section'} id='desk-page-loading-container' sx={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', p: 5 }}>
@@ -59,11 +59,11 @@ export function DeskPage({ userDesks, waitingForResponse }) {
             />
           </Box>
           :
-          <Stack component='ul' id='user-desks-list' spacing={2}>
+          <Box component='section' id='user-desks-list' sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', width: '100%', gap: 5, justifyContent: 'center' }} >
             {userDesks.map(desk => (
               <DeskView id={'user-desk-' + desk.id} key={desk.id} desk={desk} />
             ))}
-          </Stack>
+          </Box>
         ) : (
           <Typography
             component='h6'

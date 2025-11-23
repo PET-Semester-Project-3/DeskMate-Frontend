@@ -116,7 +116,7 @@ export default function DatabasePageController() {
     if (selectedRow != null){
       console.log(`Remove[${selectedTable.name}] (Id = ${selectedRow.id})`, selectedRow)
       const response = await selectedTable.delete(selectedRow.id);
-      if (response.success != null && !response.success){
+      if (response.success != null && response.success == false){
         console.log('Failed to delete object');
         return;
       }
@@ -138,7 +138,7 @@ export default function DatabasePageController() {
       if (selectedRow == null){
         console.log(`Create New[${selectedTable.name}]`, object)
         const response = await selectedTable.post(object);
-        if (response.success != null && !response.success){
+        if (response.success != null && response.success == false){
           console.log('Failed to create new object');
           return;
         }
@@ -146,7 +146,7 @@ export default function DatabasePageController() {
       else{
         console.log(`Update[${selectedTable.name}] (Id = ${object.id})`, object)
         const response = await selectedTable.put(object);
-        if (response.success != null && !response.success){
+        if (response.success != null && response.success == false){
           console.log('Failed to create new object');
           return;
         }

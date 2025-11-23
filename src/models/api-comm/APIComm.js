@@ -34,7 +34,7 @@ export async function asyncFetch(url, method, body) {
         }
         const result = await response.json();
         console.log(`fetch -[ ${url} ]- result: `, result)
-        return result.success ? result.data != null ? result.data : result.message : result;;
+        return result.success && result.data != null ? result.data : result;
     } catch (error) {
         console.error(error.message);
     }

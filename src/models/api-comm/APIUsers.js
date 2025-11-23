@@ -154,6 +154,7 @@ export async function asyncGetUserScheduledTasks(id) {
 // 401 returns: { success: false, message: "Current password incorrect" }
 // 500 returns: { success: false, message: "Failed to change password" }
 export async function asyncPostNewPassword(id, currentPassword, newPassword) {
+  console.log(id, currentPassword, newPassword)
   if (!id || !currentPassword || !newPassword) {
     console.log(`id (${id}), currentPassword (${currentPassword}) or newPassword (${newPassword}) was null or empty`)
     return null;
