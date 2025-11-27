@@ -23,7 +23,7 @@ export default function DeskViewController({ desk }){
   const [deskName, setDeskName] = React.useState(desk.name);
   const [tempName, setTempName] = React.useState(desk.name);
   const [isEditingName, setIsEditingName] = React.useState(false);
-  const [height, setHeight] = React.useState(desk.height);
+  const [height, setHeight] = React.useState(desk.last_data.height);
   const [isOnline, setIsOnline] = React.useState(desk.is_online);
 
   const handleNameConfirm = async () => {
@@ -42,7 +42,8 @@ export default function DeskViewController({ desk }){
   };
 
   const handleHeightCommit = async (_, newValue) => {
-    await asyncPutDesk(desk.id, { height: newValue });
+    desk.last_data.height = newValue;
+    await asyncPutDesk(desk.id,  { last_data: desk.last_data });
   };
 
   const handleNameEdit = () => {
@@ -112,7 +113,7 @@ export function DeskView({ deskName, desk, tempName, isEditingName, height, isOn
 
             {/* Manufacturer Info */}
             <Typography component='p' id='desk-view-left-panel-manufacturer-header' variant="caption" color="text.secondary">
-              Manufacturer: {desk.manufacturer}
+              Manufacturer: {desk.last_data.manufacturer}
             </Typography>
 
             {/* Height Control */}

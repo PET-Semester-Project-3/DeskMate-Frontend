@@ -116,7 +116,7 @@ export function DashboardPage({ desks, session }) {
                   }}
                 >
                   {desk.name} <br/>
-                  Current height: {desk.height} cm
+                  Current height: {desk.last_data.height} cm
                 </Box>
               ))}
           </Box>

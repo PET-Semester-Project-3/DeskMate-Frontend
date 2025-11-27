@@ -22,13 +22,14 @@ export async function asyncGetUser(id) {
 // 201 returns: { success: true, data: user }
 // 400 returns: { success: false, message: "Email and password required" }
 // 409 returns: { success: false, message: "User exists" }
+// 409 returns: { success: false, message: "Main Desk User exists" }
 // 500 returns: { success: false, message: "Failed to create user" }
-export async function asyncPostUser({ email, password }) {
+export async function asyncPostUser({ email, password, mainDeskId }) {
   if (!email || !password) {
     console.log(`email (${email}) or password (${password}) was null or empty`)
     return null
   }
-  return asyncFetch(`${APIUSERSURL}`, "POST", { email, password })
+  return asyncFetch(`${APIUSERSURL}`, "POST", { email, password, mainDeskId })
 }
 
 // 201 returns: { success: true, data: user }
@@ -45,13 +46,14 @@ export async function asyncPostUserWithPermissions({ email, permissionIds }) {
 
 // 200 returns: { success: true, data: user }
 // 409 returns: { success: false, message: "Email already in use" }
+// 409 returns: { success: false, message: "Main Desk User exists" }
 // 500 returns: { success: false, message: "Failed to update user" }
-export async function asyncPutUser({ id, email, password }) {
+export async function asyncPutUser({ id, email, password, mainDeskId }) {
   if (!id) {
     console.log(`id (${id}) was null or empty`)
     return null
   }
-  return asyncFetch(`${APIUSERSURL}/${id}`, "PUT", { email, password })
+  return asyncFetch(`${APIUSERSURL}/${id}`, "PUT", { email, password, mainDeskId })
 }
 
 // 200 returns: { success: true, message: "User deleted successfully" }
