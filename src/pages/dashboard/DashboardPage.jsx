@@ -95,7 +95,8 @@ export function DashboardPage({ desks, session }) {
             The current position of desks assigned to {session?.user?.email}
           </Typography>
 
-          <Box 
+          <Box
+          id='dashboard-desk-position-flex-box' 
           sx={{
             display: 'flex',
             flexWrap: 'wrap',
@@ -159,76 +160,87 @@ export function DashboardPage({ desks, session }) {
             >
               Detected Errors for desks assigned to {session?.user?.email} <br/>
             </Typography>
-          
-            { (desks.length > 0) ? (
-              desks.map(desk => (
 
-                desk.last_data.errors ? (
-                  <Box
-                  component=''
-                  id={'dashboard-error-list-' + desk.id}
-                  sx={{
-                    bgcolor: 'rgba(250, 10, 10, 0.2)',
-                    borderLeft: '4px solid rgba(250, 50, 50, 0.75)',
-                    borderRadius: 2,
-                    p: 2,
-                    mt: 2,
-                    mb: 2
-                  }}
-                  >
-                    {desk.name} <br/>
-                    {desk.last_data.errors.map(error =>(
-                      
-                      <Typography
-                      component='p'
-                      id={'dashboard-error-list-' + desk.id + error}
-                      color='warning'
-                      >
-                        <WarningIcon id='dasboard-error-list-warning-icon'/>
-                        {error} <br/>
-                      </Typography>
+            <Box
+            id='dashboard-error-list-flex-box'
+            sx={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              flexDirection: 'row',
+              gap: 3
+            }}>
+              { (desks.length > 0) ? (
+                desks.map(desk => (
 
-                    ))}
-                  </Box>
-                ) : (
-                  <Box
-                  component=''
-                  id={'dashboard-error-list-' + desk.id}
-                  sx={{
-                    bgcolor: 'rgba(250, 10, 10, 0.2)',
-                    borderLeft: '4px solid rgba(250, 50, 50, 0.75)',
-                    borderRadius: 2,
-                    p: 2,
-                    mt: 2,
-                    mb: 2
-                  }}
-                  >
-                    {desk.name}
-
-                    <Typography
-                    component='p'
-                    id='dashboard-error-list-no-errors'
+                  desk.last_data.errors ? (
+                    <Box
+                    component=''
+                    id={'dashboard-error-list-' + desk.id}
                     sx={{
-                      color: 'rgba(0, 250, 0, 0.5)'
+                      bgcolor: 'rgba(250, 10, 10, 0.2)',
+                      borderLeft: '4px solid rgba(250, 50, 50, 0.75)',
+                      borderRadius: 2,
+                      width: 250,
+                      p: 2,
+                      mt: 2,
+                      mb: 2
                     }}
                     >
-                      No errors was detected.<br/>
-                    </Typography>
-                  </Box>
-                )
-                
-              ))
-            ) : (
-              <Typography
-              component='p'
-              id='dashboard-error-list-no-desks'
-              sx={{
-                color: 'rgba(250, 0, 0, 1)'
-              }}
-              >
-                No desks has been detected. Please contact an administrator for help.
-              </Typography>
-            )}
+                      {desk.name} <br/>
+                      {desk.last_data.errors.map(error =>(
+                        
+                        <Typography
+                        component='p'
+                        id={'dashboard-error-list-' + desk.id + error}
+                        color='warning'
+                        >
+                          <WarningIcon id='dasboard-error-list-warning-icon'/>
+                          {error} <br/>
+                        </Typography>
+
+                      ))}
+                    </Box>
+                  ) : (
+                    <Box
+                    component=''
+                    id={'dashboard-error-list-' + desk.id}
+                    sx={{
+                      bgcolor: 'rgba(250, 10, 10, 0.2)',
+                      borderLeft: '4px solid rgba(250, 50, 50, 0.75)',
+                      borderRadius: 2,
+                      width: 250,
+                      p: 2,
+                      mt: 2,
+                      mb: 2
+                    }}
+                    >
+                      {desk.name}
+
+                      <Typography
+                      component='p'
+                      id='dashboard-error-list-no-errors'
+                      sx={{
+                        color: 'rgba(0, 250, 0, 0.5)'
+                      }}
+                      >
+                        No errors was detected.<br/>
+                      </Typography>
+                    </Box>
+                  )
+                  
+                ))
+              ) : (
+                <Typography
+                component='p'
+                id='dashboard-error-list-no-desks'
+                sx={{
+                  color: 'rgba(250, 0, 0, 1)'
+                }}
+                >
+                  No desks has been detected. Please contact an administrator for help.
+                </Typography>
+              )}
+            </Box>
 
         </Box>
       </Box>
