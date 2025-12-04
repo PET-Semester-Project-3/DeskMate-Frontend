@@ -131,7 +131,7 @@ export function ProfilePage({ userEmail, setUserEmail, userEmailErrorText, isUse
                 </Typography>
                 <Box component='section' id='user-info-pages-container' sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', mb: 4, width: '80%', height: '20%' }}>
                     <Typography component='h6' id='user-info-pages-header' variant="h6" sx={{ mb: 1, fontWeight: '600' }}>
-                        Assigned Pages:
+                        Assigned Permissions:
                     </Typography>
                     <Box component='div' id='user-info-pages-chips' sx={{ display: 'flex' }} >
                         {userPages && userPages.length > 0 ? (
