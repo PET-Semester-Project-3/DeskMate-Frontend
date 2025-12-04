@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router';
 import useSession from '../../models/SessionContext';
-import { Box, Paper, Button, Link, ButtonGroup, Avatar, Menu, MenuItem } from '@mui/material';
+import { Box, Paper, Button, Link, ButtonGroup, Avatar, Menu, MenuItem, Divider } from '@mui/material';
 import DeskmateInverseSVG from '../../assets/DeskMateInverse.svg'
 import DeskmateSVG from '../../assets/DeskMate.svg'
 import { useTheme } from '@mui/material/styles';
@@ -123,6 +123,7 @@ export function NavBar({ imageSrc, navigate, userEmail, avaterClick, anchorElUse
         >
           <MenuItem component='span' id='user-avatar-menuitem-profile' onClick={(e) => { avaterClick(e); navigate('/profile'); }}>Profile</MenuItem>
           <MenuItem component='span' id='user-avatar-menuitem-deskmate' onClick={(e) => { avaterClick(e); navigate('/deskmate'); }}>My Deskmate</MenuItem>
+          <Divider/>
           <MenuItem component='span' id='user-avatar-menuitem-sign-out' onClick={() => setSession(null)}>Sign-Out</MenuItem>
         </Menu>
       </Box>

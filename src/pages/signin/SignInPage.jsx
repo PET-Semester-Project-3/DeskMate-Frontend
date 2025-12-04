@@ -49,7 +49,7 @@ export default function SignInPageController() {
 
   const handleClickShowPassword = () => setShowPassword(() => !showPassword);
 
-  const handleSignInClick = async () => {
+  async function signinFunction() {
     if (apiReady == false) {
       setErrorText('No connection to API')
       return;
@@ -113,7 +113,7 @@ export default function SignInPageController() {
       passwordErrorText={loginErrorText}
       showPassword={showPassword}
       handleClickShowPassword={handleClickShowPassword}
-      signinButtonClick={handleSignInClick}
+      signinFunction={signinFunction}
       errorText={errorText}
       waitingForResponse={waitingForResponse}
     />
@@ -121,7 +121,7 @@ export default function SignInPageController() {
 }
 
 /* View */
-export function SignInPage({ apiReady, windowHeight, imageSrc, username, changeUsername, usernameErrorText, password, changePassword, passwordErrorText, showPassword, handleClickShowPassword, signinButtonClick, errorText, waitingForResponse }) {
+export function SignInPage({ apiReady, windowHeight, imageSrc, username, changeUsername, usernameErrorText, password, changePassword, passwordErrorText, showPassword, handleClickShowPassword, signinFunction, errorText, waitingForResponse }) {
   return (
     <Box
       component='main'
@@ -147,7 +147,7 @@ export function SignInPage({ apiReady, windowHeight, imageSrc, username, changeU
           </Box>
           <Stack component='ol' id='signin-textfield-stack' spacing={1} sx={{ alignItems: 'center', mr: 5 }} >
             <TextField
-              component='form'
+              component='div'
               id='signin-username-textfield'
               error={usernameErrorText == '' ? false : true}
               label='Username'
@@ -155,9 +155,10 @@ export function SignInPage({ apiReady, windowHeight, imageSrc, username, changeU
               onChange={changeUsername} 
               variant='outlined'
               helperText={usernameErrorText}
+              onKeyUp={e => { if (e.key == "Enter") signinFunction(); }}
               sx={{ width: '100%' }} 
             />
-            <FormControl component='form' id='signin-password-textfield' sx={{ m: 1, width: '100%' }} variant="outlined">
+            <FormControl component='div' id='signin-password-textfield' sx={{ m: 1, width: '100%' }} variant="outlined">
               <InputLabel component='label' id='signin-password-textfield-inputlabel' error={passwordErrorText == '' ? false : true} >Password</InputLabel>
               <OutlinedInput
                 id='signin-password-textfield-outlinedinput'
@@ -165,7 +166,8 @@ export function SignInPage({ apiReady, windowHeight, imageSrc, username, changeU
                 label="Password"
                 value={password} 
                 type={showPassword ? 'text' : 'password'}
-                onChange={changePassword} 
+                onChange={changePassword}
+                onKeyUp={e => { if (e.key == "Enter") signinFunction(); }}
                 endAdornment={
                   <InputAdornment id='signin-password-textfield-inputadronment' position="end">
                     <IconButton
@@ -192,7 +194,7 @@ export function SignInPage({ apiReady, windowHeight, imageSrc, username, changeU
               id='signin-button'
               variant='contained'
               size='large'
-              onClick={signinButtonClick}
+              onClick={() => signinFunction()}
               sx={{
                 background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                 '&:hover': {

@@ -286,8 +286,9 @@ export function DatabasePage({
   getTableData,
 }) {
   return (
-    <Box component="main" id="database-page" sx={{ boxShadow: 2 }}>
-      <Typography
+    <Box component="main" id="database-page" sx={{ width: '100%' }}>
+      <Box component="section" id="database-data-container">
+        <Typography
         component="h4"
         id="database-page-header"
         variant="h4"
@@ -299,11 +300,10 @@ export function DatabasePage({
       >
         Database Management
       </Typography>
-      <Box component="section" id="database-data-container">
         <Box
           component="section"
           id="database-data-selector-actions-container"
-          sx={{ display: "flex", flexDirection: "row" }}
+          sx={{ display: "flex", flexDirection: "row", width: '100%' }}
         >
           <Box
             component="section"

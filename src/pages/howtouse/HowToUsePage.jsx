@@ -11,7 +11,7 @@ export default function HowToUsePageController() {
 /* View */
 export function HowToUsePage() {
     return (
-        <Box component='main' id='howtouse-page' sx={{ boxShadow: 2 }}>
+        <Box component='main' id='howtouse-page' sx={{ width: '100%' }}>
             <Typography
                 component='h4'
                 id='howtouse-page-header'
@@ -73,13 +73,10 @@ export function HowToUsePage() {
                     <br/>
                     The pages that you will have access to, and can navigate to, will be dependent on what your permission level is.
                     <br/>
-                    If you are a regular user, you will have access to the following pages:
-                    <ul id='howtouse-usage-link-list-regular' style={{listStyle: 'disc'}}>
-                        <li id='howtouse-usage-link-desk-regular' >Desk</li>
-                    </ul>
         
-                    If you are a admin, you will have access to the following pages:
+                    The following pages are restricted via permissions:
                     <ul id='howtouse-usage-link-list-admin' style={{listStyle: 'disc'}}>
+                        <li id='howtouse-usage-link-dashboard-admin'>Dashboard</li>
                         <li id='howtouse-usage-link-desk-admin'>Desk</li>
                         <li id='howtouse-usage-link-maintenance-admin'>Maintenance</li>
                         <li id='howtouse-usage-link-database-admin'>Database</li>
@@ -87,9 +84,9 @@ export function HowToUsePage() {
                     
                     All users have access to: <br/>
                     <ul>
-                        <li>The dashboard, where an overview of assigned desk(s) can be seen. </li>
-                        <li>This page, describing how to use the app. </li>
-                        <li>The about page, describing what the purpose of this web app is.</li>
+                        <li>This ("How to use") page, describing how to use the app. </li>
+                        <li>The "About" page, describing what the purpose of this web app is.</li>
+                        <li>The "My Deskmate" page, which holds your Deskmate and a leaderboard for all Deskmates in the company.</li>
                     </ul>
                 </Box>
             </Box>

@@ -39,11 +39,15 @@ export default function TomogatchiSectionController({ session }) {
 /* View */
 export function TomogatchiSection({ deskmate, waitingForResponse }) {
     return (
-        <Box component='section' id='tomogatchi-section' sx={{  }}>
+        <Box component='section' id='tomogatchi-section' sx={{ height: '100%', bgcolor: 'red' }}>
             {
                 !deskmate ? (
                     /* Create a new deskmate */
-                    null
+                    <Box sx={{ height: '100%', width: '100%', justifyContent: 'center', alignContent: 'center' }}>
+                        <Button>
+                            {"Create"}
+                        </Button>
+                    </Box>
                  ) : (
                     /* Show deskmate */
                     null

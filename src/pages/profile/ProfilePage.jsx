@@ -90,7 +90,7 @@ export default function ProfilePageController() {
 /* View */
 export function ProfilePage({ userEmail, setUserEmail, userEmailErrorText, isUserEmailEdit, setIsUserEmailEdit, newPassword, setNewPassword, showNewPassword, setShowNewPassword, newPasswordErrorText, oldPassword, setOldPassword, showOldPassword, setShowOldPassword, oldPasswordErrorText, isPasswordEdit, setIsPasswordEdit, userPages, SaveNewEmailClick, SaveNewPasswordClick, waitingForResponse }) {
     return (
-        <Box component='main' id='user-page' sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Box component='main' id='user-page' sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
             <Box 
                 component='section' 
                 id='user-info-container' 

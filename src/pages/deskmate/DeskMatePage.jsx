@@ -22,7 +22,7 @@ export default function DeskMatePageController() {
 /* View */
 export function DeskMatePage({ session, pageNum, setPageNum }) {
     return (
-        <Box component='main' id='deskmate-page' sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center',  }}>
+        <Box component='main' id='deskmate-page' sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%', bgcolor: 'blue'  }}>
             <Tabs value={pageNum} aria-label="deskMate page tabs">
                 <Button component='button' id='tomogatchi-tab-button' onClick={() => setPageNum(0)} >
                     <Typography variant='h6'>My Desk Mate</Typography>
