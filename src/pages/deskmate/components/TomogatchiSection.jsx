@@ -39,13 +39,24 @@ export default function TomogatchiSectionController({ session }) {
 /* View */
 export function TomogatchiSection({ deskmate, waitingForResponse }) {
     return (
-        <Box component='section' id='tomogatchi-section' sx={{ height: '100%', bgcolor: 'red' }}>
+        <Box component='section' id='tomogatchi-section' sx={{ height: '100%', width: '100%' }}>
             {
                 !deskmate ? (
                     /* Create a new deskmate */
-                    <Box sx={{ height: '100%', width: '100%', justifyContent: 'center', alignContent: 'center' }}>
-                        <Button>
-                            {"Create"}
+                    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center', gap: 5 }}>
+                        <Typography sx={{ maxWidth: 550, textAlign: 'center' }}>
+                            No Deskmate found. Create a new Deskmate to care for (while taking care of your own health) and compete with other colleagues and their Deskmates. 
+                        </Typography>
+                        <Button
+                            variant='outlined'
+                            sx={{ 
+                                height: 65,
+                                minWidth: 150,
+                             }}
+                        >
+                            <Typography>
+                                Create a new Deskmate
+                            </Typography>
                         </Button>
                     </Box>
                  ) : (

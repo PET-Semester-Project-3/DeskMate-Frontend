@@ -22,19 +22,19 @@ export default function DeskMatePageController() {
 /* View */
 export function DeskMatePage({ session, pageNum, setPageNum }) {
     return (
-        <Box component='main' id='deskmate-page' sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%', bgcolor: 'blue'  }}>
-            <Tabs value={pageNum} aria-label="deskMate page tabs">
+        <Box component='main' id='deskmate-page' sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+            <Tabs value={pageNum} aria-label="deskMate page tabs" indicatorColor='primary' >
                 <Button component='button' id='tomogatchi-tab-button' onClick={() => setPageNum(0)} >
-                    <Typography variant='h6'>My Desk Mate</Typography>
+                    <Typography variant='h6' color='white' >My Desk Mate</Typography>
                 </Button>
                 <Button component='button' id='leaderboard-tab-button'onClick={() => setPageNum(1)} >
-                    <Typography variant='h6'>Leaderboards</Typography>
+                    <Typography variant='h6'  color='white' >Leaderboards</Typography>
                 </Button>
             </Tabs>
             { pageNum === 0 ? 
                 <TomogatchiSection session={session} />
                 :
-                <LeaderBoardSection />
+                <LeaderBoardSection session={session} />
             }
         </Box>
     )
