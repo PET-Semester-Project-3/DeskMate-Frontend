@@ -54,7 +54,11 @@ export function LeaderBoardSectionSection({ waitingForResponse, userId, deskmate
                                             <Box>
                                                 <ListItem
                                                     sx={{
-                                                        bgcolor: dm.user_id == userId ? 'background.paper' : 'background.default'
+                                                        bgcolor: dm.user_id == userId ? 'background.paper' : 'background.default',
+                                                        transition: 'transform 0.3s ease, box-shadow 0.3s ease','&:hover': {
+                                                            transform: 'translateY(-2px)',
+                                                            boxShadow: '0 4px 8px rgba(102, 126, 234, 0.3)',
+                                                        },
                                                     }}
                                                 >
                                                     <Box 

@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { Box, Typography, Button, Card, LinearProgress, CircularProgress,
-    Chip, Divider, Badge, IconButton, List, Backdrop, TextField
+import { Box, Typography, Button, Card, CircularProgress, Badge, TextField
 } from '@mui/material';
 import {
     Gauge
@@ -8,6 +7,7 @@ import {
 import ChangeValuePopout from '../../profile/components/ChangeValuePopout';
 import { asyncGetDeskMateByUser, asyncPostDeskMate, asyncPutDeskMateStreak } from '../../../models/api-comm/APIDeskMate'
 import { calculateDaysDiff, dateToString } from '../../../models/DateTimeCal'
+import { Whatshot, SentimentSatisfiedAltRounded, SentimentSatisfied, SentimentVeryDissatisfied } from '@mui/icons-material'
 import deskImage from '../../../assets/desk.png';
 
 /* Controller */
@@ -192,17 +192,39 @@ export function TomogatchiSection({
                                         Change Name
                                     </Typography>
                                 </Button>
-                                <Box
-                                    component='img'
-                                    id='tomogatchi-desk-image'
-                                    src={deskImage}
-                                    alt='Deskmate sitting at a desk'
+                                <Badge
+                                    badgeContent={
+                                        calculateDaysDiff(deskmate.last_streak, today) < 2 ? <SentimentSatisfiedAltRounded sx={{ width: 35, height: 35 }}/>
+                                        : calculateDaysDiff(deskmate.last_streak, today) < 5 ? <SentimentSatisfied sx={{ width: 35, height: 35 }}/>
+                                        : <SentimentVeryDissatisfied sx={{ width: 35, height: 35 }}/>
+                                    } 
+                                    color={
+                                        calculateDaysDiff(deskmate.last_streak, today) < 2 ? 'success' 
+                                        : calculateDaysDiff(deskmate.last_streak, today) < 5 ? 'warning' 
+                                        : 'error'
+                                    }
                                     sx={{
-                                        height: 250,
-                                        width: 'auto',
-                                        mt: 2,
+                                        '& .MuiBadge-badge': {
+                                            right: 40,
+                                            top: 65,
+                                            height: 40,
+                                            width: 40,
+                                            borderRadius: 15
+                                        },
                                     }}
-                                />
+                                    >
+                                        <Box
+                                            component='img'
+                                            id='tomogatchi-desk-image'
+                                            src={deskImage}
+                                            alt='Deskmate sitting at a desk'
+                                            sx={{
+                                                height: 250,
+                                                width: 'auto',
+                                                mt: 2,
+                                            }}
+                                        />
+                                </Badge>
                             </Box>
                         </Card>
                         <Card
@@ -226,8 +248,16 @@ export function TomogatchiSection({
                             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
                                 <Typography variant='h4'>
                                     { deskmate.last_streak ? Number.parseInt(calculateDaysDiff(new Date(deskmate.last_streak), new Date(today))) < 2 ? 'I am happy, let\'s keep it up!'
-                                    : Number.parseInt(calculateDaysDiff(new Date(deskmate.last_streak), new Date(today))) < 5 ? 'I am okay, but we should stand up again soon.'
+                                    : Number.parseInt(calculateDaysDiff(new Date(deskmate.last_streak), new Date(today))) < 5 ? 'We are okay, but we should stand up again soon.'
                                     : 'I am sad... please stand up with me!' : 'Let\'s start our first stand up together!'}
+                                </Typography>
+                                { /* Todays streak status */ }
+                                <Typography variant='h6'>
+                                    { Number.parseInt(calculateDaysDiff(new Date(deskmate.last_streak), new Date(today))) < 1 ? 'You have already stood up today. Great job!' : 'You have not stood up today yet. Let\'s do it together!' }
+                                    {
+                                        deskmate.last_streak != null && new Date(deskmate.last_streak).getDate() == new Date(today).getDate() ?
+                                        <Whatshot sx={{ height: 20 }} /> : null
+                                    }
                                 </Typography>
                                 <Typography
                                     variant='body1'
@@ -247,8 +277,9 @@ export function TomogatchiSection({
                                     valueMax={15*60}
                                     min={0}
                                     max={15}
-                                    text={(value) => `${value.value >= 15*60 ? 'Good Job!' : ((value.value / 60) > 10 ? Number.parseInt((value.value / 60)) : '0' + Number.parseInt((value.value / 60))) + ':' + ((value.value % 60) > 10 ? (value.value % 60) : '0' + (value.value % 60)) + '0'.slice(String(value.value % 60).length) + ' / 15:00'}`}
-                                />
+                                    text={(value) =>`${value.value >= 15*60 ? '+1 Streak' : ((value.value / 60) > 10 ? Number.parseInt((value.value / 60)) : '0' + Number.parseInt((value.value / 60))) + ':' + ((value.value % 60) > 10 ? (value.value % 60) : '0' + (value.value % 60)) + '0'.slice(String(value.value % 60).length) + ' / 15:00'}`}
+                                >
+                                </Gauge>
                                 <Button
                                     variant='contained'
                                     onClick={() => setIsTimerRunning(!isTimerRunning)}
