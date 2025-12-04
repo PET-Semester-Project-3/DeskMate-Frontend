@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Box, List, Typography, ListItem, Divider, Badge  } from '@mui/material';
+import { Box, List, Typography, ListItem, Divider, Badge, CircularProgress  } from '@mui/material';
 import { Whatshot, Desk, SentimentSatisfiedAltRounded, SentimentSatisfied, SentimentVeryDissatisfied } from '@mui/icons-material'
 import { calculateDaysDiff, dateToString } from '../../../models/DateTimeCal'
 import { asyncGetDeskMates } from '../../../models/api-comm/APIDeskMate'
@@ -18,7 +18,7 @@ export default function LeaderBoardSectionController({ session }) {
     
         
     React.useEffect(() => {
-        const getDeskmates = async (id) => {
+        const getDeskmates = async () => {
             setWaitingForResponse(true);
             const deskmates = await asyncGetDeskMates();
             setDeskmates(deskmates);
@@ -29,6 +29,7 @@ export default function LeaderBoardSectionController({ session }) {
 
     return (
         <LeaderBoardSectionSection
+            waitingForResponse={waitingForResponse}
             userId={session?.user?.id}
             deskmates={deskmates}
             today={today}
@@ -37,111 +38,115 @@ export default function LeaderBoardSectionController({ session }) {
 }
 
 /* View */
-export function LeaderBoardSectionSection({ userId, deskmates, today }) {
+export function LeaderBoardSectionSection({ waitingForResponse, userId, deskmates, today }) {
     return (
         <Box component='section' id='leaderboard-section' sx={{  height: '100%', width: '100%' }}>
             <Box sx={{ display: 'flex', height: '100%', width: '100%', m: 2, mt: 4, justifyContent: 'center' }}>
                 {
-                    deskmates?.length > 0 ? (
-                        <List 
-                            sx={{ 
-                                width: '35%',
-                                overflow: 'auto',
-                                maxHeight: '92%'
-                            }}>
-                            {
-                                deskmates.sort((a, b) => b.streak - a.streak ).map(dm => {
-                                    return (
-                                        <Box>
-                                            <ListItem
-                                                sx={{
-                                                    bgcolor: dm.user_id == userId ? 'background.paper' : 'background.default'
-                                                }}
-                                            >
-                                                <Box 
-                                                    sx={{ 
-                                                        display: 'flex', 
-                                                        width: '100%',
-                                                    }}>
-                                                    <Box sx={{ display: 'flex', width: '50%' }}>
-                                                        {
-                                                            dm.last_streak ? (
-                                                                <Badge
-                                                                    badgeContent={
-                                                                        calculateDaysDiff(dm.last_streak, today) < 2 ? <SentimentSatisfiedAltRounded/>
-                                                                        : calculateDaysDiff(dm.last_streak, today) < 5 ? <SentimentSatisfied/>
-                                                                        : <SentimentVeryDissatisfied/>
-                                                                    } 
-                                                                    color={
-                                                                        calculateDaysDiff(dm.last_streak, today) < 2 ? 'success' 
-                                                                        : calculateDaysDiff(dm.last_streak, today) < 5 ? 'warning' 
-                                                                        : 'error'
+                    waitingForResponse ? (
+                        <CircularProgress/>
+                    ) : (
+                        deskmates?.length > 0 ? (
+                            <List 
+                                sx={{ 
+                                    width: '35%',
+                                    overflow: 'auto',
+                                    maxHeight: '92%'
+                                }}>
+                                {
+                                    deskmates.sort((a, b) => b.streak - a.streak ).map(dm => {
+                                        return (
+                                            <Box>
+                                                <ListItem
+                                                    sx={{
+                                                        bgcolor: dm.user_id == userId ? 'background.paper' : 'background.default'
+                                                    }}
+                                                >
+                                                    <Box 
+                                                        sx={{ 
+                                                            display: 'flex', 
+                                                            width: '100%',
+                                                        }}>
+                                                        <Box sx={{ display: 'flex', width: '50%' }}>
+                                                            {
+                                                                dm.last_streak ? (
+                                                                    <Badge
+                                                                        badgeContent={
+                                                                            calculateDaysDiff(dm.last_streak, today) < 2 ? <SentimentSatisfiedAltRounded/>
+                                                                            : calculateDaysDiff(dm.last_streak, today) < 5 ? <SentimentSatisfied/>
+                                                                            : <SentimentVeryDissatisfied/>
+                                                                        } 
+                                                                        color={
+                                                                            calculateDaysDiff(dm.last_streak, today) < 2 ? 'success' 
+                                                                            : calculateDaysDiff(dm.last_streak, today) < 5 ? 'warning' 
+                                                                            : 'error'
+                                                                        }
+                                                                        sx={{
+                                                                            mr: 3,
+                                                                            '& .MuiBadge-badge': {
+                                                                                right: 2,
+                                                                                top: 12,
+                                                                                height: 25,
+                                                                                width: 25,
+                                                                                borderRadius: 5
+                                                                            },
+                                                                        }}
+                                                                    >
+                                                                        <Desk
+                                                                            color='primary'
+                                                                            sx={{ 
+                                                                                height: 65,
+                                                                                width: 65,
+                                                                            }}
+                                                                        />
+                                                                    </Badge>
+                                                                ) : (
+                                                                    <Box>
+                                                                        <Desk
+                                                                            color='primary'
+                                                                            sx={{ 
+                                                                                height: 65,
+                                                                                width: 65,
+                                                                            }}
+                                                                        />
+                                                                    </Box>
+                                                                )
+                                                            }
+                                                            <List>
+                                                                <Typography variant='h5' color='primary' >
+                                                                    {dm.name}
+                                                                </Typography>
+                                                                <Typography variant='body2' color='secondary' >
+                                                                    {"Streak: " + dm.streak + ' day(s)'}
+                                                                    {
+                                                                        dm.last_streak != null && new Date(dm.last_streak).getDate() == new Date(today).getDate() ?
+                                                                        <Whatshot sx={{ height: 20 }} /> : null
                                                                     }
-                                                                    sx={{
-                                                                        mr: 3,
-                                                                        '& .MuiBadge-badge': {
-                                                                            right: 2,
-                                                                            top: 12,
-                                                                            height: 25,
-                                                                            width: 25,
-                                                                            borderRadius: 5
-                                                                        },
-                                                                    }}
-                                                                >
-                                                                    <Desk
-                                                                        color='primary'
-                                                                        sx={{ 
-                                                                            height: 65,
-                                                                            width: 65,
-                                                                        }}
-                                                                    />
-                                                                </Badge>
-                                                            ) : (
-                                                                <Box>
-                                                                    <Desk
-                                                                        color='primary'
-                                                                        sx={{ 
-                                                                            height: 65,
-                                                                            width: 65,
-                                                                        }}
-                                                                    />
-                                                                </Box>
-                                                            )
-                                                        }
-                                                        <List>
-                                                            <Typography variant='h5' color='primary' >
-                                                                {dm.name}
-                                                            </Typography>
-                                                            <Typography variant='body2' color='secondary' >
-                                                                {"Streak: " + dm.streak + ' day(s)'}
-                                                                {
-                                                                    dm.last_streak != null && new Date(dm.last_streak).getDate() == new Date(today).getDate() ?
-                                                                    <Whatshot sx={{ height: 20 }} /> : null
-                                                                }
-                                                                {' -> '}
-                                                                {dateToString(dm.last_streak)}
-                                                            </Typography>
-                                                        </List>
+                                                                    {' -> '}
+                                                                    {dateToString(dm.last_streak)}
+                                                                </Typography>
+                                                            </List>
+                                                        </Box>
+                                                        <Box sx={{ display: 'flex', width: '50%', justifyContent: 'flex-end' }}>
+                                                            <List sx={{ justifyItems: 'right' }}>
+                                                                <Typography variant='h6' color='primary' >{dm.user.email}</Typography>
+                                                                <Typography variant='body2' color='secondary' >{(dm.user_id == userId ? '(You)' : '')}</Typography>
+                                                            </List>
+                                                        </Box>
                                                     </Box>
-                                                    <Box sx={{ display: 'flex', width: '50%', justifyContent: 'flex-end' }}>
-                                                        <List sx={{ justifyItems: 'right' }}>
-                                                            <Typography variant='h6' color='primary' >{dm.user.email}</Typography>
-                                                            <Typography variant='body2' color='secondary' >{(dm.user_id == userId ? '(You)' : '')}</Typography>
-                                                        </List>
-                                                    </Box>
-                                                </Box>
-                                            </ListItem>
-                                            <Divider />
-                                        </Box>
-                                    )
-                                })
-                            }
-                        </List>
-                    ) :
-                    (
-                        <Typography>
-                            There was found no Deskmates, so be the first to create their Deskmate.
-                        </Typography>
+                                                </ListItem>
+                                                <Divider />
+                                            </Box>
+                                        )
+                                    })
+                                }
+                            </List>
+                        ) :
+                        (
+                            <Typography>
+                                There was found no Deskmates, so be the first to create their Deskmate.
+                            </Typography>
+                        )
                     )
                 }
             </Box>
