@@ -91,7 +91,7 @@ export default function SignInPageController() {
       if (retryCount == 10) {
         clearInterval(interval);
         setErrorText(`Retried ${retryCount} times, cancelling further retries. Please ensure connections and try again.`);
-        setAPIFailed(true);
+        setAPIReady(false);
         return;
       }
       checkAPIReady();

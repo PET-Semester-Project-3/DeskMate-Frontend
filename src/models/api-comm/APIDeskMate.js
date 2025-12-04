@@ -71,3 +71,18 @@ export async function asyncPutDeskMateStreak(id) {
 }
 
 //#endregion
+
+//#region Streak
+
+// 200 returns: { success: true, data: deskmate }
+// 404 returns: { success: false, message: "deskmate not found" }
+// 500 returns: { success: false, message: "Failed to fetch deskmate" }
+export async function asyncGetDeskMateByUser(id) {
+  if (!id) {
+    console.log(`id (${id}) was null or empty`)
+    return null;
+  }
+  return asyncFetch(`${APIDESKMATEURL}/user/${id}`, 'GET');
+}
+
+//#endregion

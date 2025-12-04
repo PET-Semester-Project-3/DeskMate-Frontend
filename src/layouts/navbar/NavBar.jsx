@@ -122,6 +122,7 @@ export function NavBar({ imageSrc, navigate, userEmail, avaterClick, anchorElUse
           }}
         >
           <MenuItem component='span' id='user-avatar-menuitem-profile' onClick={(e) => { avaterClick(e); navigate('/profile'); }}>Profile</MenuItem>
+          <MenuItem component='span' id='user-avatar-menuitem-deskmate' onClick={(e) => { avaterClick(e); navigate('/deskmate'); }}>My Deskmate</MenuItem>
           <MenuItem component='span' id='user-avatar-menuitem-sign-out' onClick={() => setSession(null)}>Sign-Out</MenuItem>
         </Menu>
       </Box>

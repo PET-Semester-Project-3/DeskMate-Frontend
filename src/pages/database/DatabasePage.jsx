@@ -36,14 +36,30 @@ import {
   asyncPostScheduledTask,
   asyncPutScheduledTask,
 } from "../../models/api-comm/APIScheduleTask"
-import { asyncGetUserDesks } from "../../models/api-comm/APIUserDesk"
-import { asyncGetUserPermissions } from "../../models/api-comm/APIUserPermission"
+import {
+  asyncDeleteDeskMate,
+  asyncGetDeskMates,
+  asyncPostDeskMate,
+  asyncPutDeskMate,
+} from "../../models/api-comm/APIDeskMate"
+import { 
+  asyncDeleteUserDesk,
+  asyncGetUserDesks,
+  asyncPostUserDesk,
+  asyncPutUserDesk,
+ } from "../../models/api-comm/APIUserDesk"
+import { 
+  asyncDeleteUserPermission,
+  asyncGetUserPermissions,
+  asyncPostUserPermission,
+  asyncPutUserPermission,
+ } from "../../models/api-comm/APIUserPermission"
 
 const DBTABLESELECTION = [
   {
     name: "Desks",
     canCreateNew: true,
-    blackListedProperties: ["last_data", "last_data_at", "created_at", "updated_at"],
+    blackListedProperties: ["last_data", "last_data_at", "created_at", "updated_at", "controller"],
     requiredProperties: ["id", "name", "manufacturer"],
     getAll: asyncGetDesks,
     post: asyncPostDesk,
@@ -103,6 +119,9 @@ const DBTABLESELECTION = [
     blackListedProperties: ["id", "created_at", "updated_at", "user", "desk"],
     requiredProperties: ["user_id", "desk_id"],
     getAll: asyncGetUserDesks,
+    post: asyncPostUserDesk,
+    put: asyncPutUserDesk,
+    delete: asyncDeleteUserDesk,
   },
   {
     name: "User To Permissions",
@@ -110,6 +129,19 @@ const DBTABLESELECTION = [
     blackListedProperties: ["id", "created_at", "updated_at", "user", "permission"],
     requiredProperties: ["user_id", "permission_id"],
     getAll: asyncGetUserPermissions,
+    post: asyncPostUserPermission,
+    put: asyncPutUserPermission,
+    delete: asyncDeleteUserPermission,
+  },
+  {
+    name: "DeskMates",
+    canCreateNew: true,
+    blackListedProperties: ["id", "created_at", "updated_at", "user"],
+    requiredProperties: ["name", "user_id"],
+    getAll: asyncGetDeskMates,
+    post: asyncPostDeskMate,
+    put: asyncPutDeskMate,
+    delete: asyncDeleteDeskMate,
   },
 ]
 
