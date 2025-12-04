@@ -4,18 +4,13 @@ import { Whatshot, Desk, SentimentSatisfiedAltRounded, SentimentSatisfied, Senti
 import { calculateDaysDiff, dateToString } from '../../../models/DateTimeCal'
 import { asyncGetDeskMates } from '../../../models/api-comm/APIDeskMate'
 
-/*
-Leaderboard page to see all deskmates in the database and their rankings
-*/
-
 /* Controller */
 export default function LeaderBoardSectionController({ session }) {
 
     const [waitingForResponse, setWaitingForResponse] = React.useState(false);
-        
     const [deskmates, setDeskmates] = React.useState(null);
-    const today = Date.now();
     
+    const today = Date.now();
         
     React.useEffect(() => {
         const getDeskmates = async () => {

@@ -72,7 +72,7 @@ export async function asyncPutDeskMateStreak(id) {
 
 //#endregion
 
-//#region Streak
+//#region Get by User
 
 // 200 returns: { success: true, data: deskmate }
 // 404 returns: { success: false, message: "deskmate not found" }
