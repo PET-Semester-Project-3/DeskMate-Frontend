@@ -6,44 +6,9 @@ import {
     Gauge
 } from '@mui/x-charts'
 import ChangeValuePopout from '../../profile/components/ChangeValuePopout';
-import { asyncGetDeskMateByUser, asyncPostDeskMate } from '../../../models/api-comm/APIDeskMate'
+import { asyncGetDeskMateByUser, asyncPostDeskMate, asyncPutDeskMateStreak } from '../../../models/api-comm/APIDeskMate'
 import { calculateDaysDiff, dateToString } from '../../../models/DateTimeCal'
-
-/*
-
-Tomogatchi page for user to see information on their Deskmate and start a timer that when finished extends their streak.
-They can also change the name of their Deskmate.
-
-if there is no deskmate found then use "Create a new Deskmate" to open a backdrop create new Deskmate popup where they can give it a name.
-
-Deskmate schematic:
-  id String @id @default(uuid())
-  user_id String @unique
-  name String
-  streak Int @default(0)
-  last_streak DateTime?
-  created_at DateTime? @default(now())
-  updated_at DateTime? @updatedAt
-  achievements String[]
-  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
-
-User schematic:
-  model User {
-  id            String     @id @default(uuid())
-  email         String     @unique @db.VarChar(50)
-  password_hash String
-  main_desk_id  String?    @unique
-  created_at    DateTime   @default(now())
-  updated_at    DateTime?  @updatedAt
-  userDesks     UserDesk[]
-  scheduledTasks ScheduledTask[]
-  userPermissions UserPermission[]
-  deskMate DeskMate?
-}
-
-There is a timer on the page (using the gauge) for 15 min, which can be started an paused by a button, the gauge is full when 15 min has passed.
-
-*/
+import deskImage from '../../../assets/desk.png';
 
 /* Controller */
 export default function TomogatchiSectionController({ session }) {
@@ -72,6 +37,38 @@ export default function TomogatchiSectionController({ session }) {
         setWaitingForResponse(false);
     }
 
+    const extendStreak = async () => {
+        setWaitingForResponse(true);
+        const deskmate = asyncPutDeskMateStreak(deskmate.id);
+        if (deskmate) {
+            setDeskmate(deskmate);
+            setPopupOpen(false);
+        }
+        else
+            console.log('Failed to extend streak');
+        setWaitingForResponse(false);
+    }
+
+    React.useEffect(() => {
+        let timer = null;
+        if (isTimerRunning) {
+            timer = setInterval(() => {
+                setTimerTime((prevTime) => {
+                    if (prevTime >= 15*60) {
+                        clearInterval(timer);
+                        setIsTimerRunning(false);
+                        extendStreak();
+                        return prevTime;
+                    }
+                    return prevTime + 1;
+                });
+            }, 1000);
+        } else if (!isTimerRunning && timer !== null) {
+            clearInterval(timer);
+        }
+        return () => clearInterval(timer);
+    }, [isTimerRunning]);
+
     const getDeskmate = async (id) => {
         setWaitingForResponse(true);
         const deskmate = await asyncGetDeskMateByUser(id);
@@ -88,7 +85,6 @@ export default function TomogatchiSectionController({ session }) {
             deskmate={deskmate}
             today={today}
             timerTime={timerTime}
-            setTimerTime={setTimerTime}
             isTimerRunning={isTimerRunning}
             setIsTimerRunning={setIsTimerRunning}
             popupOpen={popupOpen}
@@ -103,7 +99,7 @@ export default function TomogatchiSectionController({ session }) {
 
 /* View */
 export function TomogatchiSection({ 
-    waitingForResponse, deskmate, today, timerTime, setTimerTime, 
+    waitingForResponse, deskmate, today, timerTime, 
     isTimerRunning, setIsTimerRunning, popupOpen, setPopupOpen,
     name, setName, nameErrorText, onCreateNewDeskmateClick
 }) {
@@ -134,10 +130,144 @@ export function TomogatchiSection({
                     </Box>
                  ) : (
                     /* Show deskmate */
-                    null
-                 )
+                    <Box sx={{ display: 'flex', flexDirection: 'row', height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center', gap: 3 }}>
+                        <Card
+                            sx={{ 
+                                p: 2, 
+                                height: '60%',
+                                minHeight: 550, 
+                                display: 'flex', 
+                                flexDirection: 'column', 
+                                alignItems: 'center', 
+                                gap: 2,
+                                border: '2px solid',
+                                borderImage: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%) 1',
+                                transition: 'transform 0.3s ease, box-shadow 0.3s ease','&:hover': {
+                                    transform: 'translateY(-4px)',
+                                    boxShadow: '0 12px 24px rgba(102, 126, 234, 0.3)',
+                                },
+                            }}
+                        >
+                            <Box 
+                                sx={{ 
+                                    p: 4,
+                                    display: 'flex', 
+                                    flexDirection: 'column', 
+                                    height: '100%', 
+                                    width: '100%', 
+                                    justifyContent: 'top', 
+                                    alignItems: 'center', 
+                                    gap: 1,
+                                }}>
+                                <Typography variant='h4'>
+                                    {deskmate.name}
+                                </Typography>
+                                <Typography>
+                                    {`I've been with you since ${dateToString(new Date(deskmate.created_at))}`}
+                                </Typography>
+                                <Typography variant='body2' color='secondary' >
+                                    {`Current Streak: ${deskmate.streak} day${deskmate.streak !== 1 ? 's' : ''}`}
+                                </Typography>
+                                <Typography variant='body2' color='secondary' >
+                                    {`Days since last streak: ${deskmate.last_streak ? Number.parseInt(calculateDaysDiff(new Date(deskmate.last_streak), new Date(today))) : 'N/A'}`}
+                                </Typography>
+                                <Typography variant='body2' color='secondary' >
+                                    {`Last Streak: ${deskmate.last_streak ? dateToString(new Date(deskmate.last_streak)) : 'N/A'}`}
+                                </Typography>
+                                <Typography
+                                    variant='body2'
+                                    sx={{ mt: 2 }}
+                                >
+                                    Want to change my name?
+                                </Typography>
+                                <Button
+                                    variant='outlined'
+                                    onClick={() => setPopupOpen(true)}
+                                    sx={{ 
+                                        height: 40,
+                                        minWidth: 100,
+                                        }}
+                                >
+                                    <Typography>
+                                        Change Name
+                                    </Typography>
+                                </Button>
+                                <Box
+                                    component='img'
+                                    id='tomogatchi-desk-image'
+                                    src={deskImage}
+                                    alt='Deskmate sitting at a desk'
+                                    sx={{
+                                        height: 250,
+                                        width: 'auto',
+                                        mt: 2,
+                                    }}
+                                />
+                            </Box>
+                        </Card>
+                        <Card
+                            sx={{ 
+                                p: 4, 
+                                height: '60%',
+                                minHeight: 550,
+                                display: 'flex', 
+                                flexDirection: 'column', 
+                                justifyContent: 'top',
+                                alignItems: 'center', 
+                                gap: 2,
+                                border: '2px solid',
+                                borderImage: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%) 1',
+                                transition: 'transform 0.3s ease, box-shadow 0.3s ease','&:hover': {
+                                    transform: 'translateY(-4px)',
+                                    boxShadow: '0 12px 24px rgba(102, 126, 234, 0.3)',
+                                },
+                            }}
+                        >
+                            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
+                                <Typography variant='h4'>
+                                    { deskmate.last_streak ? Number.parseInt(calculateDaysDiff(new Date(deskmate.last_streak), new Date(today))) < 2 ? 'I am happy, let\'s keep it up!'
+                                    : Number.parseInt(calculateDaysDiff(new Date(deskmate.last_streak), new Date(today))) < 5 ? 'I am okay, but we should stand up again soon.'
+                                    : 'I am sad... please stand up with me!' : 'Let\'s start our first stand up together!'}
+                                </Typography>
+                                <Typography
+                                    variant='body1'
+                                    sx={{ mb: 2 }}
+                                >
+                                    {`Take care of me and you by standing up at work for 15 minutes, every day to keep my streak going!`}
+                                </Typography>
+                                <Typography>
+                                    {`Current Streak: ${deskmate.streak} day${deskmate.streak !== 1 ? 's' : ''}`}
+                                </Typography>
+                                <Gauge
+                                    component='div'
+                                    id='tomogatchi-timer-gauge'
+                                    height={250}
+                                    width={250}
+                                    value={timerTime}
+                                    valueMax={15*60}
+                                    min={0}
+                                    max={15}
+                                    text={(value) => `${value.value >= 15*60 ? 'Good Job!' : ((value.value / 60) > 10 ? Number.parseInt((value.value / 60)) : '0' + Number.parseInt((value.value / 60))) + ':' + ((value.value % 60) > 10 ? (value.value % 60) : '0' + (value.value % 60)) + '0'.slice(String(value.value % 60).length) + ' / 15:00'}`}
+                                />
+                                <Button
+                                    variant='contained'
+                                    onClick={() => setIsTimerRunning(!isTimerRunning)}
+                                    sx={{ 
+                                        height: 50,
+                                        minWidth: 150,
+                                    }}
+                                >
+                                    <Typography>
+                                        {isTimerRunning ? 'Pause Timer' : 'Start Timer'}
+                                    </Typography>
+                                </Button>
+                            </Box>
+                        </Card>
+                    </Box>
+                    
+                )
             }
-            <ChangeValuePopout header='Name Deskmate' onSaveClick={onCreateNewDeskmateClick} isOpen={popupOpen} setIsOpen={setPopupOpen}>
+            <ChangeValuePopout header={!deskmate ? 'Name Deskmate' : 'Change ' + deskmate.name} onSaveClick={onCreateNewDeskmateClick} isOpen={popupOpen} setIsOpen={setPopupOpen}>
                 <TextField
                     component='div'
                     id='deskmate-info-name-textfield'

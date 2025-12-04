@@ -112,7 +112,7 @@ export function LeaderBoardSectionSection({ waitingForResponse, userId, deskmate
                                                                     {dm.name}
                                                                 </Typography>
                                                                 <Typography variant='body2' color='secondary' >
-                                                                    {"Streak: " + dm.streak + ' day(s)'}
+                                                                    {"Streak: " + dm.streak + ' day' + (dm.streak !== 1 ? 's' : '')}
                                                                     {
                                                                         dm.last_streak != null && new Date(dm.last_streak).getDate() == new Date(today).getDate() ?
                                                                         <Whatshot sx={{ height: 20 }} /> : null
