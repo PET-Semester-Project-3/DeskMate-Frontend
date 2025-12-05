@@ -30,7 +30,7 @@ export default function ProfilePageController() {
     const SaveNewEmailClick = () => {
         async function putUser(id) {
             setWaitingForResponse(true);
-            const result = await asyncPutUser({id, email: userEmail, password: null});
+            const result = await asyncPutUser({id, email: userEmail, password: null, mainDeskId: null});
             if (result.success != null && result.success == false) {
                 setUserEmailErrorText('Issue occured when trying to change email');
             }

@@ -18,7 +18,7 @@ import deskImage from '../../../assets/desk.png';
 export default function DeskCardController({ desk }) {
 
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [isOnline, setIsOnline] = React.useState(desk.status === 'Online');
+  const [isOnline, setIsOnline] = React.useState(desk.is_online);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -70,7 +70,7 @@ export function DeskCard({ desk, anchorEl, isOnline, handleClick, handleClose, h
       }}
     >
       <CardContent component='section' id='desk-card-content' sx={{ position: 'relative' }}>
-        {desk.lasterrors && desk.lasterrors.length > 0 && (
+        {desk.last_data.errors && desk.last_data.errors.length > 0 && (
           <Box component='section' id='desk-errors-container' sx={{ position: 'absolute', top: 16, left: 16 }}>
             <IconButton
               component='button'
@@ -79,7 +79,7 @@ export function DeskCard({ desk, anchorEl, isOnline, handleClick, handleClose, h
               onClick={handleClick}
               sx={{ p: 0 }}
             >
-              <Badge id='desk-errors-button-badge' badgeContent={desk.lasterrors.length} color="error">
+              <Badge id='desk-errors-button-badge' badgeContent={desk.last_data.errors.length} color="error">
                 <WarningIcon id='desk-errors-button-badge-icon' color="warning" />
               </Badge>
             </IconButton>
@@ -99,7 +99,7 @@ export function DeskCard({ desk, anchorEl, isOnline, handleClick, handleClose, h
                   Last Errors:
                 </Typography>
                 <Box component='span' id='desk-errors-popover-list-container' sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-                  {desk.lasterrors.map((error, index) => (
+                  {desk.last_data.errors.map((error, index) => (
                     <Chip
                       component='div'
                       id={'desk-errors-popover-list-element-' + error}
@@ -176,7 +176,7 @@ export function DeskCard({ desk, anchorEl, isOnline, handleClick, handleClose, h
               Manufacturer:
             </Typography>
             <Typography component='p' id='desk-details-manufacturer-value' variant="body2" fontWeight="medium">
-              {desk.manufacturer}
+              {desk.last_data.manufacturer}
             </Typography>
           </Box>
 
@@ -185,7 +185,7 @@ export function DeskCard({ desk, anchorEl, isOnline, handleClick, handleClose, h
               Position:
             </Typography>
             <Typography component='p' id='desk-details-position-value' variant="body2" fontWeight="medium">
-              {desk.height} cm
+              {desk.last_data.height} cm
             </Typography>
           </Box>
 
@@ -194,7 +194,7 @@ export function DeskCard({ desk, anchorEl, isOnline, handleClick, handleClose, h
               Activation Count:
             </Typography>
             <Typography component='p' id='desk-details-activationcount-value' variant="body2" fontWeight="medium">
-              {desk.activationcounter}
+              {desk.last_data.activationCounter}
             </Typography>
           </Box>
 
@@ -203,7 +203,7 @@ export function DeskCard({ desk, anchorEl, isOnline, handleClick, handleClose, h
               Sit/Stand Count:
             </Typography>
             <Typography component='p' id='desk-details-sitstandcount-value' variant="body2" fontWeight="medium">
-              {desk.sitstandcounter}
+              {desk.last_data.sitStandCounter}
             </Typography>
           </Box>
         </Box>

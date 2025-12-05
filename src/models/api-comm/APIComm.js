@@ -10,6 +10,7 @@ export const APISCHEDULEDTASKSURL = APIBASEURL + '/scheduled-tasks'
 export const APICONTROLLERSURL = APIBASEURL + '/controllers'
 export const APIUSERDESKURL = APIBASEURL + '/user-desks'
 export const APIUSERPERMISSIONURL = APIBASEURL + '/user-permissions'
+export const APIDESKMATEURL = APIBASEURL + '/deskmates'
 
 //#endregion
 

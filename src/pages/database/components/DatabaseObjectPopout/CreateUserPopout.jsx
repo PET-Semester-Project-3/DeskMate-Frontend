@@ -38,7 +38,7 @@ export default function CreateUserPopoutController({ isOpen, onClose, onCreated 
     if (!email) return // required
     setSaving(true)
     const permissionIds = Array.from(selectedPermissions)
-    const resp = await asyncPostUserWithPermissions({ email, permissionIds })
+    const resp = await asyncPostUserWithPermissions({ email, permissionIds})
     setSaving(false)
     if (resp && resp.success !== false) {
       onCreated && onCreated(resp.data)
