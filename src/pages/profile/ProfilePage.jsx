@@ -90,7 +90,7 @@ export default function ProfilePageController() {
 /* View */
 export function ProfilePage({ userEmail, setUserEmail, userEmailErrorText, isUserEmailEdit, setIsUserEmailEdit, newPassword, setNewPassword, showNewPassword, setShowNewPassword, newPasswordErrorText, oldPassword, setOldPassword, showOldPassword, setShowOldPassword, oldPasswordErrorText, isPasswordEdit, setIsPasswordEdit, userPages, SaveNewEmailClick, SaveNewPasswordClick, waitingForResponse }) {
     return (
-        <Box component='main' id='user-page' sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Box component='main' id='user-page' sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
             <Box 
                 component='section' 
                 id='user-info-container' 
@@ -131,7 +131,7 @@ export function ProfilePage({ userEmail, setUserEmail, userEmailErrorText, isUse
                 </Typography>
                 <Box component='section' id='user-info-pages-container' sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', mb: 4, width: '80%', height: '20%' }}>
                     <Typography component='h6' id='user-info-pages-header' variant="h6" sx={{ mb: 1, fontWeight: '600' }}>
-                        Assigned Pages:
+                        Assigned Permissions:
                     </Typography>
                     <Box component='div' id='user-info-pages-chips' sx={{ display: 'flex' }} >
                         {userPages && userPages.length > 0 ? (

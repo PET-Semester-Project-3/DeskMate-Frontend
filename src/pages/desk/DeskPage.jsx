@@ -32,7 +32,7 @@ export default function DeskPageController() {
 /* View */
 export function DeskPage({ userDesks, waitingForResponse }) {
   return (
-    <Box component='main' id='desk-page' sx={{ boxShadow: 2 }}>
+    <Box component='main' id='desk-page'>
       <Typography
         component='h4'
         id='desk-page-header'

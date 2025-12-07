@@ -5,6 +5,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import Cookies from 'js-cookie';
 import SignIn from './pages/signin/SignInPage';
+import { Box } from '@mui/material';
 
 /* Controller */
 export default function AppController() {
@@ -38,7 +39,9 @@ export function App({ sessionContextValue }) {
         {
           sessionContextValue.session == null ?
           <SignIn />
-          : <Outlet />
+          : <Box sx={{ height: '100%', width: '100%' }} > 
+              <Outlet />
+            </Box>
         }
       </SessionContext.Provider>
     </LocalizationProvider>

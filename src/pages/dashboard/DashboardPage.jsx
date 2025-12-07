@@ -31,7 +31,7 @@ export default function DashboardPageController() {
 /* View */
 export function DashboardPage({ desks, session }) {
   return (
-    <Box id='dashboard-page' sx={{ boxShadow: 2 }}>
+    <Box id='dashboard-page' sx={{ width: '100%' }}>
       <Typography
         variant="h4"
         sx={{

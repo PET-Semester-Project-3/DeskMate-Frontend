@@ -31,7 +31,7 @@ export default function MaintenancePageController() {
 /* View */
 export function MaintenancePage({ desks, waitingForResponse }) {
   return (
-    <Box component='main' id='maintenance-page' sx={{ boxShadow: 2 }}>
+    <Box component='main' id='maintenance-page' sx={{ width: '100%' }}>
       <Typography
         component='h4'
         id='maintenance-page-header'
