@@ -1,10 +1,12 @@
 import * as React from 'react';
 import RestrictedPage from '../restricted/RestrictedPage'
-import { Typography, Box, Stack } from '@mui/material';
+import { Typography, Box, colors } from '@mui/material';
+import { BarChart, Gauge, gaugeClasses } from '@mui/x-charts';
 import WarningIcon from '@mui/icons-material/Warning';
+import dayjs from 'dayjs';
 import { asyncGetUserDesks } from '../../models/api-comm/APIUsers';
 import useSession from '../../models/SessionContext';
-import dayjs from 'dayjs';
+
 
 /* Controller */
 export default function DashboardPageController() {
@@ -194,7 +196,7 @@ export function DashboardPage({ desks, session }) {
                         id={'dashboard-error-list-' + desk.id + error}
                         color='warning'
                         >
-                          <WarningIcon id='dasboard-error-list-warning-icon'/>
+                          <WarningIcon id='dasboard-error-list-warning-icon' sx={{mr: 1}}/>
                           {error} <br/>
                         </Typography>
 
@@ -267,16 +269,129 @@ export function DashboardPage({ desks, session }) {
           id='dashboard-data-visualization-body'
           sx={{
             bgcolor: 'rgba(250, 50, 250, 0.1)',
+            borderLeft: '4px solid rgba(250, 50, 250, 0.75)',
             borderRadius: 2,
             p: 2,
-            borderLeft: '4px solid rgba(250, 50, 250, 0.75)',
             mt: 2,
             mb: 2
           }}
         >
-          <i>Will be implemented as part of an individual extension to the project.</i>
           {/* Insert graphs and other data visualization here */}
 
+          <Typography
+            component='p'
+            variant='h6'
+          >
+            Individual Activation counter
+          </Typography>
+          <Box
+            id='dashboard-data-visualization-desks-flex-box'
+            sx={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              flexDirection: 'row',
+              gap: 3
+            }}
+          >
+          
+            {desks.map(desk => (
+              <Box
+              component=''
+              id='dashboard-data-visualization-activation-bar'
+              sx={{
+                bgcolor: 'rgba(250, 50, 250, 0.15)',
+                borderLeft: '4px solid rgba(250, 50, 250, 0.75)',
+                width: 250,
+                mt: 1,
+                mb: 1
+              }}>
+
+                <Typography>
+                  {desk.name} <br/> 
+                </Typography>
+                <BarChart
+                  xAxis={[{
+                    barGapRatio: 0,
+                    data: [desk.name]
+                  }]}
+                  series={
+                    [
+                      {label:'Activation', 
+                        barLabel: 'value',
+                        barLabelPlacement: 'center', 
+                        color: 'darkblue', 
+                        data: [desk.last_data.activationCounter,
+                      ]},
+
+                      {label: 
+                        'SitStand', 
+                        barLabel: 'value',
+                        barLabelPlacement: 'center',  
+                        color: 'green', 
+                        data: [desk.last_data.sitStandCounter
+                      ]}
+                    ]}
+                  height={300}
+                  sx={{
+                    width: 250
+                  }}
+                />
+
+                <Gauge
+                  width={250} 
+                  height={100} 
+                  value={desk.last_data.sitStandCounter}
+                  valueMax={desk.last_data.activationCounter}
+                  startAngle={-90} 
+                  endAngle={90}
+                  text={({ value, valueMax }) => `${value} / ${valueMax}`}
+                  sx={() => ({
+                    [`& .${gaugeClasses.valueArc}`] : {
+                      fill: 'green'
+                    },
+                    [`& .${gaugeClasses.referenceArc}`]: {
+                      fill: 'darkblue'
+                    }
+                  })}
+                />
+
+              </Box>
+            ))}
+          </Box>
+          
+
+          {/* WORK IN PROGRESS */}
+          <Typography
+            component='p'
+            variant='h6'
+            sx={{
+              mt: 5
+            }}
+          >
+            Total/Average Activation counter
+          </Typography>
+          <Box
+          component=''
+          id='dashboard-data-visualization-total-activation-bar'
+          sx={{
+            bgcolor: 'rgba(250, 50, 250, 0.15)',
+            borderLeft: '4px solid rgba(250, 50, 250, 0.75)',
+            height: 250,
+            mt: 1,
+            mb: 1
+          }}>
+            <Typography>Total <i>WIP</i></Typography>
+              <BarChart
+                xAxis={[
+                  {data:['Test']},
+                  {data:['test2']}
+                ]}
+                series={[
+                  {data:[2]},
+                  {data: [3]}
+                ]}
+              />
+          </Box>
         </Box>
       </Box>
 
