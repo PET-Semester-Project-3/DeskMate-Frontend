@@ -16,6 +16,13 @@ export default function DashboardPageController() {
   const [desks, setDesks] = React.useState([]);
   const { session } = useSession();
 
+  const total_counter = [0, 0];
+
+  desks.map(desk => (
+    total_counter[0] += desk.last_data.activationCounter,
+    total_counter[1] += desk.last_data.sitStandCounter
+  ));
+
   React.useEffect(() => {
     async function getDesks(id) {
       setWaitingForResponse(true);
@@ -26,12 +33,12 @@ export default function DashboardPageController() {
     getDesks(session?.user?.id);
   }, []);
 
-  return (<RestrictedPage Page={<DashboardPage desks={desks} session={session} />} />)
+  return (<RestrictedPage Page={<DashboardPage desks={desks} session={session} total={total_counter} />} />)
 
 }
 
 /* View */
-export function DashboardPage({ desks, session }) {
+export function DashboardPage({ desks, session, total }) {
   return (
     <Box id='dashboard-page' sx={{ boxShadow: 2 }}>
       <Typography
@@ -277,7 +284,6 @@ export function DashboardPage({ desks, session }) {
           }}
         >
           {/* Insert graphs and other data visualization here */}
-
           <Typography
             component='p'
             variant='h6'
@@ -306,10 +312,13 @@ export function DashboardPage({ desks, session }) {
                 mb: 1
               }}>
 
-                <Typography>
+                <Typography
+                  id={'dashboard-data-visualization-graph-total-activation-title-' + desk.id}
+                >
                   {desk.name} <br/> 
                 </Typography>
                 <BarChart
+                  id={'dashboard-data-visualization-graph-bar-' + desk.id}
                   xAxis={[{
                     barGapRatio: 0,
                     data: [desk.name]
@@ -319,15 +328,14 @@ export function DashboardPage({ desks, session }) {
                       {label:'Activation', 
                         barLabel: 'value',
                         barLabelPlacement: 'center', 
-                        color: 'darkblue', 
+                        color: 'rgba(0, 150, 250, 0.5)', 
                         data: [desk.last_data.activationCounter,
                       ]},
 
-                      {label: 
-                        'SitStand', 
+                      {label: 'Sit/Stand', 
                         barLabel: 'value',
                         barLabelPlacement: 'center',  
-                        color: 'green', 
+                        color: 'rgba(10, 200, 0, 0.5)', 
                         data: [desk.last_data.sitStandCounter
                       ]}
                     ]}
@@ -338,6 +346,7 @@ export function DashboardPage({ desks, session }) {
                 />
 
                 <Gauge
+                  id={'dashboard-data-visualization-graph-gauge-' + desk.id}
                   width={250} 
                   height={100} 
                   value={desk.last_data.sitStandCounter}
@@ -347,10 +356,10 @@ export function DashboardPage({ desks, session }) {
                   text={({ value, valueMax }) => `${value} / ${valueMax}`}
                   sx={() => ({
                     [`& .${gaugeClasses.valueArc}`] : {
-                      fill: 'green'
+                      fill: 'rgba(10, 200, 0, 0.5)'
                     },
                     [`& .${gaugeClasses.referenceArc}`]: {
-                      fill: 'darkblue'
+                      fill: 'rgba(0, 150, 250, 0.5)'
                     }
                   })}
                 />
@@ -359,17 +368,17 @@ export function DashboardPage({ desks, session }) {
             ))}
           </Box>
           
-
-          {/* WORK IN PROGRESS */}
           <Typography
             component='p'
+            id='dashboard-data-visualization-total-activation-title'
             variant='h6'
             sx={{
               mt: 5
             }}
           >
-            Total/Average Activation counter
+            Total Activation counter
           </Typography>
+
           <Box
           component=''
           id='dashboard-data-visualization-total-activation-bar'
@@ -377,18 +386,37 @@ export function DashboardPage({ desks, session }) {
             bgcolor: 'rgba(250, 50, 250, 0.15)',
             borderLeft: '4px solid rgba(250, 50, 250, 0.75)',
             height: 250,
+            maxWidth: 1280,
             mt: 1,
             mb: 1
           }}>
-            <Typography>Total <i>WIP</i></Typography>
+            <Typography 
+              id='dashboard-data-visualization-graph-total-activation-title'
+              textAlign={'center'}
+            >
+              Graph of totals 
+            </Typography>
               <BarChart
+                id='dashboard-data-visualization-graph-total-bar'
                 xAxis={[
-                  {data:['Test']},
-                  {data:['test2']}
+                  {
+                    barGapRatio: 0,
+                    data:['Total']
+                  }
                 ]}
                 series={[
-                  {data:[2]},
-                  {data: [3]}
+                  { label:'Activation', 
+                    barLabel: 'value',
+                    barLabelPlacement: 'center', 
+                    color: 'rgba(0, 150, 250, 0.5)', 
+                    data: [total[0]],
+                  },
+                  { label:'Sit/Stand', 
+                    barLabel: 'value',
+                    barLabelPlacement: 'center', 
+                    color: 'rgba(10, 200, 0, 0.5)',
+                    data: [total[1]],
+                  }
                 ]}
               />
           </Box>
