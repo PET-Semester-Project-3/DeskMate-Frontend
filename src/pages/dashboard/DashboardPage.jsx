@@ -53,14 +53,13 @@ export function DashboardPage({ desks, session, total }) {
       </Typography>
       
       {/* Greeting text */}
-      <Box 
+      <Card 
         component='p' 
         id='dashboard-greeting-text' 
         sx={{
-            bgcolor: 'rgba(102, 126, 234, 0.1)',
-            borderLeft: '4px solid #667eea',
+            bgcolor: 'primary',
             borderRadius: 2,
-            maxWidth: 600,
+            maxWidth: 400,
             p: 2,
             mb: 3,
           }}
@@ -71,7 +70,7 @@ export function DashboardPage({ desks, session, total }) {
         <br/>
         Your account was created on: {dayjs(session?.user?.created_at).format('DD-MM-YYYY')} <br/>
         Your account last had updates on: {dayjs(session?.user?.updated_at).format('DD-MM-YYYY')} <br/>
-      </Box>
+      </Card>
       
       {/* Desk position */}
       <Box component='article' id='dashboard-desk-position-container'>
@@ -112,12 +111,11 @@ export function DashboardPage({ desks, session, total }) {
             gap: 3
           }}>
             {desks.map(desk => (
-                <Box 
+                <Card 
                   component=''
                   id={'dashboard-desk-position-value-' + desk.id}
                   sx={{
-                    bgcolor: 'rgba(100, 200, 100, 0.2)',
-                    borderLeft: '4px solid rgba(100, 250, 0, 0.50)',
+                    bgcolor: 'primary)',
                     borderRadius: 2,
                     width: 250,
                     p: 2,
@@ -127,7 +125,7 @@ export function DashboardPage({ desks, session, total }) {
                 >
                   {desk.name} <br/>
                   Current height: {desk.last_data.height} cm
-                </Box>
+                </Card>
               ))}
           </Box>
         </Box>
@@ -179,18 +177,18 @@ export function DashboardPage({ desks, session, total }) {
                 desks.map(desk => (
 
                   desk.last_data.errors ? (
-                    <Box
-                    component=''
-                    id={'dashboard-error-list-' + desk.id}
-                    sx={{
-                      bgcolor: 'rgba(250, 10, 10, 0.2)',
-                      borderLeft: '4px solid rgba(250, 50, 50, 0.75)',
-                      borderRadius: 2,
-                      width: 250,
-                      p: 2,
-                      mt: 2,
-                      mb: 2
-                    }}
+                    <Card
+                      component=''
+                      id={'dashboard-error-list-' + desk.id}
+                      sx={{
+                        bgcolor: 'rgba(250, 10, 10, 0.2)',
+                        borderLeft: '4px solid rgba(250, 50, 50, 0.75)',
+                        borderRadius: 2,
+                        width: 250,
+                        p: 2,
+                        mt: 2,
+                        mb: 2
+                      }}
                     >
                       {desk.name} <br/>
                       {desk.last_data.errors.map(error =>(
@@ -205,14 +203,13 @@ export function DashboardPage({ desks, session, total }) {
                         </Typography>
 
                       ))}
-                    </Box>
+                    </Card>
                   ) : (
-                    <Box
+                    <Card
                     component=''
                     id={'dashboard-error-list-' + desk.id}
                     sx={{
-                      bgcolor: 'rgba(250, 10, 10, 0.2)',
-                      borderLeft: '4px solid rgba(250, 50, 50, 0.75)',
+                      bgcolor: 'primary',
                       borderRadius: 2,
                       width: 250,
                       p: 2,
@@ -231,7 +228,7 @@ export function DashboardPage({ desks, session, total }) {
                       >
                         No errors was detected.<br/>
                       </Typography>
-                    </Box>
+                    </Card>
                   )
                   
                 ))
