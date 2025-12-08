@@ -254,7 +254,6 @@ export function DashboardPage({ desks, session, total }) {
         </Box>
       </Box>
 
-
       {/* Data visualization */}
       <Box>
         <Typography 
@@ -283,6 +282,7 @@ export function DashboardPage({ desks, session, total }) {
             mb: 2
           }}
         >
+
           {/* Insert graphs and other data visualization here */}
           <Typography
             component='p'
