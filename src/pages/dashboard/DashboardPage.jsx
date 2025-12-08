@@ -1,6 +1,6 @@
 import * as React from 'react';
 import RestrictedPage from '../restricted/RestrictedPage'
-import { Typography, Box, colors } from '@mui/material';
+import { Typography, Box, Card } from '@mui/material';
 import { BarChart, Gauge, gaugeClasses } from '@mui/x-charts';
 import WarningIcon from '@mui/icons-material/Warning';
 import dayjs from 'dayjs';
@@ -58,13 +58,14 @@ export function DashboardPage({ desks, session, total }) {
         id='dashboard-greeting-text' 
         sx={{
             bgcolor: 'rgba(102, 126, 234, 0.1)',
+            borderLeft: '4px solid #667eea',
             borderRadius: 2,
+            maxWidth: 600,
             p: 2,
             mb: 3,
-            borderLeft: '4px solid #667eea'
           }}
         >
-        Hello {String(session?.user?.email).split('@')[0]} <br/> {/* Will say: Hello admin */}
+        Hello <b>{String(session?.user?.email).split('@')[0]}</b> <br/> {/* Will say: Hello admin */}
         {/*Hello {session?.user?.email} <br/> */}                {/* Will say: Hello admin@deskmate.com */}
         Welcome to the DeskMate Dashboard! <br/>
         <br/>
@@ -92,10 +93,8 @@ export function DashboardPage({ desks, session, total }) {
           component='' 
           id='dashboard-desk-position'
           sx={{
-            bgcolor: 'rgba(100, 250, 200, 0.1)',
+            bgcolor: 'primary',
             borderRadius: 2,
-            p: 2,
-            borderLeft: '4px solid rgba(100, 250, 0, 0.50)',
             mt: 2,
             mb: 2
           }}
@@ -154,10 +153,8 @@ export function DashboardPage({ desks, session, total }) {
           component=''
           id='dashboard-error-list-list'
           sx={{
-            bgcolor: 'rgba(250, 100, 100, 0.1)',
+            bgcolor: 'primary',
             borderRadius: 2,
-            p: 2,
-            borderLeft: '4px solid rgba(250, 0, 0, 0.75)',
             mt: 2,
             mb: 2
           }}
@@ -274,10 +271,8 @@ export function DashboardPage({ desks, session, total }) {
           component=''
           id='dashboard-data-visualization-body'
           sx={{
-            bgcolor: 'rgba(250, 50, 250, 0.1)',
-            borderLeft: '4px solid rgba(250, 50, 250, 0.75)',
+            bgcolor: 'primary',
             borderRadius: 2,
-            p: 2,
             mt: 2,
             mb: 2
           }}
@@ -301,19 +296,21 @@ export function DashboardPage({ desks, session, total }) {
           >
           
             {desks.map(desk => (
-              <Box
+              <Card
               component=''
               id='dashboard-data-visualization-activation-bar'
               sx={{
-                bgcolor: 'rgba(250, 50, 250, 0.15)',
-                borderLeft: '4px solid rgba(250, 50, 250, 0.75)',
+                bgcolor: 'primary',
                 width: 250,
                 mt: 1,
-                mb: 1
+                mb: 1,
+                boxShadow: 2,
+                
               }}>
 
                 <Typography
                   id={'dashboard-data-visualization-graph-total-activation-title-' + desk.id}
+                  textAlign={'center'}
                 >
                   {desk.name} <br/> 
                 </Typography>
@@ -321,23 +318,28 @@ export function DashboardPage({ desks, session, total }) {
                   id={'dashboard-data-visualization-graph-bar-' + desk.id}
                   xAxis={[{
                     barGapRatio: 0,
-                    data: [desk.name]
+                    data: [desk.name],
+                  }]}
+                  yAxis={[{
+                    tickMinStep: 5,
+                    min: 1,
+                    max: [desk.last_data.activationCounter + 5],
                   }]}
                   series={
                     [
                       {label:'Activation', 
                         barLabel: 'value',
-                        barLabelPlacement: 'center', 
+                        barLabelPlacement: 'outside', 
                         color: 'rgba(0, 150, 250, 0.5)', 
-                        data: [desk.last_data.activationCounter,
-                      ]},
+                        data: [desk.last_data.activationCounter]
+                      },
 
                       {label: 'Sit/Stand', 
                         barLabel: 'value',
-                        barLabelPlacement: 'center',  
+                        barLabelPlacement: 'outside',  
                         color: 'rgba(10, 200, 0, 0.5)', 
-                        data: [desk.last_data.sitStandCounter
-                      ]}
+                        data: [desk.last_data.sitStandCounter]
+                      }
                     ]}
                   height={300}
                   sx={{
@@ -364,7 +366,7 @@ export function DashboardPage({ desks, session, total }) {
                   })}
                 />
 
-              </Box>
+              </Card>
             ))}
           </Box>
           
@@ -379,16 +381,16 @@ export function DashboardPage({ desks, session, total }) {
             Total Activation counter
           </Typography>
 
-          <Box
+          <Card
           component=''
           id='dashboard-data-visualization-total-activation-bar'
           sx={{
-            bgcolor: 'rgba(250, 50, 250, 0.15)',
-            borderLeft: '4px solid rgba(250, 50, 250, 0.75)',
+            bgcolor: 'primary',
             height: 250,
             maxWidth: 1280,
             mt: 1,
-            mb: 1
+            mb: 1,
+            boxShadow: 2
           }}>
             <Typography 
               id='dashboard-data-visualization-graph-total-activation-title'
@@ -419,7 +421,7 @@ export function DashboardPage({ desks, session, total }) {
                   }
                 ]}
               />
-          </Box>
+          </Card>
         </Box>
       </Box>
 
