@@ -5,7 +5,7 @@ import DatabaseDataSelection from "./components/DatabaseDataSelection"
 import DatabaseDataGrid from "./components/DatabaseDataGrid"
 import DatabaseActionButtons from "./components/DatabaseActionButtons"
 import DatabaseObjectPopout from "./components/DatabaseObjectPopout/DatabaseObjectPopout"
-import CreateUserPopout from "./components/DatabaseObjectPopout/CreateUserPopout"
+import CreateUserPopout from "../../components/CreateUserPopout"
 import {
   asyncDeleteDesk,
   asyncGetDesks,

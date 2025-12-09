@@ -10,8 +10,8 @@ import {
   FormControlLabel,
   Checkbox,
 } from "@mui/material"
-import { asyncGetPermissions } from "../../../../models/api-comm/APIPermission"
-import { asyncPostUserWithPermissions } from "../../../../models/api-comm/APIUsers"
+import { asyncGetPermissions } from "../models/api-comm/APIPermission"
+import { asyncPostUserWithPermissions } from "../models/api-comm/APIUsers"
 
 export default function CreateUserPopoutController({ isOpen, onClose, onCreated }) {
   const [permissions, setPermissions] = React.useState([])

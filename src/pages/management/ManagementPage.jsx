@@ -45,8 +45,8 @@ export default function ManagementPageController() {
                 }
             }   
             // Update Desks
-            const currentDeskIds = currentUser.userDesks.map(ud => ud.desk.id);
-            const selectedDeskIds = selectedUser.userDesks.map(ud => ud.desk.id);
+            const currentDeskIds = currentUser.userDesks.map(ud => { if (ud?.desk?.id) return ud.desk.id } );
+            const selectedDeskIds = selectedUser.userDesks.map(ud => { if (ud?.desk?.id) return ud.desk.id });
             for (const did of selectedDeskIds) {
                 if (!currentDeskIds.includes(did)) {
                     if (!did) continue;
@@ -72,7 +72,7 @@ export default function ManagementPageController() {
         setPopupOpen(true);
     }
 
-    const getData = async () => {
+    async function getData() {
         setWaitingForResponse(true);
         const users = await asyncGetUsers();
         if (users.length)
@@ -101,6 +101,7 @@ export default function ManagementPageController() {
                 popupOpen={popupOpen}
                 setPopupOpen={setPopupOpen}
                 saveUserData={saveUserData}
+                getData={getData}
                 waitingForResponse={waitingForResponse}
             />
         } />
@@ -109,7 +110,7 @@ export default function ManagementPageController() {
 }
 
 /* View */
-export function ManagementPage({ currentUser, users, permissions, desks, selectUserClick, selectedUser, popupOpen, setPopupOpen, saveUserData, waitingForResponse }) {
+export function ManagementPage({ currentUser, users, permissions, desks, selectUserClick, selectedUser, popupOpen, setPopupOpen, saveUserData, getData, waitingForResponse }) {
     return (
         <Box component='main' id='management-page' sx={{ width: '100%' }}>
             <Typography
@@ -138,7 +139,7 @@ export function ManagementPage({ currentUser, users, permissions, desks, selectU
                         />
                     </Box>
                     : 
-                    <UserList users={users} currentUser={currentUser} selectUserClick={selectUserClick} />
+                    <UserList users={users} currentUser={currentUser} selectUserClick={selectUserClick} getData={getData} />
                 }
             </Box>
             {
