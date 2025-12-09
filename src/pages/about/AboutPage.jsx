@@ -60,7 +60,17 @@ export function AboutPage() {
                     
                     <br/>
                     
-                    Within the group, it was decided to combine the semester project with the exam project from the course Web Technologies.
+                    Within the group, it was decided to combine the semester project with the exam project for the course Web Technologies. <br/>
+                    However, that semester group was not the same in the Web Technologies course and therefore has a different group composition: <br/>
+                    
+                    <ul>
+                        <li>Patrick G. Schemel</li>
+                        <li>Asbjørn E. Rom</li>
+                        <li>Miroslav Andrejcak</li>
+                        <li>Victor Petrica</li>
+                        <li>Maksym Andrzej Drzyzgiewicz</li>
+                    </ul>
+
                 </Typography>
             </Box>
 
