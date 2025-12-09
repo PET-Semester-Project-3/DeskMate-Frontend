@@ -50,7 +50,7 @@ export function UserList({ users, currentUser, selectUserClick }) {
                                                             {user.email + (user?.id == currentUser?.id ? ' (You)' : '')}
                                                         </Typography>
                                                         <Typography variant='body2' color='secondary' >
-                                                            {'Main Desk: ' + user.userDesks?.find(ud => ud.desk.id == user.main_desk_id).desk.name}
+                                                            {'Main Desk: ' + user.main_desk_id ? user.userDesks?.find(ud => ud.desk.id == user.main_desk_id).desk.name : 'N/A'}
                                                         </Typography>
                                                     </List>
                                                 </Box>
