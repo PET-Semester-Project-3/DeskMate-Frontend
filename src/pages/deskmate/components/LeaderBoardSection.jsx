@@ -41,7 +41,7 @@ export function LeaderBoardSectionSection({ waitingForResponse, userId, deskmate
                     waitingForResponse ? (
                         <CircularProgress/>
                     ) : (
-                        deskmates?.filter(dm => !dm.last_streak || calculateDaysDiff(dm.last_streak, today) <= 3).length > 0 ? (
+                        deskmates?.filter(dm => !dm.last_streak || calculateDaysDiff(dm.last_streak, today) <= 5).length > 0 ? (
                             <List 
                                 sx={{ 
                                     width: '35%',
@@ -49,7 +49,7 @@ export function LeaderBoardSectionSection({ waitingForResponse, userId, deskmate
                                     maxHeight: '92%'
                                 }}>
                                 {
-                                    deskmates.sort((a, b) => b.streak - a.streak ).filter(dm => !dm.last_streak || calculateDaysDiff(dm.last_streak, today) <= 3).map(dm => {
+                                    deskmates.sort((a, b) => b.streak - a.streak ).filter(dm => !dm.last_streak || calculateDaysDiff(dm.last_streak, today) <= 5).map(dm => {
                                         return (
                                             <Box>
                                                 <ListItem
@@ -71,14 +71,14 @@ export function LeaderBoardSectionSection({ waitingForResponse, userId, deskmate
                                                                 <Badge
                                                                     badgeContent={
                                                                         !dm.last_streak ? <SentimentSatisfiedAltRounded/>
-                                                                        : calculateDaysDiff(dm.last_streak, today) < 1 ? <SentimentSatisfiedAltRounded/>
-                                                                        : calculateDaysDiff(dm.last_streak, today) < 2 ? <SentimentSatisfied/>
+                                                                        : calculateDaysDiff(dm.last_streak, today) <= 2 ? <SentimentSatisfiedAltRounded/>
+                                                                        : calculateDaysDiff(dm.last_streak, today) <= 3 ? <SentimentSatisfied/>
                                                                         : <SentimentVeryDissatisfied/>
                                                                     } 
                                                                     color={
                                                                         !dm.last_streak ? 'success' 
-                                                                        : calculateDaysDiff(dm.last_streak, today) < 1 ? 'success' 
-                                                                        : calculateDaysDiff(dm.last_streak, today) < 2 ? 'warning' 
+                                                                        : calculateDaysDiff(dm.last_streak, today) <= 2 ? 'success' 
+                                                                        : calculateDaysDiff(dm.last_streak, today) <= 3 ? 'warning' 
                                                                         : 'error'
                                                                     }
                                                                     sx={{

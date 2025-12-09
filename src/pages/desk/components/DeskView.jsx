@@ -12,13 +12,12 @@ import {
   Stack,
   IconButton,
 } from '@mui/material';
-import CheckIcon from '@mui/icons-material/Check';
-import EditIcon from '@mui/icons-material/Edit';
+import { StarBorder, Star, Edit, Check } from '@mui/icons-material';
 import deskImage from '../../../assets/desk.png';
 import { asyncPutDesk } from '../../../models/api-comm/APIDesk';
 
 /* Controller */
-export default function DeskViewController({ desk }){
+export default function DeskViewController({ desk, setMainDesk }){
 
   const [deskName, setDeskName] = React.useState(desk.name);
   const [tempName, setTempName] = React.useState(desk.name);
@@ -64,12 +63,13 @@ export default function DeskViewController({ desk }){
       setIsOnline={handleSwitchChange}
       handleNameConfirm={handleNameConfirm}
       handleNameEdit={handleNameEdit}
+      setMainDesk={setMainDesk}
     />
   )
 }
 
 /* View */
-export function DeskView({ deskName, desk, tempName, isEditingName, height, isOnline, setTempName, setHeight, setHeightCommit, setIsOnline, handleNameConfirm, handleNameEdit }) {
+export function DeskView({ deskName, desk, tempName, isEditingName, height, isOnline, setTempName, setHeight, setHeightCommit, setIsOnline, handleNameConfirm, handleNameEdit, setMainDesk }) {
   return (
     <Card component='div' id='desk-view' sx={{ pt: 3, width: 700 }}>
       <Grid component='section' id='desk-view-grid' container spacing={4}>
@@ -96,7 +96,7 @@ export function DeskView({ deskName, desk, tempName, isEditingName, height, isOn
                   onClick={handleNameConfirm}
                   sx={{ mt: 1 }}
                 >
-                  <CheckIcon id='desk-view-left-panel-desk-name-check-icon' />
+                  <Check id='desk-view-left-panel-desk-name-check-icon' />
                 </IconButton>
               ) : (
                 <IconButton
@@ -106,7 +106,7 @@ export function DeskView({ deskName, desk, tempName, isEditingName, height, isOn
                   onClick={handleNameEdit}
                   sx={{ mt: 1 }}
                 >
-                  <EditIcon id='desk-view-left-panel-desk-name-icon-edit' />
+                  <Edit id='desk-view-left-panel-desk-name-icon-edit' />
                 </IconButton>
               )}
             </Box>
@@ -165,15 +165,25 @@ export function DeskView({ deskName, desk, tempName, isEditingName, height, isOn
 
         {/* Right Panel - Desk Visualization */}
         <Grid component='section' id='desk-view-grid-right-panel' item xs={12} md={6}>
-          <img
+          <Box component='div' id='desk-view-right-panel-desk-image-container' sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+            <img
               id='desk-view-grid-right-panel-desk-image'
               src={deskImage}
               alt="Desk"
               style={{
-                maxWidth: '300px',
+                maxWidth: '275px',
                 height: 'auto',
               }}
-          />
+            />
+            <IconButton
+              component='div'
+              id='desk-view-right-panel-favorite-desk-button'
+              onClick={() => setMainDesk(desk)}
+              sx={{ top: -125, right: 10 }}
+            >
+              {desk.isFavorit ? <Star id='desk-view-right-panel-favorite-desk-star-icon' /> : <StarBorder id='desk-view-right-panel-favorite-desk-starborder-icon' />}
+            </IconButton>
+          </Box>
         </Grid>
       </Grid>
     </Card>

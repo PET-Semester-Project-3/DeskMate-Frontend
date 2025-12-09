@@ -17,6 +17,7 @@
     "@mui/x-charts": "^8.20.0",
     "@mui/x-data-grid": "^8.16.0",
     "@mui/x-date-pickers": "^8.17.0",
+    "@mui/x-tree-view": "^8.21.0",
     "dayjs": "^1.11.19",
     "js-cookie": "^3.0.5",
     "react": "^19.1.1",

@@ -4,7 +4,7 @@ import { Box, Typography, Button, Card, CircularProgress, Badge, TextField
 import {
     Gauge
 } from '@mui/x-charts'
-import ChangeValuePopout from '../../profile/components/ChangeValuePopout';
+import GenericPopout from '../../../components/GenericPopout';
 import { asyncGetDeskMateByUser, asyncPostDeskMate, asyncPutDeskMateStreak, asyncDeleteDeskMate } from '../../../models/api-comm/APIDeskMate'
 import { calculateDaysDiff, dateToString } from '../../../models/DateTimeCal'
 import { Whatshot, SentimentSatisfiedAltRounded, SentimentSatisfied, SentimentVeryDissatisfied } from '@mui/icons-material'
@@ -41,9 +41,9 @@ export default function TomogatchiSectionController({ session }) {
 
     const extendStreak = async () => {
         setWaitingForResponse(true);
-        const deskmate = asyncPutDeskMateStreak(deskmate.id);
-        if (deskmate) {
-            setDeskmate(deskmate);
+        const updatedDeskmate = await asyncPutDeskMateStreak(deskmate.id);
+        if (updatedDeskmate.id) {
+            setDeskmate(updatedDeskmate);
             setPopupOpen(false);
         }
         else
@@ -56,10 +56,13 @@ export default function TomogatchiSectionController({ session }) {
         if (isTimerRunning) {
             timer = setInterval(() => {
                 setTimerTime((prevTime) => {
+                    console.log(prevTime)
                     if (prevTime >= 15*60) {
                         clearInterval(timer);
+                        setTimerTime(0);
                         setIsTimerRunning(false);
-                        extendStreak();
+                        if (Number.parseInt(calculateDaysDiff(new Date(deskmate.last_streak), new Date(today))) >= 1)
+                            extendStreak();
                         return prevTime;
                     }
                     return prevTime + 1;
@@ -72,7 +75,7 @@ export default function TomogatchiSectionController({ session }) {
     }, [isTimerRunning]);
 
     const isDeskmateAlive = async (deskmate) => {
-        if (deskmate.last_streak != null && Number.parseInt(calculateDaysDiff(new Date(deskmate.last_streak), new Date(today))) > 3 )
+        if (deskmate.last_streak != null && Number.parseInt(calculateDaysDiff(new Date(deskmate.last_streak), new Date(today))) >= 5 )
         {
             setJustDied(true);
             asyncDeleteDeskMate(deskmate.id);
@@ -219,14 +222,14 @@ export function TomogatchiSection({
                                 <Badge
                                     badgeContent={
                                         !deskmate.last_streak ? <SentimentSatisfiedAltRounded sx={{ width: 35, height: 35 }}/>
-                                        : calculateDaysDiff(deskmate.last_streak, today) < 1 ? <SentimentSatisfiedAltRounded sx={{ width: 35, height: 35 }}/>
-                                        : calculateDaysDiff(deskmate.last_streak, today) < 2 ? <SentimentSatisfied sx={{ width: 35, height: 35 }}/>
+                                        : calculateDaysDiff(deskmate.last_streak, today) <= 2 ? <SentimentSatisfiedAltRounded sx={{ width: 35, height: 35 }}/>
+                                        : calculateDaysDiff(deskmate.last_streak, today) <= 3 ? <SentimentSatisfied sx={{ width: 35, height: 35 }}/>
                                         : <SentimentVeryDissatisfied sx={{ width: 35, height: 35 }}/>
                                     } 
                                     color={
                                         !deskmate.last_streak ? 'success' 
-                                        : calculateDaysDiff(deskmate.last_streak, today) < 1 ? 'success' 
-                                        : calculateDaysDiff(deskmate.last_streak, today) < 2 ? 'warning' 
+                                        : calculateDaysDiff(deskmate.last_streak, today) <= 2 ? 'success' 
+                                        : calculateDaysDiff(deskmate.last_streak, today) <= 3 ? 'warning' 
                                         : 'error'
                                     }
                                     sx={{
@@ -273,13 +276,13 @@ export function TomogatchiSection({
                         >
                             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
                                 <Typography variant='h4'>
-                                    { deskmate.last_streak ? Number.parseInt(calculateDaysDiff(new Date(deskmate.last_streak), new Date(today))) < 2 ? 'I am happy, let\'s keep it up!'
-                                    : Number.parseInt(calculateDaysDiff(new Date(deskmate.last_streak), new Date(today))) < 5 ? 'We are okay, but we should stand up again soon.'
+                                    { deskmate.last_streak ? Number.parseInt(calculateDaysDiff(new Date(deskmate.last_streak), new Date(today))) <= 1 ? 'I am happy, let\'s keep it up!'
+                                    : Number.parseInt(calculateDaysDiff(new Date(deskmate.last_streak), new Date(today))) <= 2 ? 'We are okay, but we should stand up again soon.'
                                     : 'I am sad... please stand up with me!' : 'Let\'s start our first stand up together!'}
                                 </Typography>
                                 { /* Todays streak status */ }
                                 <Typography variant='h6'>
-                                    { Number.parseInt(calculateDaysDiff(new Date(deskmate.last_streak), new Date(today))) < 1 ? 'You have already stood up today. Great job!' : 'You have not stood up today yet. Let\'s do it together!' }
+                                    { Number.parseInt(calculateDaysDiff(new Date(deskmate.last_streak), new Date(today))) <= 1 ? 'You have already stood up today. Great job!' : 'You have not stood up today yet. Let\'s do it together!' }
                                     {
                                         deskmate.last_streak != null && new Date(deskmate.last_streak).getDate() == new Date(today).getDate() ?
                                         <Whatshot sx={{ height: 20 }} /> : null
@@ -303,7 +306,7 @@ export function TomogatchiSection({
                                     valueMax={15*60}
                                     min={0}
                                     max={15}
-                                    text={(value) =>`${value.value >= 15*60 ? '+1 Streak' : ((value.value / 60) > 10 ? Number.parseInt((value.value / 60)) : '0' + Number.parseInt((value.value / 60))) + ':' + ((value.value % 60) > 10 ? (value.value % 60) : '0' + (value.value % 60)) + '0'.slice(String(value.value % 60).length) + ' / 15:00'}`}
+                                    text={(value) =>`${value.value >= 15*60 ? Number.parseInt(calculateDaysDiff(new Date(deskmate.last_streak), new Date(today))) >= 1 ? '+1 Streak' : 'Finished' : ((value.value / 60) > 10 ? Number.parseInt((value.value / 60)) : '0' + Number.parseInt((value.value / 60))) + ':' + ((value.value % 60) > 10 ? (value.value % 60) : '0' + (value.value % 60)) + '0'.slice(String(value.value % 60).length) + ' / 15:00'}`}
                                 >
                                 </Gauge>
                                 <Button
@@ -324,7 +327,7 @@ export function TomogatchiSection({
                     
                 )
             }
-            <ChangeValuePopout header={!deskmate ? 'Name Deskmate' : 'Change ' + deskmate.name} onSaveClick={onCreateNewDeskmateClick} isOpen={popupOpen} setIsOpen={setPopupOpen}>
+            <GenericPopout header={!deskmate ? 'Name Deskmate' : 'Change ' + deskmate.name} onSaveClick={onCreateNewDeskmateClick} isOpen={popupOpen} setIsOpen={setPopupOpen}>
                 <TextField
                     component='div'
                     id='deskmate-info-name-textfield'
@@ -336,7 +339,7 @@ export function TomogatchiSection({
                     variant='outlined'
                     sx={{ width: '100%', m: 1 }} 
                 />
-            </ChangeValuePopout>
+            </GenericPopout>
         </Box>
     )
 }

@@ -2,9 +2,9 @@ import * as React from 'react';
 import { Paper, Box, Backdrop, Button, Typography } from '@mui/material';
 
 /* Controller */
-export default function ChangeValuePopoutController({ children, header, onSaveClick, isOpen, setIsOpen  }) {
+export default function GenericPopoutController({ children, header, onSaveClick, isOpen, setIsOpen  }) {
   return (
-    <ChangeValuePopout 
+    <GenericPopout 
         children={children}
         header={header}
         onSaveClick={onSaveClick}
@@ -15,17 +15,17 @@ export default function ChangeValuePopoutController({ children, header, onSaveCl
 }
 
 /* View */
-export function ChangeValuePopout({ children, header, onSaveClick, isOpen, setIsOpen }) {
+export function GenericPopout({ children, header, onSaveClick, isOpen, setIsOpen }) {
   return (
     <Backdrop
       component='div'
-      id='change-value-popout'
+      id='generic-popout'
       open={isOpen}
       sx={{ zIndex: 200 }}
     >
         <Box
             component='section'
-            id='change-value-popout-sized-container'
+            id='generic-popout-sized-container'
             sx={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -35,7 +35,7 @@ export function ChangeValuePopout({ children, header, onSaveClick, isOpen, setIs
             {/* Close Button */}
             <Box
             component='section'
-            id='change-value-popout-close-button-container'
+            id='generic-popout-close-button-container'
             sx={{
                 display: 'flex',
                 justifyContent: 'flex-end',
@@ -44,7 +44,7 @@ export function ChangeValuePopout({ children, header, onSaveClick, isOpen, setIs
             >
             <Button
                 component='button'
-                id='change-value-popout-close-button'
+                id='generic-popout-close-button'
                 variant='contained'
                 onClick={() => setIsOpen(false)}
                 sx={{ width: 50, height: 45, mb: 1 }}
@@ -53,16 +53,16 @@ export function ChangeValuePopout({ children, header, onSaveClick, isOpen, setIs
             {/* Window */}
             <Paper
                 component='section'
-                id='change-value-popout-window-container'
+                id='generic-popout-window-container'
                 sx={{ 
                     width: '100%',
                     height: '100%',
                 }}
                 >
-                <Box component='section' id='change-value-popout-window-header-container' sx={{ height: '87%' }}>
+                <Box component='section' id='generic-popout-window-header-container' sx={{ height: '87%' }}>
                     <Typography
                         component='h4'
-                        id='change-value-popout-window-header'
+                        id='generic-popout-window-header'
                         variant="h4"
                         sx={{
                             fontWeight: 700,
@@ -70,14 +70,14 @@ export function ChangeValuePopout({ children, header, onSaveClick, isOpen, setIs
                             color: '#667eea'
                         }}
                         >{header}</Typography>
-                        <Box component='section' id='change-value-popout-window-form-container' sx={{ m: 1, display: 'flex', flexWrap: 'wrap', overflow: 'auto' }} >
+                        <Box component='section' id='generic-popout-window-form-container' sx={{ m: 1, display: 'flex', flexWrap: 'wrap', overflow: 'auto' }} >
                             {children}
                         </Box>
                 </Box>
                 {/* Save Button */}
                 <Box
                     component='section'
-                    id='change-value-popout-window-save-button-container'
+                    id='generic-popout-window-save-button-container'
                     sx={{
                         display: 'flex',
                         justifyContent: 'flex-end',
@@ -87,7 +87,7 @@ export function ChangeValuePopout({ children, header, onSaveClick, isOpen, setIs
                 >
                     <Button
                         component='button'
-                        id='change-value-popout-window-save-button'
+                        id='generic-popout-window-save-button'
                         variant='contained'
                         onClick={onSaveClick}
                         sx={{ width: 75, height: 35, m: 2, mt: 0 }}

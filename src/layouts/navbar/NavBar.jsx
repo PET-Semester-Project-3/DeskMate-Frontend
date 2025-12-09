@@ -6,6 +6,13 @@ import DeskmateInverseSVG from '../../assets/DeskMateInverse.svg'
 import DeskmateSVG from '../../assets/DeskMate.svg'
 import { useTheme } from '@mui/material/styles';
 
+const NAVORDER = {
+  Desk: 1,
+  Maintenance: 2,
+  Management: 3,
+  Database: 4,
+}
+
 /* Controller */
 export default function NavBarController(){
 
@@ -56,7 +63,7 @@ export function NavBar({ imageSrc, navigate, userEmail, avaterClick, anchorElUse
         zIndex: 100
       }} 
     >
-      <Link component='nav' id='navbar-logo-link' onClick={() => navigate('/howtouse')} >
+      <Link component='nav' id='navbar-logo-link' onClick={() => navigate('/')} >
         <img id='deskmate-logo-image' height='100' src={imageSrc} />
       </Link>
       <ButtonGroup
@@ -66,8 +73,9 @@ export function NavBar({ imageSrc, navigate, userEmail, avaterClick, anchorElUse
         fullWidth='true' 
         sx={{ pl: 3 }}
       >
+        <Button component='button' id="footer-information-link-dashboard" onClick={() => navigate('/')} sx={{width: '115px'}}>Dashboard</Button>
         {
-          pages.map(page => {
+          pages.sort((a, b) => !NAVORDER[a.label] ? -1 : NAVORDER[a.label] > NAVORDER[b.label] ? 1 : -1).map(page => {
             return (
               <Button
                 component='button'
@@ -77,8 +85,6 @@ export function NavBar({ imageSrc, navigate, userEmail, avaterClick, anchorElUse
             )
           })
         }
-
-        {/* Buttons navigate, but only the the dashboard ('/') */}
         <Button component='button' id="footer-information-link-howtouse" onClick={() => navigate('/howtouse')} sx={{width: '115px'}}>How To Use</Button>
         <Button component='button' id="footer-information-link-about" onClick={() => navigate('/about')}>About</Button>
       </ButtonGroup>

@@ -5,7 +5,7 @@ import { Typography, Box } from '@mui/material';
 
 /* Controller */
 export default function RestrictedPageController({ Page }) {
-  const { session, setSession } = useSession();
+  const { session } = useSession();
   const location = useLocation();
   return (
     <Box component='main' id='restricted-page-container' sx={{ width: '100%', height: '100%' }} >

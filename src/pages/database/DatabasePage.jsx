@@ -295,7 +295,7 @@ export function DatabasePage({
         sx={{
           fontWeight: 700,
           mb: 3,
-          color: "#667eea",
+          color: "#66ea7cff",
         }}
       >
         Database Management

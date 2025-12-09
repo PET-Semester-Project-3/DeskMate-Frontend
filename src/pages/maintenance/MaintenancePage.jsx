@@ -11,7 +11,7 @@ export default function MaintenancePageController() {
   const [waitingForResponse, setWaitingForResponse] = React.useState(false);
 
   const [desks, setDesks] = React.useState([]);
-  const { session, setSession } = useSession();
+  const { session } = useSession();
 
   React.useEffect(() => {
     const getDesks = async (id) => {

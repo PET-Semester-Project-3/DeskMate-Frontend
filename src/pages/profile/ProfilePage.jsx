@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { FormControl, OutlinedInput, InputLabel, InputAdornment, 
-  FormHelperText, IconButton, Box, Avatar, Typography, CircularProgress, 
-  Chip, TextField, Button, Backdrop
+  FormHelperText, IconButton, Box, Avatar, Typography, 
+  Chip, TextField, Button
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import useSession from '../../models/SessionContext';
-import ChangeValuePopout from './components/ChangeValuePopout'
+import GenericPopout from '../../components/GenericPopout'
 import { asyncPutUser, asyncPostNewPassword } from '../../models/api-comm/APIUsers';
 
 /* Controller */
@@ -88,7 +88,7 @@ export default function ProfilePageController() {
 }
 
 /* View */
-export function ProfilePage({ userEmail, setUserEmail, userEmailErrorText, isUserEmailEdit, setIsUserEmailEdit, newPassword, setNewPassword, showNewPassword, setShowNewPassword, newPasswordErrorText, oldPassword, setOldPassword, showOldPassword, setShowOldPassword, oldPasswordErrorText, isPasswordEdit, setIsPasswordEdit, userPages, SaveNewEmailClick, SaveNewPasswordClick, waitingForResponse }) {
+export function ProfilePage({ userEmail, setUserEmail, userEmailErrorText, isUserEmailEdit, setIsUserEmailEdit, newPassword, setNewPassword, showNewPassword, setShowNewPassword, newPasswordErrorText, oldPassword, setOldPassword, showOldPassword, setShowOldPassword, oldPasswordErrorText, isPasswordEdit, setIsPasswordEdit, userPages, SaveNewEmailClick, SaveNewPasswordClick }) {
     return (
         <Box component='main' id='user-page' sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
             <Box 
@@ -139,7 +139,7 @@ export function ProfilePage({ userEmail, setUserEmail, userEmailErrorText, isUse
                                 <Chip
                                     label={page.label}
                                     size="small"
-                                    sx={{ mb: 1, width: '100%' }}
+                                    sx={{ m: 0.25, width: '100%' }}
                                 />
                             ))
                         ) : (
@@ -154,7 +154,7 @@ export function ProfilePage({ userEmail, setUserEmail, userEmailErrorText, isUse
                     <Button component='form' id='user-info-edit-buttons-password' variant='outlined' onClick={() => setIsPasswordEdit(true)}  sx={{ minWidth: 350, width: '80%', fontSize: 18, alignSelf: 'center' }} >Change Password</Button>
                 </Box>
             </Box>
-            <ChangeValuePopout header='Change Email' onSaveClick={SaveNewEmailClick} isOpen={isUserEmailEdit} setIsOpen={setIsUserEmailEdit}>
+            <GenericPopout header='Change Email' onSaveClick={SaveNewEmailClick} isOpen={isUserEmailEdit} setIsOpen={setIsUserEmailEdit}>
                 <TextField
                     component='form'
                     id='user-info-edit-username-textfield'
@@ -166,8 +166,8 @@ export function ProfilePage({ userEmail, setUserEmail, userEmailErrorText, isUse
                     variant='outlined'
                     sx={{ width: '100%', m: 1 }} 
                 />
-            </ChangeValuePopout>
-            <ChangeValuePopout header='Change Password' onSaveClick={SaveNewPasswordClick} isOpen={isPasswordEdit} setIsOpen={setIsPasswordEdit}>
+            </GenericPopout>
+            <GenericPopout header='Change Password' onSaveClick={SaveNewPasswordClick} isOpen={isPasswordEdit} setIsOpen={setIsPasswordEdit}>
                 <FormControl component='form' id='user-info-edit-oldpassword-textfield' sx={{ m: 1, width: '100%' }} variant="outlined">
                     <InputLabel component='label' id='user-info-edit-oldpassword-textfield-inputlabel' >Old Password</InputLabel>
                     <OutlinedInput
@@ -214,7 +214,7 @@ export function ProfilePage({ userEmail, setUserEmail, userEmailErrorText, isUse
                     />
                     <FormHelperText id='user-info-edit-newpassword-textfield-formhelptertext' error={newPasswordErrorText == '' ? false : true} >{newPasswordErrorText}</FormHelperText>
                 </FormControl>
-            </ChangeValuePopout>
+            </GenericPopout>
         </Box>
     )
 }
