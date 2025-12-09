@@ -105,7 +105,7 @@ export function ProfilePage({ userEmail, setUserEmail, userEmailErrorText, isUse
                     border: '2px solid',
                     borderImage: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%) 1',
                     transition: 'transform 0.3s ease, box-shadow 0.3s ease','&:hover': {
-                        transform: 'translateY(-4px)',
+                        transform: 'scale(1.01, 1.01)',
                         boxShadow: '0 12px 24px rgba(102, 126, 234, 0.3)',
                     },
                 }} >
@@ -119,11 +119,11 @@ export function ProfilePage({ userEmail, setUserEmail, userEmailErrorText, isUse
                             bgcolor: '#667eea',
                             boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)',
                             transition: 'transform 0.3s ease, box-shadow 0.3s ease','&:hover': {
-                                transform: 'translateY(-4px)',
+                                transform: 'scale(1.02, 1.02)',
                                 boxShadow: '0 12px 24px rgba(102, 126, 234, 0.3)',
                             },
                         }}>
-                            {userEmail ? userEmail.split('@').map(part => part[0].toUpperCase()) : '??'}
+                            {userEmail ? userEmail.split('@')[0].slice(0, 2).toUpperCase() : '??'}
                     </Avatar>
                 </Box>
                 <Typography component='h5' id='user-info-header' variant="h4" sx={{ mb: 2, fontWeight: 'bold' }}>

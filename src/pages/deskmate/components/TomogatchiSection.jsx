@@ -5,7 +5,7 @@ import {
     Gauge
 } from '@mui/x-charts'
 import ChangeValuePopout from '../../profile/components/ChangeValuePopout';
-import { asyncGetDeskMateByUser, asyncPostDeskMate, asyncPutDeskMateStreak } from '../../../models/api-comm/APIDeskMate'
+import { asyncGetDeskMateByUser, asyncPostDeskMate, asyncPutDeskMateStreak, asyncDeleteDeskMate } from '../../../models/api-comm/APIDeskMate'
 import { calculateDaysDiff, dateToString } from '../../../models/DateTimeCal'
 import { Whatshot, SentimentSatisfiedAltRounded, SentimentSatisfied, SentimentVeryDissatisfied } from '@mui/icons-material'
 import deskImage from '../../../assets/desk.png';
@@ -15,6 +15,8 @@ export default function TomogatchiSectionController({ session }) {
 
     const [waitingForResponse, setWaitingForResponse] = React.useState(false);
     const [deskmate, setDeskmate] = React.useState(null);
+
+    const [justDied, setJustDied] = React.useState(false);
     
     const today = Date.now();
 
@@ -28,7 +30,7 @@ export default function TomogatchiSectionController({ session }) {
     const onCreateNewDeskmateClick = async () => {
         setWaitingForResponse(true);
         const deskmate = await asyncPostDeskMate({ user_id: session?.user?.id, name });
-        if (deskmate) {
+        if (deskmate.id) {
             setDeskmate(deskmate);
             setPopupOpen(false);
         }
@@ -69,10 +71,23 @@ export default function TomogatchiSectionController({ session }) {
         return () => clearInterval(timer);
     }, [isTimerRunning]);
 
+    const isDeskmateAlive = async (deskmate) => {
+        if (deskmate.last_streak != null && Number.parseInt(calculateDaysDiff(new Date(deskmate.last_streak), new Date(today))) > 3 )
+        {
+            setJustDied(true);
+            asyncDeleteDeskMate(deskmate.id);
+            setDeskmate(null);
+        }
+    }
+
     const getDeskmate = async (id) => {
         setWaitingForResponse(true);
         const deskmate = await asyncGetDeskMateByUser(id);
-        setDeskmate(deskmate);
+        if (deskmate.id){
+            setDeskmate(deskmate);
+            await isDeskmateAlive(deskmate);
+        }
+            
         setWaitingForResponse(false);
     }
     React.useEffect(() => {
@@ -93,6 +108,7 @@ export default function TomogatchiSectionController({ session }) {
             setName={setName}
             nameErrorText={nameErrorText}
             onCreateNewDeskmateClick={onCreateNewDeskmateClick}
+            justDied={justDied}
         />
     )
 }
@@ -101,7 +117,7 @@ export default function TomogatchiSectionController({ session }) {
 export function TomogatchiSection({ 
     waitingForResponse, deskmate, today, timerTime, 
     isTimerRunning, setIsTimerRunning, popupOpen, setPopupOpen,
-    name, setName, nameErrorText, onCreateNewDeskmateClick
+    name, setName, nameErrorText, onCreateNewDeskmateClick, justDied
 }) {
     return (
         <Box component='section' id='tomogatchi-section' sx={{ height: '100%', width: '100%' }}>
@@ -112,9 +128,17 @@ export function TomogatchiSection({
                 : !deskmate ? (
                     /* Create a new deskmate */
                     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center', gap: 5 }}>
-                        <Typography sx={{ maxWidth: 550, textAlign: 'center' }}>
-                            No Deskmate found. Create a new Deskmate to care for (while taking care of your own health) and compete with other colleagues and their Deskmates. 
-                        </Typography>
+                        {
+                            justDied ? (
+                                <Typography sx={{ maxWidth: 550, textAlign: 'center' }}>
+                                    After days of not standing up your Deskmate has moved on. However you can create a new one and strive to make it to the top of the ladder and compete with other colleagues and their Deskmates once again. 
+                                </Typography>
+                            ) : (
+                                <Typography sx={{ maxWidth: 550, textAlign: 'center' }}>
+                                    No Deskmate found. Create a new Deskmate to care for (while taking care of your own health) and compete with other colleagues and their Deskmates. 
+                                </Typography>
+                            )
+                        }
                         <Button
                             variant='outlined'
                             onClick={() => setPopupOpen(true)}
@@ -135,7 +159,7 @@ export function TomogatchiSection({
                             sx={{ 
                                 p: 2, 
                                 height: '60%',
-                                minHeight: 550, 
+                                minHeight: 625, 
                                 display: 'flex', 
                                 flexDirection: 'column', 
                                 alignItems: 'center', 
@@ -143,7 +167,7 @@ export function TomogatchiSection({
                                 border: '2px solid',
                                 borderImage: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%) 1',
                                 transition: 'transform 0.3s ease, box-shadow 0.3s ease','&:hover': {
-                                    transform: 'translateY(-4px)',
+                                    transform: 'scale(1.02, 1.02)',
                                     boxShadow: '0 12px 24px rgba(102, 126, 234, 0.3)',
                                 },
                             }}
@@ -194,13 +218,15 @@ export function TomogatchiSection({
                                 </Button>
                                 <Badge
                                     badgeContent={
-                                        calculateDaysDiff(deskmate.last_streak, today) < 2 ? <SentimentSatisfiedAltRounded sx={{ width: 35, height: 35 }}/>
-                                        : calculateDaysDiff(deskmate.last_streak, today) < 5 ? <SentimentSatisfied sx={{ width: 35, height: 35 }}/>
+                                        !deskmate.last_streak ? <SentimentSatisfiedAltRounded sx={{ width: 35, height: 35 }}/>
+                                        : calculateDaysDiff(deskmate.last_streak, today) < 1 ? <SentimentSatisfiedAltRounded sx={{ width: 35, height: 35 }}/>
+                                        : calculateDaysDiff(deskmate.last_streak, today) < 2 ? <SentimentSatisfied sx={{ width: 35, height: 35 }}/>
                                         : <SentimentVeryDissatisfied sx={{ width: 35, height: 35 }}/>
                                     } 
                                     color={
-                                        calculateDaysDiff(deskmate.last_streak, today) < 2 ? 'success' 
-                                        : calculateDaysDiff(deskmate.last_streak, today) < 5 ? 'warning' 
+                                        !deskmate.last_streak ? 'success' 
+                                        : calculateDaysDiff(deskmate.last_streak, today) < 1 ? 'success' 
+                                        : calculateDaysDiff(deskmate.last_streak, today) < 2 ? 'warning' 
                                         : 'error'
                                     }
                                     sx={{
@@ -231,7 +257,7 @@ export function TomogatchiSection({
                             sx={{ 
                                 p: 4, 
                                 height: '60%',
-                                minHeight: 550,
+                                minHeight: 625, 
                                 display: 'flex', 
                                 flexDirection: 'column', 
                                 justifyContent: 'top',
@@ -240,7 +266,7 @@ export function TomogatchiSection({
                                 border: '2px solid',
                                 borderImage: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%) 1',
                                 transition: 'transform 0.3s ease, box-shadow 0.3s ease','&:hover': {
-                                    transform: 'translateY(-4px)',
+                                    transform: 'scale(1.02, 1.02)',
                                     boxShadow: '0 12px 24px rgba(102, 126, 234, 0.3)',
                                 },
                             }}

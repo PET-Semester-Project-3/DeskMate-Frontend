@@ -106,7 +106,7 @@ export function NavBar({ imageSrc, navigate, userEmail, avaterClick, anchorElUse
               boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)',
               cursor: 'pointer'
           }}>
-            {userEmail ? userEmail.split('@').map(part => part[0].toUpperCase()) : '??'}
+            {userEmail ? userEmail.split('@')[0].slice(0, 2).toUpperCase() : '??'}
           </Avatar>
         </Box>
         <Menu
