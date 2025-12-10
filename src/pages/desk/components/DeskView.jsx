@@ -15,9 +15,13 @@ import {
 import { StarBorder, Star, Edit, Check } from '@mui/icons-material';
 import deskImage from '../../../assets/desk.png';
 import { asyncPutDesk } from '../../../models/api-comm/APIDesk';
+import { useSnackbar } from 'notistack';
+
 
 /* Controller */
 export default function DeskViewController({ desk, setMainDesk }){
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const [deskName, setDeskName] = React.useState(desk.name);
   const [tempName, setTempName] = React.useState(desk.name);
@@ -27,7 +31,11 @@ export default function DeskViewController({ desk, setMainDesk }){
 
   const handleNameConfirm = async () => {
     setDeskName(tempName);
-    await asyncPutDesk(desk.id, { name: tempName });
+    const updatedDesk = await asyncPutDesk(desk.id, { name: tempName });
+    if (updatedDesk.id)
+      enqueueSnackbar(`Changed ${desk.name} to: ${tempName}`, { variant: 'success' });
+    else
+      enqueueSnackbar(`${updatedDesk.message}`, { variant: 'error' });
     setIsEditingName(false);
   };
 
@@ -37,12 +45,20 @@ export default function DeskViewController({ desk, setMainDesk }){
 
   const handleSwitchChange = async (_, newValue) => {
     setIsOnline(newValue);
-    await asyncPutDesk(desk.id, { is_online: newValue });
+    const updatedDesk = await asyncPutDesk(desk.id, { is_online: newValue });
+    if (updatedDesk.id)
+      enqueueSnackbar(`${desk.name}'s online state to: ${newValue ? 'online' : 'offline'}`, { variant: 'info' });
+    else
+      enqueueSnackbar(`${updatedDesk.message}`, { variant: 'error' });
   };
 
   const handleHeightCommit = async (_, newValue) => {
     desk.last_data.height = newValue;
-    await asyncPutDesk(desk.id,  { last_data: desk.last_data });
+    const updatedDesk = await asyncPutDesk(desk.id,  { last_data: desk.last_data });
+    if (updatedDesk.id)
+      enqueueSnackbar(`${desk.name}'s height set to: ${newValue}`, { variant: 'info' });
+    else
+      enqueueSnackbar(`${updatedDesk.message}`, { variant: 'error' });
   };
 
   const handleNameEdit = () => {

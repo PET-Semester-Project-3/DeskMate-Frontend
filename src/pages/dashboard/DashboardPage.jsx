@@ -5,9 +5,13 @@ import WarningIcon from '@mui/icons-material/Warning';
 import { asyncGetUserDesks } from '../../models/api-comm/APIUsers';
 import useSession from '../../models/SessionContext';
 import dayjs from 'dayjs';
+import { useSnackbar } from 'notistack';
+
 
 /* Controller */
 export default function DashboardPageController() {
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const [waitingForResponse, setWaitingForResponse] = React.useState(false);
 
@@ -20,6 +24,8 @@ export default function DashboardPageController() {
       const desks = await asyncGetUserDesks(id);
       if (desks.length)
         setDesks(desks);
+      else
+        enqueueSnackbar(`Failed to retrieve data`, { variant: 'error' });
       setWaitingForResponse(false);
     }
     getDesks(session?.user?.id);

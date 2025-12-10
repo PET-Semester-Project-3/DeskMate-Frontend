@@ -6,6 +6,7 @@ import DatabaseDataGrid from "./components/DatabaseDataGrid"
 import DatabaseActionButtons from "./components/DatabaseActionButtons"
 import DatabaseObjectPopout from "./components/DatabaseObjectPopout/DatabaseObjectPopout"
 import CreateUserPopout from "../../components/CreateUserPopout"
+import { useSnackbar } from 'notistack';
 import {
   asyncDeleteDesk,
   asyncGetDesks,
@@ -147,6 +148,9 @@ const DBTABLESELECTION = [
 
 /* Controller */
 export default function DatabasePageController() {
+
+  const { enqueueSnackbar } = useSnackbar();
+
   const [waitingForResponse, setWaitingForResponse] = React.useState(false)
 
   const [selectedTable, setSelectedTable] = React.useState(DBTABLESELECTION[0])
@@ -159,6 +163,7 @@ export default function DatabasePageController() {
 
   const onSelectionChanged = (newSelectedTable) => {
     setSelectedTable(DBTABLESELECTION.find((sel) => sel.name == newSelectedTable))
+    enqueueSnackbar(`Looking at Table: ${newSelectedTable}`, { variant: 'info' });
     setSelectedRow(null)
   }
 
@@ -184,12 +189,13 @@ export default function DatabasePageController() {
 
   const onRemoveSelectedClick = async () => {
     if (selectedRow != null) {
-      console.log(`Remove[${selectedTable.name}] (Id = ${selectedRow.id})`, selectedRow)
       const response = await selectedTable.delete(selectedRow.id)
       if (response.success != null && response.success == false) {
-        console.log("Failed to delete object")
+        enqueueSnackbar(`${response.message}`, { variant: 'error' });
         return
       }
+      else
+          enqueueSnackbar(`Deleted object`, { variant: 'info' });
       getTableData()
     } else {
       console.log("No selected row to remove")
@@ -204,19 +210,21 @@ export default function DatabasePageController() {
       })
       if (missingProperties.length > 0) return
       if (selectedRow == null) {
-        console.log(`Create New[${selectedTable.name}]`, object)
         const response = await selectedTable.post(object)
         if (response.success != null && response.success == false) {
-          console.log("Failed to create new object")
+          enqueueSnackbar(`${response.message}`, { variant: 'error' });
           return
         }
+        else
+          enqueueSnackbar(`Saved new object`, { variant: 'success' });
       } else {
-        console.log(`Update[${selectedTable.name}] (Id = ${object.id})`, object)
         const response = await selectedTable.put(object)
         if (response.success != null && response.success == false) {
-          console.log("Failed to create new object")
+          enqueueSnackbar(`${response.message}`, { variant: 'error' });
           return
         }
+        else
+          enqueueSnackbar(`Updated object`, { variant: 'success' });
       }
       setIsEditing(false)
       getTableData()
@@ -231,10 +239,11 @@ export default function DatabasePageController() {
     setTableRows([])
     var rows = []
     rows = await selectedTable.getAll()
-    console.log("Fetched Data for Table:", selectedTable.name, rows)
     if (rows != null && rows.success == null) {
       setTableRows(rows)
     }
+    else
+      enqueueSnackbar(`Failed to retrieve data`, { variant: 'error' });
     setWaitingForResponse(false)
   }, [selectedTable])
 

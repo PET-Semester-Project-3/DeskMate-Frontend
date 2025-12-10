@@ -12,12 +12,16 @@ import {
 } from "@mui/material"
 import { asyncGetPermissions } from "../models/api-comm/APIPermission"
 import { asyncPostUserWithPermissions } from "../models/api-comm/APIUsers"
+import { useSnackbar } from 'notistack';
 
 export default function CreateUserPopoutController({ isOpen, onClose, onCreated }) {
+  const { enqueueSnackbar } = useSnackbar();
+
   const [permissions, setPermissions] = React.useState([])
   const [selectedPermissions, setSelectedPermissions] = React.useState(new Set())
   const [email, setEmail] = React.useState("")
   const [saving, setSaving] = React.useState(false)
+  const [emailErrorText, setEmailErrorText] = React.useState('')
 
   React.useEffect(() => {
     async function load() {
@@ -43,8 +47,11 @@ export default function CreateUserPopoutController({ isOpen, onClose, onCreated 
     if (resp && resp.success !== false) {
       onCreated && onCreated(resp.data)
       onClose && onClose()
+      if (emailErrorText != '') setEmailErrorText('');
+      enqueueSnackbar(`Successfully created: ${email}`, { variant: 'success' });
     } else {
       console.error("Failed to create user", resp)
+      setEmailErrorText(resp.message);
       // keep the popup open and allow user to retry
     }
   }
@@ -72,6 +79,8 @@ export default function CreateUserPopoutController({ isOpen, onClose, onCreated 
               fullWidth
               label="Email"
               value={email}
+              helperText={emailErrorText}
+              error={emailErrorText}
               onChange={(e) => setEmail(e.target.value)}
               required
             />

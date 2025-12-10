@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router';
 import useSession from '../../models/SessionContext';
-import { Box, Paper, Button, Link, ButtonGroup, Avatar, Menu, MenuItem, Divider } from '@mui/material';
+import { Box, Paper, Button, Link, ButtonGroup, Avatar, Menu, MenuItem, Divider, Tooltip } from '@mui/material';
 import DeskmateInverseSVG from '../../assets/DeskMateInverse.svg'
 import DeskmateSVG from '../../assets/DeskMate.svg'
 import { useTheme } from '@mui/material/styles';
@@ -99,21 +99,23 @@ export function NavBar({ imageSrc, navigate, userEmail, avaterClick, anchorElUse
         }}
       >
         <Box component='section' id='user-avatar-container' sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <Avatar
-            component='div' 
-            id='user-avatar'
-            variant="square"
-            onClick={avaterClick}
-            sx={{ 
-              width: 50, 
-              height: 50, 
-              fontSize: 20, 
-              bgcolor: '#667eea',
-              boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)',
-              cursor: 'pointer'
-          }}>
-            {userEmail ? userEmail.split('@')[0].slice(0, 2).toUpperCase() : '??'}
-          </Avatar>
+          <Tooltip title={userEmail}>
+            <Avatar
+              component='div' 
+              id='user-avatar'
+              variant="square"
+              onClick={avaterClick}
+              sx={{ 
+                width: 50, 
+                height: 50, 
+                fontSize: 20, 
+                bgcolor: '#667eea',
+                boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)',
+                cursor: 'pointer'
+              }}>
+              {userEmail ? userEmail.split('@')[0].slice(0, 2).toUpperCase() : '??'}
+            </Avatar>
+          </Tooltip>
         </Box>
         <Menu
           component='div' 

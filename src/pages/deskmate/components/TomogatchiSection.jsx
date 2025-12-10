@@ -5,13 +5,17 @@ import {
     Gauge
 } from '@mui/x-charts'
 import GenericPopout from '../../../components/GenericPopout';
-import { asyncGetDeskMateByUser, asyncPostDeskMate, asyncPutDeskMateStreak, asyncDeleteDeskMate } from '../../../models/api-comm/APIDeskMate'
+import { asyncGetDeskMateByUser, asyncPostDeskMate, asyncPutDeskMate, asyncPutDeskMateStreak, asyncDeleteDeskMate } from '../../../models/api-comm/APIDeskMate'
 import { calculateDaysDiff, dateToString } from '../../../models/DateTimeCal'
 import { Whatshot, SentimentSatisfiedAltRounded, SentimentSatisfied, SentimentVeryDissatisfied } from '@mui/icons-material'
 import deskImage from '../../../assets/desk.png';
+import { useSnackbar } from 'notistack';
+
 
 /* Controller */
 export default function TomogatchiSectionController({ session }) {
+
+    const { enqueueSnackbar } = useSnackbar();
 
     const [waitingForResponse, setWaitingForResponse] = React.useState(false);
     const [deskmate, setDeskmate] = React.useState(null);
@@ -23,31 +27,49 @@ export default function TomogatchiSectionController({ session }) {
     const [timerTime, setTimerTime] = React.useState(0)
     const [isTimerRunning, setIsTimerRunning] = React.useState(false)
 
-    const [popupOpen, setPopupOpen] = React.useState(false)
+    const [createPopupOpen, setCreatePopupOpen] = React.useState(false)
+    const [updatePopupOpen, setUpdatePopupOpen] = React.useState(false)
     const [name, setName] = React.useState('')
     const [nameErrorText, setNameErrorText] = React.useState('')
 
     const onCreateNewDeskmateClick = async () => {
         setWaitingForResponse(true);
         const deskmate = await asyncPostDeskMate({ user_id: session?.user?.id, name });
-        if (deskmate.id) {
+        if (deskmate?.id) {
             setDeskmate(deskmate);
-            setPopupOpen(false);
+            setCreatePopupOpen(false);
+            setName('');
+            enqueueSnackbar(`Created new Deskmate: ${deskmate?.name}`, { variant: 'success' });
         }
         else
-            setNameErrorText('Failed to create Deskmate')
+            setNameErrorText(deskmate.message)
+        setWaitingForResponse(false);
+    }
+
+    const onUpdateDeskmateNameClick = async () => {
+        setWaitingForResponse(true);
+        const updatedDeskmate = await asyncPutDeskMate({ id: deskmate?.id, user_id: session?.user?.id, name });
+        if (updatedDeskmate?.id) {
+            setDeskmate(updatedDeskmate);
+            setUpdatePopupOpen(false);
+            setName('');
+            enqueueSnackbar(`Updated Deskmate name from ${deskmate?.name} to: ${updatedDeskmate?.name}`, { variant: 'success' });
+        }
+        else
+            setNameErrorText(updatedDeskmate.message)
         setWaitingForResponse(false);
     }
 
     const extendStreak = async () => {
+        if (!deskmate) return;
         setWaitingForResponse(true);
-        const updatedDeskmate = await asyncPutDeskMateStreak(deskmate.id);
-        if (updatedDeskmate.id) {
+        const updatedDeskmate = await asyncPutDeskMateStreak(deskmate?.id);
+        if (updatedDeskmate?.id) {
             setDeskmate(updatedDeskmate);
-            setPopupOpen(false);
+            enqueueSnackbar(`Great job!!! Streak has been extended`, { variant: 'success' });
         }
         else
-            console.log('Failed to extend streak');
+            enqueueSnackbar(`${updatedDeskmate.message}`, { variant: 'error' });
         setWaitingForResponse(false);
     }
 
@@ -75,22 +97,23 @@ export default function TomogatchiSectionController({ session }) {
     }, [isTimerRunning]);
 
     const isDeskmateAlive = async (deskmate) => {
-        if (deskmate.last_streak != null && Number.parseInt(calculateDaysDiff(new Date(deskmate.last_streak), new Date(today))) >= 5 )
-        {
+        if (deskmate.last_streak != null && Number.parseInt(calculateDaysDiff(new Date(deskmate.last_streak), new Date(today))) >= 5 ){
             setJustDied(true);
-            asyncDeleteDeskMate(deskmate.id);
+            asyncDeleteDeskMate(deskmate?.id);
             setDeskmate(null);
+            enqueueSnackbar(`${deskmate.name} moved on due to last standing together: ${dateToString(new Date(deskmate.last_streak))}`, { variant: 'info' });
         }
     }
 
     const getDeskmate = async (id) => {
         setWaitingForResponse(true);
         const deskmate = await asyncGetDeskMateByUser(id);
-        if (deskmate.id){
+        if (deskmate?.id){
             setDeskmate(deskmate);
             await isDeskmateAlive(deskmate);
         }
-            
+        else
+            enqueueSnackbar(`Failed to retrieve data or no Deskmate found`, { variant: 'error' });
         setWaitingForResponse(false);
     }
     React.useEffect(() => {
@@ -105,12 +128,15 @@ export default function TomogatchiSectionController({ session }) {
             timerTime={timerTime}
             isTimerRunning={isTimerRunning}
             setIsTimerRunning={setIsTimerRunning}
-            popupOpen={popupOpen}
-            setPopupOpen={setPopupOpen}
+            createPopupOpen={createPopupOpen}
+            setCreatePopupOpen={setCreatePopupOpen}
+            updatePopupOpen={updatePopupOpen}
+            setUpdatePopupOpen={setUpdatePopupOpen}
             name={name}
             setName={setName}
             nameErrorText={nameErrorText}
             onCreateNewDeskmateClick={onCreateNewDeskmateClick}
+            onUpdateDeskmateNameClick={onUpdateDeskmateNameClick}
             justDied={justDied}
         />
     )
@@ -119,8 +145,9 @@ export default function TomogatchiSectionController({ session }) {
 /* View */
 export function TomogatchiSection({ 
     waitingForResponse, deskmate, today, timerTime, 
-    isTimerRunning, setIsTimerRunning, popupOpen, setPopupOpen,
-    name, setName, nameErrorText, onCreateNewDeskmateClick, justDied
+    isTimerRunning, setIsTimerRunning, createPopupOpen, setCreatePopupOpen, 
+    updatePopupOpen, setUpdatePopupOpen, name, setName, nameErrorText, 
+    onCreateNewDeskmateClick, onUpdateDeskmateNameClick, justDied
 }) {
     return (
         <Box component='section' id='tomogatchi-section' sx={{ height: '100%', width: '100%' }}>
@@ -144,7 +171,7 @@ export function TomogatchiSection({
                         }
                         <Button
                             variant='outlined'
-                            onClick={() => setPopupOpen(true)}
+                            onClick={() => setCreatePopupOpen(true)}
                             sx={{ 
                                 height: 65,
                                 minWidth: 150,
@@ -209,7 +236,7 @@ export function TomogatchiSection({
                                 </Typography>
                                 <Button
                                     variant='outlined'
-                                    onClick={() => setPopupOpen(true)}
+                                    onClick={() => setUpdatePopupOpen(true)}
                                     sx={{ 
                                         height: 40,
                                         minWidth: 100,
@@ -327,10 +354,23 @@ export function TomogatchiSection({
                     
                 )
             }
-            <GenericPopout header={!deskmate ? 'Name Deskmate' : 'Change ' + deskmate.name} onSaveClick={onCreateNewDeskmateClick} isOpen={popupOpen} setIsOpen={setPopupOpen}>
+            <GenericPopout header={'Name Deskmate'} onSaveClick={onCreateNewDeskmateClick} isOpen={createPopupOpen} setIsOpen={setCreatePopupOpen}>
                 <TextField
                     component='div'
-                    id='deskmate-info-name-textfield'
+                    id='deskmate-info-new-name-textfield'
+                    error={nameErrorText == '' ? false : true}
+                    label='Name'
+                    value={name} 
+                    onChange={e => setName(e.target.value)} 
+                    helperText={nameErrorText}
+                    variant='outlined'
+                    sx={{ width: '100%', m: 1 }} 
+                />
+            </GenericPopout>
+            <GenericPopout header={deskmate ? 'Change ' + deskmate.name : ''} onSaveClick={onUpdateDeskmateNameClick} isOpen={updatePopupOpen} setIsOpen={setUpdatePopupOpen}>
+                <TextField
+                    component='div'
+                    id='deskmate-info-update-name-textfield'
                     error={nameErrorText == '' ? false : true}
                     label='Name'
                     value={name} 

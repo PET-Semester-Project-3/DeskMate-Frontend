@@ -3,15 +3,15 @@ import { Paper, Box, Backdrop, Button, Typography } from '@mui/material';
 
 /* Controller */
 export default function GenericPopoutController({ children, header, onSaveClick, isOpen, setIsOpen  }) {
-  return (
-    <GenericPopout 
-        children={children}
-        header={header}
-        onSaveClick={onSaveClick}
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-    />
-  )
+    return (
+        <GenericPopout 
+            children={children}
+            header={header}
+            onSaveClick={onSaveClick}
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+        />
+    )
 }
 
 /* View */

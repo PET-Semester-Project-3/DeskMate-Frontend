@@ -7,9 +7,13 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import useSession from '../../models/SessionContext';
 import GenericPopout from '../../components/GenericPopout'
 import { asyncPutUser, asyncPostNewPassword } from '../../models/api-comm/APIUsers';
+import { useSnackbar } from 'notistack';
+
 
 /* Controller */
 export default function ProfilePageController() {
+
+    const { enqueueSnackbar } = useSnackbar();
 
     const [waitingForResponse, setWaitingForResponse] = React.useState(false);
 
@@ -30,12 +34,15 @@ export default function ProfilePageController() {
     const SaveNewEmailClick = () => {
         async function putUser(id) {
             setWaitingForResponse(true);
-            const result = await asyncPutUser({id, email: userEmail, password: null, mainDeskId: null});
-            if (result.success != null && result.success == false) {
+            const user = await asyncPutUser({id, email: userEmail, password: null, mainDeskId: null});
+            if (user.id) {
+                setSession({...session, user: user})
+                setIsUserEmailEdit(false);
+                enqueueSnackbar(`Changed email successfully to ${user.email}`, { variant: 'success' });
+            }
+            else {
                 setUserEmailErrorText('Issue occured when trying to change email');
             }
-            setSession({...session, user: result})
-            setIsUserEmailEdit(false);
             setWaitingForResponse(false);
         }
         putUser(session?.user?.id);
@@ -51,6 +58,7 @@ export default function ProfilePageController() {
                 setNewPasswordErrorText('Issue occured when trying to change password')
             }
             else if (result.success) {
+                enqueueSnackbar(`Changed password successfully`, { variant: 'success' });
                 setOldPassword('');
                 setNewPassword('');
                 setIsPasswordEdit(false);
@@ -80,6 +88,7 @@ export default function ProfilePageController() {
             isPasswordEdit={isPasswordEdit}
             setIsPasswordEdit={setIsPasswordEdit}
             userPages={session?.pages}
+            currentUserEmail={session?.user?.email}
             SaveNewEmailClick={SaveNewEmailClick}
             SaveNewPasswordClick={SaveNewPasswordClick}
             waitingForResponse={waitingForResponse}
@@ -88,7 +97,7 @@ export default function ProfilePageController() {
 }
 
 /* View */
-export function ProfilePage({ userEmail, setUserEmail, userEmailErrorText, isUserEmailEdit, setIsUserEmailEdit, newPassword, setNewPassword, showNewPassword, setShowNewPassword, newPasswordErrorText, oldPassword, setOldPassword, showOldPassword, setShowOldPassword, oldPasswordErrorText, isPasswordEdit, setIsPasswordEdit, userPages, SaveNewEmailClick, SaveNewPasswordClick }) {
+export function ProfilePage({ userEmail, setUserEmail, userEmailErrorText, isUserEmailEdit, setIsUserEmailEdit, newPassword, setNewPassword, showNewPassword, setShowNewPassword, newPasswordErrorText, oldPassword, setOldPassword, showOldPassword, setShowOldPassword, oldPasswordErrorText, isPasswordEdit, setIsPasswordEdit, userPages, currentUserEmail, SaveNewEmailClick, SaveNewPasswordClick }) {
     return (
         <Box component='main' id='user-page' sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
             <Box 
@@ -123,11 +132,11 @@ export function ProfilePage({ userEmail, setUserEmail, userEmailErrorText, isUse
                                 boxShadow: '0 12px 24px rgba(102, 126, 234, 0.3)',
                             },
                         }}>
-                            {userEmail ? userEmail.split('@')[0].slice(0, 2).toUpperCase() : '??'}
+                            {currentUserEmail ? currentUserEmail.split('@')[0].slice(0, 2).toUpperCase() : '??'}
                     </Avatar>
                 </Box>
                 <Typography component='h5' id='user-info-header' variant="h4" sx={{ mb: 2, fontWeight: 'bold' }}>
-                    {userEmail}
+                    {currentUserEmail}
                 </Typography>
                 <Box component='section' id='user-info-pages-container' sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', mb: 4, width: '80%', height: '20%' }}>
                     <Typography component='h6' id='user-info-pages-header' variant="h6" sx={{ mb: 1, fontWeight: '600' }}>

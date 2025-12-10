@@ -4,9 +4,12 @@ import { Typography, Box, CircularProgress } from '@mui/material';
 import RestrictedPage from '../restricted/RestrictedPage'
 import DeskCard from './components/DeskCard';
 import { asyncGetUserDesks } from '../../models/api-comm/APIUsers'
+import { useSnackbar } from 'notistack';
 
 /* Controller */
 export default function MaintenancePageController() {
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const [waitingForResponse, setWaitingForResponse] = React.useState(false);
 
@@ -17,7 +20,10 @@ export default function MaintenancePageController() {
     const getDesks = async (id) => {
       setWaitingForResponse(true);
       const desks = await asyncGetUserDesks(id);
-      setDesks(desks);
+      if (desks.length)
+        setDesks(desks);
+      else
+        enqueueSnackbar(`Failed to retrieve data`, { variant: 'error' });
       setWaitingForResponse(false);
     }
     getDesks(session?.user?.id);

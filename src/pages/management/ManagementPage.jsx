@@ -9,9 +9,13 @@ import { asyncPostUserDesk, asyncDeleteUserDesk } from '../../models/api-comm/AP
 import { asyncPostUserPermission, asyncDeleteUserPermission } from '../../models/api-comm/APIUserPermission'
 import UserList from './components/UserList';
 import UserPopout from './components/UserPopout';
+import { useSnackbar } from 'notistack';
+
 
 /* Controller */
 export default function ManagementPageController() {
+
+    const { enqueueSnackbar } = useSnackbar();
 
     const [waitingForResponse, setWaitingForResponse] = React.useState(false);
     const { session } = useSession();
@@ -35,13 +39,21 @@ export default function ManagementPageController() {
             for (const pid of selectedPermissionIds) {
                 if (!currentPermissionIds.includes(pid)) {
                     if (!pid) continue;
-                    await asyncPostUserPermission({userId: selectedUser.id, permissionId: pid});
+                    const response = await asyncPostUserPermission({userId: selectedUser.id, permissionId: pid});
+                    if (response.id)
+                        enqueueSnackbar(`Gave ${currentUser.email} permission: ${permissions.find(p => p.id == pid).label}`, { variant: 'success' });
+                    else
+                        enqueueSnackbar(`${response.message}`, { variant: 'error' });
                 }
             }
             for (const pid of currentPermissionIds) {
                 if (!selectedPermissionIds.includes(pid)) {
                     const relationId = currentUser.userPermissions.find(up => up.permission.id == pid).id;
-                    await asyncDeleteUserPermission(relationId);
+                    const response = await asyncDeleteUserPermission(relationId);
+                    if (response.success)
+                        enqueueSnackbar(`Deleted ${currentUser.email} permission: ${permissions.find(p => p.id == pid).label}`, { variant: 'info' });
+                    else
+                        enqueueSnackbar(`${response.message}`, { variant: 'error' });
                 }
             }   
             // Update Desks
@@ -50,13 +62,21 @@ export default function ManagementPageController() {
             for (const did of selectedDeskIds) {
                 if (!currentDeskIds.includes(did)) {
                     if (!did) continue;
-                    await asyncPostUserDesk({userId: selectedUser.id, deskId: did});
+                    const response = await asyncPostUserDesk({userId: selectedUser.id, deskId: did});
+                    if (response.id)
+                        enqueueSnackbar(`Gave ${currentUser.email} desk access: ${desks.find(p => p.id == did).name}`, { variant: 'success' });
+                    else
+                        enqueueSnackbar(`${response.message}`, { variant: 'error' });
                 }
             }
             for (const did of currentDeskIds) {
                 if (!selectedDeskIds.includes(did)) {
                     const relationId = currentUser.userDesks.find(ud => ud.desk.id == did).id;
-                    await asyncDeleteUserDesk(relationId);
+                    const response = await asyncDeleteUserDesk(relationId);
+                    if (response.success)
+                        enqueueSnackbar(`Deleted ${currentUser.email} desk access: ${desks.find(p => p.id == did).name}`, { variant: 'info' });
+                    else
+                        enqueueSnackbar(`${response.message}`, { variant: 'error' });
                 }
             }
 

@@ -4,27 +4,37 @@ import { Box, Typography, Stack, CircularProgress } from '@mui/material';
 import useSession from '../../models/SessionContext';
 import DeskView from './components/DeskView';
 import { asyncGetUserDesks, asyncPutUser } from '../../models/api-comm/APIUsers'
+import { useSnackbar } from 'notistack';
 
 
 /* Controller */
 export default function DeskPageController() {
   
+  const { enqueueSnackbar } = useSnackbar();
+
   const [waitingForResponse, setWaitingForResponse] = React.useState(false);
 
   const [desks, setDesks] = React.useState([]);
   const { session, setSession } = useSession();
 
   const setMainDesk = async (desk) => {
-    const updatedUser = await asyncPutUser({ id: session.user.id, main_desk_id: desk.id });
-    if (updatedUser.id)
-      setSession(prev => ({...prev, user: { ...prev.user, main_desk_id: desk.id }}));
+    const newMainDeskId = session.user.main_desk_id != desk.id ? desk.id : null;
+    const updatedUser = await asyncPutUser({ id: session.user.id, main_desk_id: newMainDeskId });
+    if (updatedUser.id) {
+      setSession(prev => ({...prev, user: { ...prev.user, main_desk_id: newMainDeskId }}));
+      if (newMainDeskId)
+        enqueueSnackbar(`Favorited ${desk.name}`, { variant: 'success' });
+      else
+        enqueueSnackbar(`Removed favorit ${desk.name}`, { variant: 'info' });
+    }
+    else 
+      enqueueSnackbar(`${updatedUser.message}`, { variant: 'error' });
   }
 
   React.useEffect(() => {
     const getDesks = async (id) => {
       setWaitingForResponse(true);
       var desks = await asyncGetUserDesks(id);
-      console.log(desks);
       if (desks.length){
         desks = desks.map(desk => {
           return {
@@ -34,6 +44,8 @@ export default function DeskPageController() {
         })
         setDesks(desks);
       }
+      else
+        enqueueSnackbar(`Failed to retrieve data`, { variant: 'error' });
       setWaitingForResponse(false);
     }
     getDesks(session?.user?.id);
