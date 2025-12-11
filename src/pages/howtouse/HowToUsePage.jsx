@@ -1,13 +1,10 @@
-import * as React from 'react';
-import { Typography, Box, List } from '@mui/material';
+import { Typography, Box } from '@mui/material';
 import { useNavigate } from 'react-router';
 
 
 /* Controller */
 export default function HowToUsePageController() {
-
     const navigate = useNavigate();
-
     return (
         <HowToUsePage navigate={navigate}/>
     )

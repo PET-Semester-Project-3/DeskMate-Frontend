@@ -16,7 +16,7 @@ export default function LayoutController() {
 }
 
 /* View */
-export function Layout({ widowHeight, widowWidth }) {
+export function Layout({ widowHeight }) {
   return (
     <Box component='main' id='basic-web-layout' sx={{ display: 'flex', flexDirection: 'column' }} >
       <NavBar/>

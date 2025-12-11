@@ -1,6 +1,6 @@
 import * as React from 'react';
 import RestrictedPage from '../restricted/RestrictedPage'
-import { Box, Typography, Stack, CircularProgress } from '@mui/material';
+import { Box, Typography, CircularProgress } from '@mui/material';
 import useSession from '../../models/SessionContext';
 import DeskView from './components/DeskView';
 import { asyncGetUserDesks, asyncPutUser } from '../../models/api-comm/APIUsers'

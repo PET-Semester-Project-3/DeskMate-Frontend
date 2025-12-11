@@ -1,4 +1,3 @@
-import * as React from 'react';
 import useSession from '../../models/SessionContext'
 import { useLocation } from 'react-router';
 import { Typography, Box } from '@mui/material';
