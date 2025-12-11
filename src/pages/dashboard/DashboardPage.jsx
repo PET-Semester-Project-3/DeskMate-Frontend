@@ -1,6 +1,5 @@
 import * as React from 'react';
-import RestrictedPage from '../restricted/RestrictedPage'
-import { Typography, Box, Stack, CircularProgress } from '@mui/material';
+import { Typography, Box, CircularProgress } from '@mui/material';
 import WarningIcon from '@mui/icons-material/Warning';
 import { asyncGetUserDesks } from '../../models/api-comm/APIUsers';
 import useSession from '../../models/SessionContext';
