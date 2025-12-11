@@ -2,7 +2,7 @@ import * as React from 'react';
 import useSession from '../../models/SessionContext';
 import { Typography, Box, CircularProgress } from '@mui/material';
 import RestrictedPage from '../restricted/RestrictedPage'
-import { asyncGetUsers } from '../../models/api-comm/APIUsers'
+import { asyncGetUsers, asyncDeleteUser } from '../../models/api-comm/APIUsers'
 import { asyncGetPermissions } from '../../models/api-comm/APIPermission'
 import { asyncGetDesks } from '../../models/api-comm/APIDesk'
 import { asyncPostUserDesk, asyncDeleteUserDesk } from '../../models/api-comm/APIUserDesk'
@@ -86,6 +86,26 @@ export default function ManagementPageController() {
         }
         updateUserData();
     }
+
+    const removeUserData = async () => {
+        const deleteUserData = async () => {
+            if (!selectedUser) return;
+            if (selectedUser.userPermissions?.map(up => up.permission.route).includes('/database')){
+                enqueueSnackbar(`Cannot delete ${selectedUser.email} due to high permission level  -->  Delete user through Database-Page if needed`, { variant: 'error' });
+                return;
+            }
+            setWaitingForResponse(true);
+            const response = await asyncDeleteUser(selectedUser.id);
+            if (response.success)
+                    enqueueSnackbar(`Deleted ${selectedUser.email} successfully`, { variant: 'info' });
+                else
+                    enqueueSnackbar(`${response.message}`, { variant: 'error' });
+            setWaitingForResponse(false);
+            setPopupOpen(false); 
+            getData();
+        }
+        deleteUserData();
+    }
     
     const selectUserClick = (user) => {
         setSelectedUser({...user});
@@ -121,6 +141,7 @@ export default function ManagementPageController() {
                 popupOpen={popupOpen}
                 setPopupOpen={setPopupOpen}
                 saveUserData={saveUserData}
+                removeUserData={removeUserData}
                 getData={getData}
                 waitingForResponse={waitingForResponse}
             />
@@ -130,7 +151,7 @@ export default function ManagementPageController() {
 }
 
 /* View */
-export function ManagementPage({ currentUser, users, permissions, desks, selectUserClick, selectedUser, popupOpen, setPopupOpen, saveUserData, getData, waitingForResponse }) {
+export function ManagementPage({ currentUser, users, permissions, desks, selectUserClick, selectedUser, popupOpen, setPopupOpen, saveUserData, removeUserData, getData, waitingForResponse }) {
     return (
         <Box component='main' id='management-page' sx={{ width: '100%' }}>
             <Typography
@@ -169,6 +190,7 @@ export function ManagementPage({ currentUser, users, permissions, desks, selectU
                     popupOpen={popupOpen} 
                     setPopupOpen={setPopupOpen} 
                     onSaveClick={saveUserData}
+                    onDeleteClick={removeUserData}
                     permissions={currentUser?.id && currentUser?.userPermissions?.map(up => up.permission.route).includes('/database') ? permissions : currentUser.userPermissions.map(up => up.permission)}
                     desks={currentUser?.id && currentUser?.userPermissions?.map(up => up.permission.route).includes('/database') ? desks : currentUser.userDesks.map(ud => ud.desk)}
                 />

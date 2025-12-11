@@ -2,12 +2,13 @@ import * as React from 'react';
 import { Paper, Box, Backdrop, Button, Typography } from '@mui/material';
 
 /* Controller */
-export default function GenericPopoutController({ children, header, onSaveClick, isOpen, setIsOpen  }) {
+export default function GenericPopoutController({ children, header, onSaveClick, onDeleteClick, isOpen, setIsOpen  }) {
     return (
         <GenericPopout 
             children={children}
             header={header}
             onSaveClick={onSaveClick}
+            onDeleteClick={onDeleteClick}
             isOpen={isOpen}
             setIsOpen={setIsOpen}
         />
@@ -15,7 +16,7 @@ export default function GenericPopoutController({ children, header, onSaveClick,
 }
 
 /* View */
-export function GenericPopout({ children, header, onSaveClick, isOpen, setIsOpen }) {
+export function GenericPopout({ children, header, onSaveClick, onDeleteClick, isOpen, setIsOpen }) {
   return (
     <Backdrop
       component='div'
@@ -74,7 +75,7 @@ export function GenericPopout({ children, header, onSaveClick, isOpen, setIsOpen
                             {children}
                         </Box>
                 </Box>
-                {/* Save Button */}
+                {/* Save and Delete Button */}
                 <Box
                     component='section'
                     id='generic-popout-window-save-button-container'
@@ -84,16 +85,31 @@ export function GenericPopout({ children, header, onSaveClick, isOpen, setIsOpen
                         width: '100%',
                         height: '10%'
                     }}
-                >
-                    <Button
-                        component='button'
-                        id='generic-popout-window-save-button'
-                        variant='contained'
-                        onClick={onSaveClick}
-                        sx={{ width: 75, height: 35, m: 2, mt: 0 }}
-                        >Save</Button>
+                >   
+                    {
+                        onDeleteClick ? (
+                            <Button
+                                component='button'
+                                id='generic-popout-window-delete-button'
+                                variant='contained'
+                                onClick={onDeleteClick}
+                                sx={{ width: 75, height: 35, m: 2, mt: 0, mr: 0 }}
+                            >Delete</Button>
+                        ) : null
+                    }
+                    {
+                        onSaveClick ? (
+                            <Button
+                                component='button'
+                                id='generic-popout-window-save-button'
+                                variant='contained'
+                                onClick={onSaveClick}
+                                sx={{ width: 75, height: 35, m: 2, mt: 0 }}
+                            >Save</Button>
+                        ) : null
+                    }
                 </Box>
-            </Paper>
+            </Paper> 
         </Box>
     </Backdrop>
   );

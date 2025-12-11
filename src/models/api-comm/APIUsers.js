@@ -36,12 +36,12 @@ export async function asyncPostUser({ email, password, mainDeskId }) {
 // 400 returns: { success: false, message: "Email required" }
 // 409 returns: { success: false, message: "User exists" }
 // 500 returns: { success: false, message: "Failed to create user with permissions" }
-export async function asyncPostUserWithPermissions({ email, permissionIds }) {
+export async function asyncPostUserWithPermissions({ email, password, permissionIds }) {
   if (!email) {
-    console.log(`email (${email}) was null or empty`)
+    console.log(`email (${email}) or password ${password} was null or empty`)
     return null
   }
-  return asyncFetch(`${APIUSERSURL}/with-permissions`, "POST", { email, permissionIds })
+  return asyncFetch(`${APIUSERSURL}/with-permissions`, "POST", { email, password, permissionIds })
 }
 
 // 200 returns: { success: true, data: user }

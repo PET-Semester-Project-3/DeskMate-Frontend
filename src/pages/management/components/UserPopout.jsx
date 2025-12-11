@@ -4,7 +4,7 @@ import { RichTreeView } from '@mui/x-tree-view/RichTreeView';
 import GenericPopout from '../../../components/GenericPopout'
 
 /* Controller */
-export default function UserPopoutController({ user, popupOpen, setPopupOpen, onSaveClick, permissions, desks }) {
+export default function UserPopoutController({ user, popupOpen, setPopupOpen, onSaveClick, onDeleteClick, permissions, desks }) {
 
     const permissionItems = [
         {
@@ -53,6 +53,7 @@ export default function UserPopoutController({ user, popupOpen, setPopupOpen, on
             popupOpen={popupOpen}
             setPopupOpen={setPopupOpen}
             onSaveClick={onSaveClick}
+            onDeleteClick={onDeleteClick}
             permissionItems={permissionItems}
             deskItems={deskItems}
             selectedPermissionItems={selectedPermissionItems}
@@ -64,12 +65,12 @@ export default function UserPopoutController({ user, popupOpen, setPopupOpen, on
 }
 
 /* View */
-export function UserPopout({ user, popupOpen, setPopupOpen, onSaveClick, permissionItems, deskItems, selectedPermissionItems, handleSelectedPermissionItemsChange, selectedDeskItems, handleSelectedDeskItemsChange }) {
+export function UserPopout({ user, popupOpen, setPopupOpen, onSaveClick, onDeleteClick, permissionItems, deskItems, selectedPermissionItems, handleSelectedPermissionItemsChange, selectedDeskItems, handleSelectedDeskItemsChange }) {
   return (
         <Box component='section' id='user-popout' sx={{ display: 'flex', height: '100%', width: '100%', m: 2, mt: 4, justifyContent: 'center' }}>
             {
                 user ? (
-                    <GenericPopout header={user.email.toUpperCase()} onSaveClick={onSaveClick} isOpen={popupOpen} setIsOpen={setPopupOpen}>
+                    <GenericPopout header={user.email.toUpperCase()} onSaveClick={onSaveClick} onDeleteClick={onDeleteClick} isOpen={popupOpen} setIsOpen={setPopupOpen}>
                             <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
                                 <RichTreeView
                                     multiSelect 

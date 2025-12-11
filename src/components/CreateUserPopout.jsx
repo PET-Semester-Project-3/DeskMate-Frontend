@@ -20,8 +20,10 @@ export default function CreateUserPopoutController({ isOpen, onClose, onCreated 
   const [permissions, setPermissions] = React.useState([])
   const [selectedPermissions, setSelectedPermissions] = React.useState(new Set())
   const [email, setEmail] = React.useState("")
+  const [password, setPassword] = React.useState("")
   const [saving, setSaving] = React.useState(false)
   const [emailErrorText, setEmailErrorText] = React.useState('')
+  const [passwordErrorText, setPasswordErrorText] = React.useState('')
 
   React.useEffect(() => {
     async function load() {
@@ -42,16 +44,18 @@ export default function CreateUserPopoutController({ isOpen, onClose, onCreated 
     if (!email) return // required
     setSaving(true)
     const permissionIds = Array.from(selectedPermissions)
-    const resp = await asyncPostUserWithPermissions({ email, permissionIds})
+    const resp = await asyncPostUserWithPermissions({ email, password, permissionIds})
     setSaving(false)
     if (resp && resp.success !== false) {
       onCreated && onCreated(resp.data)
       onClose && onClose()
       if (emailErrorText != '') setEmailErrorText('');
+      if (password != '') setPasswordErrorText('');
       enqueueSnackbar(`Successfully created: ${email}`, { variant: 'success' });
     } else {
       console.error("Failed to create user", resp)
       setEmailErrorText(resp.message);
+      setPasswordErrorText(resp.message);
       // keep the popup open and allow user to retry
     }
   }
@@ -74,7 +78,7 @@ export default function CreateUserPopoutController({ isOpen, onClose, onCreated 
               Close
             </Button>
           </Box>
-          <Box sx={{ mt: 2 }}>
+          <Box sx={{ m: 1, mr: 3 }}>
             <TextField
               fullWidth
               label="Email"
@@ -83,6 +87,17 @@ export default function CreateUserPopoutController({ isOpen, onClose, onCreated 
               error={emailErrorText}
               onChange={(e) => setEmail(e.target.value)}
               required
+              sx={{ m: 1 }}
+            />
+            <TextField
+              fullWidth
+              label="Password"
+              value={password}
+              helperText={passwordErrorText}
+              error={passwordErrorText}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              sx={{ m: 1 }}
             />
           </Box>
           <Box sx={{ mt: 2 }}>
