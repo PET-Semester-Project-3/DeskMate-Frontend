@@ -70,7 +70,7 @@ const DBTABLESELECTION = [
   {
     name: "Users",
     canCreateNew: true,
-    blackListedProperties: ["id", "created_at", "updated_at"],
+    blackListedProperties: ["id", "created_at", "updated_at", "userDesks", "userPermissions"],
     requiredProperties: ["email"],
     getAll: asyncGetUsers,
     post: asyncPostUser,

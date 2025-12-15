@@ -11,6 +11,7 @@ import {
   Grid,
   Stack,
   IconButton,
+  Button
 } from '@mui/material';
 import { StarBorder, Star, Edit, Check } from '@mui/icons-material';
 import deskImage from '../../../assets/desk.png';
@@ -65,6 +66,12 @@ export default function DeskViewController({ desk, setMainDesk }){
     setIsEditingName(true);
   };
 
+  const handleSaveAll = () => {
+    handleNameConfirm();
+    handleHeightCommit(null, height);
+    handleSwitchChange(null, isOnline);
+  };
+
   return (
     <DeskView
       deskName={deskName}
@@ -79,13 +86,14 @@ export default function DeskViewController({ desk, setMainDesk }){
       setIsOnline={handleSwitchChange}
       handleNameConfirm={handleNameConfirm}
       handleNameEdit={handleNameEdit}
+      handleSaveAll={handleSaveAll}
       setMainDesk={setMainDesk}
     />
   )
 }
 
 /* View */
-export function DeskView({ deskName, desk, tempName, isEditingName, height, isOnline, setTempName, setHeight, setHeightCommit, setIsOnline, handleNameConfirm, handleNameEdit, setMainDesk }) {
+export function DeskView({ deskName, desk, tempName, isEditingName, height, isOnline, setTempName, setHeight, setHeightCommit, setIsOnline, handleNameConfirm, handleNameEdit, handleSaveAll, setMainDesk }) {
   return (
     <Card component='div' id='desk-view' sx={{ pt: 3, width: 700 }}>
       <Grid component='section' id='desk-view-grid' container spacing={4}>
@@ -95,13 +103,14 @@ export function DeskView({ deskName, desk, tempName, isEditingName, height, isOn
             {/* Desk Name */}
             <Box component='span' id='desk-view-left-panel-desk-container' sx={{ display: 'flex', gap: 1, alignItems: 'flex-start' }}>
               <TextField
-                component='form'
+                component='div'
                 id='desk-view-left-panel-desk-name-textfield'
                 label="Desk Name"
                 value={isEditingName ? tempName : deskName}
                 onChange={(e) => setTempName(e.target.value)}
                 fullWidth
                 variant="outlined"
+                onKeyUp={e => { if (e.key == "Enter") handleNameConfirm(); }}
                 disabled={!isEditingName}
               />
               {isEditingName ? (
@@ -136,7 +145,7 @@ export function DeskView({ deskName, desk, tempName, isEditingName, height, isOn
             <Box component='span' id='desk-view-left-panel-height-container' >
               <Typography component='p' id='desk-view-left-panel-height-header' gutterBottom>Height: {height} cm</Typography>
               <Slider
-                component='form'
+                component='div'
                 id='desk-view-left-panel-height-slider'
                 value={height}
                 onChange={setHeight}
@@ -153,7 +162,7 @@ export function DeskView({ deskName, desk, tempName, isEditingName, height, isOn
               id='desk-view-left-panel-power-container'
               control={
                 <Switch
-                  component='form'
+                  component='div'
                   id='desk-view-left-panel-power-switch'
                   checked={isOnline}
                   onChange={setIsOnline}
@@ -181,7 +190,7 @@ export function DeskView({ deskName, desk, tempName, isEditingName, height, isOn
 
         {/* Right Panel - Desk Visualization */}
         <Grid component='section' id='desk-view-grid-right-panel' item xs={12} md={6}>
-          <Box component='div' id='desk-view-right-panel-desk-image-container' sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+          <Box component='div' id='desk-view-right-panel-desk-image-container' sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
             <img
               id='desk-view-grid-right-panel-desk-image'
               src={deskImage}
@@ -195,10 +204,17 @@ export function DeskView({ deskName, desk, tempName, isEditingName, height, isOn
               component='div'
               id='desk-view-right-panel-favorite-desk-button'
               onClick={() => setMainDesk(desk)}
-              sx={{ top: -125, right: 10 }}
+              sx={{ top: -275, right: -150 }}
             >
               {desk.isFavorit ? <Star id='desk-view-right-panel-favorite-desk-star-icon' /> : <StarBorder id='desk-view-right-panel-favorite-desk-starborder-icon' />}
             </IconButton>
+            <Button 
+              variant='contained' 
+              sx={{ top: -15, right: -115 }}
+              onClick={handleSaveAll}
+            >
+              Ensure Save
+            </Button>
           </Box>
         </Grid>
       </Grid>

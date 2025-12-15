@@ -8,8 +8,8 @@ export default function UserPopoutController({ user, popupOpen, setPopupOpen, on
 
     const permissionItems = [
         {
-            id: 'permissions',
-            label: 'Permissions',
+            id: 'sides',
+            label: 'Sides',
             children: permissions.sort((a, b) => a.label > b.label ? 1 : -1).map(permission => ({
                 id: permission.id,
                 label: permission.label,
@@ -77,7 +77,6 @@ export function UserPopout({ user, popupOpen, setPopupOpen, onSaveClick, onDelet
                                     checkboxSelection
                                     selectionPropagation={{parents: true, descendants: true}}
                                     sx={{ maxHeight: 500, flexGrow: 1, width: 200, overflowY: 'auto' }}
-                                    defaultExpandedItems={['desks']}
                                     items={deskItems}
                                     selectedItems={selectedDeskItems}
                                     onSelectedItemsChange={handleSelectedDeskItemsChange}
@@ -87,7 +86,6 @@ export function UserPopout({ user, popupOpen, setPopupOpen, onSaveClick, onDelet
                                     checkboxSelection
                                     selectionPropagation={{parents: true, descendants: true}}
                                     sx={{ maxHeight: 500, flexGrow: 1, width: 200, overflowY: 'auto' }}
-                                    defaultExpandedItems={['permissions']}
                                     items={permissionItems}
                                     selectedItems={selectedPermissionItems}
                                     onSelectedItemsChange={handleSelectedPermissionItemsChange}

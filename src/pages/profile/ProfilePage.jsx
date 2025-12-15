@@ -99,7 +99,7 @@ export default function ProfilePageController() {
 /* View */
 export function ProfilePage({ userEmail, setUserEmail, userEmailErrorText, isUserEmailEdit, setIsUserEmailEdit, newPassword, setNewPassword, showNewPassword, setShowNewPassword, newPasswordErrorText, oldPassword, setOldPassword, showOldPassword, setShowOldPassword, oldPasswordErrorText, isPasswordEdit, setIsPasswordEdit, userPages, currentUserEmail, SaveNewEmailClick, SaveNewPasswordClick }) {
     return (
-        <Box component='main' id='user-page' sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+        <Box component='main' id='user-page' sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
             <Box 
                 component='section' 
                 id='user-info-container' 
@@ -107,9 +107,10 @@ export function ProfilePage({ userEmail, setUserEmail, userEmailErrorText, isUse
                     display: 'flex', 
                     flexDirection: 'column', 
                     alignItems: 'center',
-                    width: '30%',
+                    justifyContent: 'center',
+                    width: 550,
                     minHeight: 550,
-                    height: '100%',
+                    height: 750,
                     minWidth: 450,
                     border: '2px solid',
                     borderImage: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%) 1',
@@ -159,7 +160,11 @@ export function ProfilePage({ userEmail, setUserEmail, userEmailErrorText, isUse
                     </Box>
                 </Box>
                 <Box component='div' id='user-info-edit-buttons' sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-                    <Button component='form' id='user-info-edit-buttons-useremail' variant='outlined' onClick={() => setIsUserEmailEdit(true)} sx={{ minWidth: 350, width: '80%', fontSize: 18, alignSelf: 'center', mb: 1 }} >Change Email</Button>
+                    {
+                        userPages?.map(up => up.route).includes('/database') ? (
+                            <Button component='form' id='user-info-edit-buttons-useremail' variant='outlined' onClick={() => setIsUserEmailEdit(true)} sx={{ minWidth: 350, width: '80%', fontSize: 18, alignSelf: 'center', mb: 1 }} >Change Email</Button>
+                        ) : null
+                    }
                     <Button component='form' id='user-info-edit-buttons-password' variant='outlined' onClick={() => setIsPasswordEdit(true)}  sx={{ minWidth: 350, width: '80%', fontSize: 18, alignSelf: 'center' }} >Change Password</Button>
                 </Box>
             </Box>
