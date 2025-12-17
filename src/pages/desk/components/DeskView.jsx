@@ -11,14 +11,18 @@ import {
   Grid,
   Stack,
   IconButton,
+  Button
 } from '@mui/material';
-import CheckIcon from '@mui/icons-material/Check';
-import EditIcon from '@mui/icons-material/Edit';
+import { StarBorder, Star, Edit, Check } from '@mui/icons-material';
 import deskImage from '../../../assets/desk.png';
 import { asyncPutDesk } from '../../../models/api-comm/APIDesk';
+import { useSnackbar } from 'notistack';
+
 
 /* Controller */
-export default function DeskViewController({ desk }){
+export default function DeskViewController({ desk, setMainDesk }){
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const [deskName, setDeskName] = React.useState(desk.name);
   const [tempName, setTempName] = React.useState(desk.name);
@@ -28,7 +32,11 @@ export default function DeskViewController({ desk }){
 
   const handleNameConfirm = async () => {
     setDeskName(tempName);
-    await asyncPutDesk(desk.id, { name: tempName });
+    const updatedDesk = await asyncPutDesk(desk.id, { name: tempName });
+    if (updatedDesk.id)
+      enqueueSnackbar(`Changed ${desk.name} to: ${tempName}`, { variant: 'success' });
+    else
+      enqueueSnackbar(`${updatedDesk.message}`, { variant: 'error' });
     setIsEditingName(false);
   };
 
@@ -38,16 +46,30 @@ export default function DeskViewController({ desk }){
 
   const handleSwitchChange = async (_, newValue) => {
     setIsOnline(newValue);
-    await asyncPutDesk(desk.id, { is_online: newValue });
+    const updatedDesk = await asyncPutDesk(desk.id, { is_online: newValue });
+    if (updatedDesk.id)
+      enqueueSnackbar(`${desk.name}'s online state to: ${newValue ? 'online' : 'offline'}`, { variant: 'info' });
+    else
+      enqueueSnackbar(`${updatedDesk.message}`, { variant: 'error' });
   };
 
   const handleHeightCommit = async (_, newValue) => {
     desk.last_data.height = newValue;
-    await asyncPutDesk(desk.id,  { last_data: desk.last_data });
+    const updatedDesk = await asyncPutDesk(desk.id,  { last_data: desk.last_data });
+    if (updatedDesk.id)
+      enqueueSnackbar(`${desk.name}'s height set to: ${newValue}`, { variant: 'info' });
+    else
+      enqueueSnackbar(`${updatedDesk.message}`, { variant: 'error' });
   };
 
   const handleNameEdit = () => {
     setIsEditingName(true);
+  };
+
+  const handleSaveAll = () => {
+    handleNameConfirm();
+    handleHeightCommit(null, height);
+    handleSwitchChange(null, isOnline);
   };
 
   return (
@@ -64,12 +86,14 @@ export default function DeskViewController({ desk }){
       setIsOnline={handleSwitchChange}
       handleNameConfirm={handleNameConfirm}
       handleNameEdit={handleNameEdit}
+      handleSaveAll={handleSaveAll}
+      setMainDesk={setMainDesk}
     />
   )
 }
 
 /* View */
-export function DeskView({ deskName, desk, tempName, isEditingName, height, isOnline, setTempName, setHeight, setHeightCommit, setIsOnline, handleNameConfirm, handleNameEdit }) {
+export function DeskView({ deskName, desk, tempName, isEditingName, height, isOnline, setTempName, setHeight, setHeightCommit, setIsOnline, handleNameConfirm, handleNameEdit, handleSaveAll, setMainDesk }) {
   return (
     <Card component='div' id='desk-view' sx={{ pt: 3, width: 700 }}>
       <Grid component='section' id='desk-view-grid' container spacing={4}>
@@ -79,13 +103,14 @@ export function DeskView({ deskName, desk, tempName, isEditingName, height, isOn
             {/* Desk Name */}
             <Box component='span' id='desk-view-left-panel-desk-container' sx={{ display: 'flex', gap: 1, alignItems: 'flex-start' }}>
               <TextField
-                component='form'
+                component='div'
                 id='desk-view-left-panel-desk-name-textfield'
                 label="Desk Name"
                 value={isEditingName ? tempName : deskName}
                 onChange={(e) => setTempName(e.target.value)}
                 fullWidth
                 variant="outlined"
+                onKeyUp={e => { if (e.key == "Enter") handleNameConfirm(); }}
                 disabled={!isEditingName}
               />
               {isEditingName ? (
@@ -96,7 +121,7 @@ export function DeskView({ deskName, desk, tempName, isEditingName, height, isOn
                   onClick={handleNameConfirm}
                   sx={{ mt: 1 }}
                 >
-                  <CheckIcon id='desk-view-left-panel-desk-name-check-icon' />
+                  <Check id='desk-view-left-panel-desk-name-check-icon' />
                 </IconButton>
               ) : (
                 <IconButton
@@ -106,7 +131,7 @@ export function DeskView({ deskName, desk, tempName, isEditingName, height, isOn
                   onClick={handleNameEdit}
                   sx={{ mt: 1 }}
                 >
-                  <EditIcon id='desk-view-left-panel-desk-name-icon-edit' />
+                  <Edit id='desk-view-left-panel-desk-name-icon-edit' />
                 </IconButton>
               )}
             </Box>
@@ -120,7 +145,7 @@ export function DeskView({ deskName, desk, tempName, isEditingName, height, isOn
             <Box component='span' id='desk-view-left-panel-height-container' >
               <Typography component='p' id='desk-view-left-panel-height-header' gutterBottom>Height: {height} cm</Typography>
               <Slider
-                component='form'
+                component='div'
                 id='desk-view-left-panel-height-slider'
                 value={height}
                 onChange={setHeight}
@@ -137,7 +162,7 @@ export function DeskView({ deskName, desk, tempName, isEditingName, height, isOn
               id='desk-view-left-panel-power-container'
               control={
                 <Switch
-                  component='form'
+                  component='div'
                   id='desk-view-left-panel-power-switch'
                   checked={isOnline}
                   onChange={setIsOnline}
@@ -165,15 +190,32 @@ export function DeskView({ deskName, desk, tempName, isEditingName, height, isOn
 
         {/* Right Panel - Desk Visualization */}
         <Grid component='section' id='desk-view-grid-right-panel' item xs={12} md={6}>
-          <img
+          <Box component='div' id='desk-view-right-panel-desk-image-container' sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+            <img
               id='desk-view-grid-right-panel-desk-image'
               src={deskImage}
               alt="Desk"
               style={{
-                maxWidth: '300px',
+                maxWidth: '275px',
                 height: 'auto',
               }}
-          />
+            />
+            <IconButton
+              component='div'
+              id='desk-view-right-panel-favorite-desk-button'
+              onClick={() => setMainDesk(desk)}
+              sx={{ top: -275, right: -150 }}
+            >
+              {desk.isFavorit ? <Star id='desk-view-right-panel-favorite-desk-star-icon' /> : <StarBorder id='desk-view-right-panel-favorite-desk-starborder-icon' />}
+            </IconButton>
+            <Button 
+              variant='contained' 
+              sx={{ top: -15, right: -115 }}
+              onClick={handleSaveAll}
+            >
+              Ensure Save
+            </Button>
+          </Box>
         </Grid>
       </Grid>
     </Card>

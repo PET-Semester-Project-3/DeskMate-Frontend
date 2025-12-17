@@ -4,7 +4,7 @@ import { Radio, RadioGroup, FormControlLabel, FormControl, FormLabel } from '@mu
 /* Controller */
 export default function DatabaseDataSelectionController({ dbSelection, onSelectionChanged }) {
     
-    const [dbDataSelections, setGridRows] = React.useState([...dbSelection]);
+    const [dbDataSelections] = React.useState([...dbSelection]);
     const [selected, setSelected] = React.useState(dbSelection[0].name)
 
     const handleChangeSelected = (event) => {

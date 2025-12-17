@@ -41,7 +41,7 @@ export function LeaderBoardSectionSection({ waitingForResponse, userId, deskmate
                     waitingForResponse ? (
                         <CircularProgress/>
                     ) : (
-                        deskmates?.length > 0 ? (
+                        deskmates?.filter(dm => !dm.last_streak || calculateDaysDiff(dm.last_streak, today) <= 5).length > 0 ? (
                             <List 
                                 sx={{ 
                                     width: '35%',
@@ -49,7 +49,7 @@ export function LeaderBoardSectionSection({ waitingForResponse, userId, deskmate
                                     maxHeight: '92%'
                                 }}>
                                 {
-                                    deskmates.sort((a, b) => b.streak - a.streak ).map(dm => {
+                                    deskmates.sort((a, b) => b.streak - a.streak ).filter(dm => !dm.last_streak || calculateDaysDiff(dm.last_streak, today) <= 5).map(dm => {
                                         return (
                                             <Box>
                                                 <ListItem
@@ -68,29 +68,30 @@ export function LeaderBoardSectionSection({ waitingForResponse, userId, deskmate
                                                         }}>
                                                         <Box sx={{ display: 'flex', width: '50%' }}>
                                                             {
-                                                                dm.last_streak ? (
-                                                                    <Badge
-                                                                        badgeContent={
-                                                                            calculateDaysDiff(dm.last_streak, today) < 2 ? <SentimentSatisfiedAltRounded/>
-                                                                            : calculateDaysDiff(dm.last_streak, today) < 5 ? <SentimentSatisfied/>
-                                                                            : <SentimentVeryDissatisfied/>
-                                                                        } 
-                                                                        color={
-                                                                            calculateDaysDiff(dm.last_streak, today) < 2 ? 'success' 
-                                                                            : calculateDaysDiff(dm.last_streak, today) < 5 ? 'warning' 
-                                                                            : 'error'
-                                                                        }
-                                                                        sx={{
-                                                                            mr: 3,
-                                                                            '& .MuiBadge-badge': {
-                                                                                right: 2,
-                                                                                top: 12,
-                                                                                height: 25,
-                                                                                width: 25,
-                                                                                borderRadius: 5
-                                                                            },
-                                                                        }}
-                                                                    >
+                                                                <Badge
+                                                                    badgeContent={
+                                                                        !dm.last_streak ? <SentimentSatisfiedAltRounded/>
+                                                                        : calculateDaysDiff(dm.last_streak, today) <= 2 ? <SentimentSatisfiedAltRounded/>
+                                                                        : calculateDaysDiff(dm.last_streak, today) <= 3 ? <SentimentSatisfied/>
+                                                                        : <SentimentVeryDissatisfied/>
+                                                                    } 
+                                                                    color={
+                                                                        !dm.last_streak ? 'success' 
+                                                                        : calculateDaysDiff(dm.last_streak, today) <= 2 ? 'success' 
+                                                                        : calculateDaysDiff(dm.last_streak, today) <= 3 ? 'warning' 
+                                                                        : 'error'
+                                                                    }
+                                                                    sx={{
+                                                                        mr: 3,
+                                                                        '& .MuiBadge-badge': {
+                                                                            right: 2,
+                                                                            top: 12,
+                                                                            height: 25,
+                                                                            width: 25,
+                                                                            borderRadius: 5
+                                                                        },
+                                                                    }}
+                                                                >
                                                                         <Desk
                                                                             color='primary'
                                                                             sx={{ 
@@ -98,18 +99,7 @@ export function LeaderBoardSectionSection({ waitingForResponse, userId, deskmate
                                                                                 width: 65,
                                                                             }}
                                                                         />
-                                                                    </Badge>
-                                                                ) : (
-                                                                    <Box>
-                                                                        <Desk
-                                                                            color='primary'
-                                                                            sx={{ 
-                                                                                height: 65,
-                                                                                width: 65,
-                                                                            }}
-                                                                        />
-                                                                    </Box>
-                                                                )
+                                                                </Badge>
                                                             }
                                                             <List>
                                                                 <Typography variant='h5' color='primary' >
@@ -121,8 +111,9 @@ export function LeaderBoardSectionSection({ waitingForResponse, userId, deskmate
                                                                         dm.last_streak != null && new Date(dm.last_streak).getDate() == new Date(today).getDate() ?
                                                                         <Whatshot sx={{ height: 20 }} /> : null
                                                                     }
-                                                                    {' -> '}
-                                                                    {dateToString(dm.last_streak)}
+                                                                    {
+                                                                        dm.last_streak ? ' -> ' + dateToString(dm.last_streak) : null
+                                                                    }
                                                                 </Typography>
                                                             </List>
                                                         </Box>

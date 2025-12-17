@@ -4,48 +4,72 @@ import { Box, Typography, Button, Card, CircularProgress, Badge, TextField
 import {
     Gauge
 } from '@mui/x-charts'
-import ChangeValuePopout from '../../profile/components/ChangeValuePopout';
-import { asyncGetDeskMateByUser, asyncPostDeskMate, asyncPutDeskMateStreak } from '../../../models/api-comm/APIDeskMate'
+import GenericPopout from '../../../components/GenericPopout';
+import { asyncGetDeskMateByUser, asyncPostDeskMate, asyncPutDeskMate, asyncPutDeskMateStreak, asyncDeleteDeskMate } from '../../../models/api-comm/APIDeskMate'
 import { calculateDaysDiff, dateToString } from '../../../models/DateTimeCal'
 import { Whatshot, SentimentSatisfiedAltRounded, SentimentSatisfied, SentimentVeryDissatisfied } from '@mui/icons-material'
 import deskImage from '../../../assets/desk.png';
+import { useSnackbar } from 'notistack';
+
 
 /* Controller */
 export default function TomogatchiSectionController({ session }) {
 
+    const { enqueueSnackbar } = useSnackbar();
+
     const [waitingForResponse, setWaitingForResponse] = React.useState(false);
     const [deskmate, setDeskmate] = React.useState(null);
+
+    const [justDied, setJustDied] = React.useState(false);
     
     const today = Date.now();
 
     const [timerTime, setTimerTime] = React.useState(0)
     const [isTimerRunning, setIsTimerRunning] = React.useState(false)
 
-    const [popupOpen, setPopupOpen] = React.useState(false)
+    const [createPopupOpen, setCreatePopupOpen] = React.useState(false)
+    const [updatePopupOpen, setUpdatePopupOpen] = React.useState(false)
     const [name, setName] = React.useState('')
     const [nameErrorText, setNameErrorText] = React.useState('')
 
     const onCreateNewDeskmateClick = async () => {
         setWaitingForResponse(true);
         const deskmate = await asyncPostDeskMate({ user_id: session?.user?.id, name });
-        if (deskmate) {
+        if (deskmate?.id) {
             setDeskmate(deskmate);
-            setPopupOpen(false);
+            setCreatePopupOpen(false);
+            setName('');
+            enqueueSnackbar(`Created new Deskmate: ${deskmate?.name}`, { variant: 'success' });
         }
         else
-            setNameErrorText('Failed to create Deskmate')
+            setNameErrorText(deskmate.message)
+        setWaitingForResponse(false);
+    }
+
+    const onUpdateDeskmateNameClick = async () => {
+        setWaitingForResponse(true);
+        const updatedDeskmate = await asyncPutDeskMate({ id: deskmate?.id, user_id: session?.user?.id, name });
+        if (updatedDeskmate?.id) {
+            setDeskmate(updatedDeskmate);
+            setUpdatePopupOpen(false);
+            setName('');
+            enqueueSnackbar(`Updated Deskmate name from ${deskmate?.name} to: ${updatedDeskmate?.name}`, { variant: 'success' });
+        }
+        else
+            setNameErrorText(updatedDeskmate.message)
         setWaitingForResponse(false);
     }
 
     const extendStreak = async () => {
+        if (!deskmate) return;
         setWaitingForResponse(true);
-        const deskmate = asyncPutDeskMateStreak(deskmate.id);
-        if (deskmate) {
-            setDeskmate(deskmate);
-            setPopupOpen(false);
+        const updatedDeskmate = await asyncPutDeskMateStreak(deskmate?.id);
+        if (updatedDeskmate?.id) {
+            setDeskmate(updatedDeskmate);
+            enqueueSnackbar(`Great job!!! Streak has been extended`, { variant: 'success' });
         }
         else
-            console.log('Failed to extend streak');
+            enqueueSnackbar(`${updatedDeskmate.message}`, { variant: 'error' });
         setWaitingForResponse(false);
     }
 
@@ -54,10 +78,13 @@ export default function TomogatchiSectionController({ session }) {
         if (isTimerRunning) {
             timer = setInterval(() => {
                 setTimerTime((prevTime) => {
+                    console.log(prevTime)
                     if (prevTime >= 15*60) {
                         clearInterval(timer);
+                        setTimerTime(0);
                         setIsTimerRunning(false);
-                        extendStreak();
+                        if (Number.parseInt(calculateDaysDiff(new Date(deskmate.last_streak), new Date(today))) >= 1)
+                            extendStreak();
                         return prevTime;
                     }
                     return prevTime + 1;
@@ -69,10 +96,24 @@ export default function TomogatchiSectionController({ session }) {
         return () => clearInterval(timer);
     }, [isTimerRunning]);
 
+    const isDeskmateAlive = async (deskmate) => {
+        if (deskmate.last_streak != null && Number.parseInt(calculateDaysDiff(new Date(deskmate.last_streak), new Date(today))) >= 5 ){
+            setJustDied(true);
+            asyncDeleteDeskMate(deskmate?.id);
+            setDeskmate(null);
+            enqueueSnackbar(`${deskmate.name} moved on due to last standing together: ${dateToString(new Date(deskmate.last_streak))}`, { variant: 'info' });
+        }
+    }
+
     const getDeskmate = async (id) => {
         setWaitingForResponse(true);
         const deskmate = await asyncGetDeskMateByUser(id);
-        setDeskmate(deskmate);
+        if (deskmate?.id){
+            setDeskmate(deskmate);
+            await isDeskmateAlive(deskmate);
+        }
+        else
+            enqueueSnackbar(`Failed to retrieve data or no Deskmate found`, { variant: 'error' });
         setWaitingForResponse(false);
     }
     React.useEffect(() => {
@@ -87,12 +128,16 @@ export default function TomogatchiSectionController({ session }) {
             timerTime={timerTime}
             isTimerRunning={isTimerRunning}
             setIsTimerRunning={setIsTimerRunning}
-            popupOpen={popupOpen}
-            setPopupOpen={setPopupOpen}
+            createPopupOpen={createPopupOpen}
+            setCreatePopupOpen={setCreatePopupOpen}
+            updatePopupOpen={updatePopupOpen}
+            setUpdatePopupOpen={setUpdatePopupOpen}
             name={name}
             setName={setName}
             nameErrorText={nameErrorText}
             onCreateNewDeskmateClick={onCreateNewDeskmateClick}
+            onUpdateDeskmateNameClick={onUpdateDeskmateNameClick}
+            justDied={justDied}
         />
     )
 }
@@ -100,8 +145,9 @@ export default function TomogatchiSectionController({ session }) {
 /* View */
 export function TomogatchiSection({ 
     waitingForResponse, deskmate, today, timerTime, 
-    isTimerRunning, setIsTimerRunning, popupOpen, setPopupOpen,
-    name, setName, nameErrorText, onCreateNewDeskmateClick
+    isTimerRunning, setIsTimerRunning, createPopupOpen, setCreatePopupOpen, 
+    updatePopupOpen, setUpdatePopupOpen, name, setName, nameErrorText, 
+    onCreateNewDeskmateClick, onUpdateDeskmateNameClick, justDied
 }) {
     return (
         <Box component='section' id='tomogatchi-section' sx={{ height: '100%', width: '100%' }}>
@@ -112,12 +158,20 @@ export function TomogatchiSection({
                 : !deskmate ? (
                     /* Create a new deskmate */
                     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center', gap: 5 }}>
-                        <Typography sx={{ maxWidth: 550, textAlign: 'center' }}>
-                            No Deskmate found. Create a new Deskmate to care for (while taking care of your own health) and compete with other colleagues and their Deskmates. 
-                        </Typography>
+                        {
+                            justDied ? (
+                                <Typography sx={{ maxWidth: 550, textAlign: 'center' }}>
+                                    After days of not standing up your Deskmate has moved on. However you can create a new one and strive to make it to the top of the ladder and compete with other colleagues and their Deskmates once again. 
+                                </Typography>
+                            ) : (
+                                <Typography sx={{ maxWidth: 550, textAlign: 'center' }}>
+                                    No Deskmate found. Create a new Deskmate to care for (while taking care of your own health) and compete with other colleagues and their Deskmates. 
+                                </Typography>
+                            )
+                        }
                         <Button
                             variant='outlined'
-                            onClick={() => setPopupOpen(true)}
+                            onClick={() => setCreatePopupOpen(true)}
                             sx={{ 
                                 height: 65,
                                 minWidth: 150,
@@ -135,7 +189,7 @@ export function TomogatchiSection({
                             sx={{ 
                                 p: 2, 
                                 height: '60%',
-                                minHeight: 550, 
+                                minHeight: 625, 
                                 display: 'flex', 
                                 flexDirection: 'column', 
                                 alignItems: 'center', 
@@ -143,7 +197,7 @@ export function TomogatchiSection({
                                 border: '2px solid',
                                 borderImage: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%) 1',
                                 transition: 'transform 0.3s ease, box-shadow 0.3s ease','&:hover': {
-                                    transform: 'translateY(-4px)',
+                                    transform: 'scale(1.02, 1.02)',
                                     boxShadow: '0 12px 24px rgba(102, 126, 234, 0.3)',
                                 },
                             }}
@@ -182,7 +236,7 @@ export function TomogatchiSection({
                                 </Typography>
                                 <Button
                                     variant='outlined'
-                                    onClick={() => setPopupOpen(true)}
+                                    onClick={() => setUpdatePopupOpen(true)}
                                     sx={{ 
                                         height: 40,
                                         minWidth: 100,
@@ -194,13 +248,15 @@ export function TomogatchiSection({
                                 </Button>
                                 <Badge
                                     badgeContent={
-                                        calculateDaysDiff(deskmate.last_streak, today) < 2 ? <SentimentSatisfiedAltRounded sx={{ width: 35, height: 35 }}/>
-                                        : calculateDaysDiff(deskmate.last_streak, today) < 5 ? <SentimentSatisfied sx={{ width: 35, height: 35 }}/>
+                                        !deskmate.last_streak ? <SentimentSatisfiedAltRounded sx={{ width: 35, height: 35 }}/>
+                                        : calculateDaysDiff(deskmate.last_streak, today) <= 2 ? <SentimentSatisfiedAltRounded sx={{ width: 35, height: 35 }}/>
+                                        : calculateDaysDiff(deskmate.last_streak, today) <= 3 ? <SentimentSatisfied sx={{ width: 35, height: 35 }}/>
                                         : <SentimentVeryDissatisfied sx={{ width: 35, height: 35 }}/>
                                     } 
                                     color={
-                                        calculateDaysDiff(deskmate.last_streak, today) < 2 ? 'success' 
-                                        : calculateDaysDiff(deskmate.last_streak, today) < 5 ? 'warning' 
+                                        !deskmate.last_streak ? 'success' 
+                                        : calculateDaysDiff(deskmate.last_streak, today) <= 2 ? 'success' 
+                                        : calculateDaysDiff(deskmate.last_streak, today) <= 3 ? 'warning' 
                                         : 'error'
                                     }
                                     sx={{
@@ -231,7 +287,7 @@ export function TomogatchiSection({
                             sx={{ 
                                 p: 4, 
                                 height: '60%',
-                                minHeight: 550,
+                                minHeight: 625, 
                                 display: 'flex', 
                                 flexDirection: 'column', 
                                 justifyContent: 'top',
@@ -240,20 +296,20 @@ export function TomogatchiSection({
                                 border: '2px solid',
                                 borderImage: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%) 1',
                                 transition: 'transform 0.3s ease, box-shadow 0.3s ease','&:hover': {
-                                    transform: 'translateY(-4px)',
+                                    transform: 'scale(1.02, 1.02)',
                                     boxShadow: '0 12px 24px rgba(102, 126, 234, 0.3)',
                                 },
                             }}
                         >
                             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
                                 <Typography variant='h4'>
-                                    { deskmate.last_streak ? Number.parseInt(calculateDaysDiff(new Date(deskmate.last_streak), new Date(today))) < 2 ? 'I am happy, let\'s keep it up!'
-                                    : Number.parseInt(calculateDaysDiff(new Date(deskmate.last_streak), new Date(today))) < 5 ? 'We are okay, but we should stand up again soon.'
+                                    { deskmate.last_streak ? Number.parseInt(calculateDaysDiff(new Date(deskmate.last_streak), new Date(today))) <= 1 ? 'I am happy, let\'s keep it up!'
+                                    : Number.parseInt(calculateDaysDiff(new Date(deskmate.last_streak), new Date(today))) <= 2 ? 'We are okay, but we should stand up again soon.'
                                     : 'I am sad... please stand up with me!' : 'Let\'s start our first stand up together!'}
                                 </Typography>
                                 { /* Todays streak status */ }
                                 <Typography variant='h6'>
-                                    { Number.parseInt(calculateDaysDiff(new Date(deskmate.last_streak), new Date(today))) < 1 ? 'You have already stood up today. Great job!' : 'You have not stood up today yet. Let\'s do it together!' }
+                                    { Number.parseInt(calculateDaysDiff(new Date(deskmate.last_streak), new Date(today))) <= 1 ? 'You have already stood up today. Great job!' : 'You have not stood up today yet. Let\'s do it together!' }
                                     {
                                         deskmate.last_streak != null && new Date(deskmate.last_streak).getDate() == new Date(today).getDate() ?
                                         <Whatshot sx={{ height: 20 }} /> : null
@@ -277,7 +333,7 @@ export function TomogatchiSection({
                                     valueMax={15*60}
                                     min={0}
                                     max={15}
-                                    text={(value) =>`${value.value >= 15*60 ? '+1 Streak' : ((value.value / 60) > 10 ? Number.parseInt((value.value / 60)) : '0' + Number.parseInt((value.value / 60))) + ':' + ((value.value % 60) > 10 ? (value.value % 60) : '0' + (value.value % 60)) + '0'.slice(String(value.value % 60).length) + ' / 15:00'}`}
+                                    text={(value) =>`${value.value >= 15*60 ? Number.parseInt(calculateDaysDiff(new Date(deskmate.last_streak), new Date(today))) >= 1 ? '+1 Streak' : 'Finished' : ((value.value / 60) > 10 ? Number.parseInt((value.value / 60)) : '0' + Number.parseInt((value.value / 60))) + ':' + ((value.value % 60) > 10 ? (value.value % 60) : '0' + (value.value % 60)) + '0'.slice(String(value.value % 60).length) + ' / 15:00'}`}
                                 >
                                 </Gauge>
                                 <Button
@@ -298,10 +354,10 @@ export function TomogatchiSection({
                     
                 )
             }
-            <ChangeValuePopout header={!deskmate ? 'Name Deskmate' : 'Change ' + deskmate.name} onSaveClick={onCreateNewDeskmateClick} isOpen={popupOpen} setIsOpen={setPopupOpen}>
+            <GenericPopout header={'Name Deskmate'} onSaveClick={onCreateNewDeskmateClick} isOpen={createPopupOpen} setIsOpen={setCreatePopupOpen}>
                 <TextField
                     component='div'
-                    id='deskmate-info-name-textfield'
+                    id='deskmate-info-new-name-textfield'
                     error={nameErrorText == '' ? false : true}
                     label='Name'
                     value={name} 
@@ -310,7 +366,20 @@ export function TomogatchiSection({
                     variant='outlined'
                     sx={{ width: '100%', m: 1 }} 
                 />
-            </ChangeValuePopout>
+            </GenericPopout>
+            <GenericPopout header={deskmate ? 'Change ' + deskmate.name : ''} onSaveClick={onUpdateDeskmateNameClick} isOpen={updatePopupOpen} setIsOpen={setUpdatePopupOpen}>
+                <TextField
+                    component='div'
+                    id='deskmate-info-update-name-textfield'
+                    error={nameErrorText == '' ? false : true}
+                    label='Name'
+                    value={name} 
+                    onChange={e => setName(e.target.value)} 
+                    helperText={nameErrorText}
+                    variant='outlined'
+                    sx={{ width: '100%', m: 1 }} 
+                />
+            </GenericPopout>
         </Box>
     )
 }
