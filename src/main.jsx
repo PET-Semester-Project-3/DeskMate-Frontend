@@ -13,6 +13,7 @@ import AboutPage from './pages/about/AboutPage';
 import HowToUsePage from './pages/howtouse/HowToUsePage';
 import ProfilePage from './pages/profile/ProfilePage';
 import DeskMatePage from './pages/deskmate/DeskMatePage';
+import SchedulePage from './pages/schedule/SchedulePage';
 import theme from './theme';
 
 
@@ -55,6 +56,10 @@ const router = createBrowserRouter([
           {
             path: 'deskmate',
             Component: DeskMatePage
+          },
+          {
+            path: 'schedule',
+            Component: SchedulePage
           },
         ]
       }
