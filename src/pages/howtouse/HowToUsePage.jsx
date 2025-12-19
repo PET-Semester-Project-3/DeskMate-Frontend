@@ -129,11 +129,10 @@ export function HowToUsePage({ navigate }) {
                         borderLeft: '4px solid #8b5cf6'
                     }}
                 >
-                    On this page multiple users will be shown. <br/>
-                    This page will show every user and clicking on them will open the adjust permissions and desk access popup. <br/>
-                    It is also possible to delete and create users on this page.
-                    <b>Without Database Permission: </b> Have access to adjust all their own desks and permissions and <b>cannot</b> adjust their own permissions.<br/>
-                    <b>With Database Permission: </b> Have access to adjust all desks and permissions and can also adjust their own permissions.<br/>
+                    On this page multiple desks will be shown. <br/>
+                    This page will show every desk that is being administratet, and will show more information about the individual desk. <br/>
+                    This info includes the manufacture, the current position, how many times it has been activated, etc. <br/>
+                    If a desk is reporting an error, this is where the details of said error will be shown.
                 </Box>
             </Box>
     
@@ -151,10 +150,11 @@ export function HowToUsePage({ navigate }) {
                         borderLeft: '4px solid #5ccaf6ff'
                     }}
                 >
-                    On this page multiple desks will be shown. <br/>
-                    This page will show every desk that is being administratet, and will show more information about the individual desk. <br/>
-                    This info includes the manufacture, the current position, how many times it has been activated, etc. <br/>
-                    If a desk is reporting an error, this is where the details of said error will be shown.
+                    On this page multiple users will be shown. <br/>
+                    This page will show every user and clicking on them will open the adjust permissions and desk access popup. <br/>
+                    It is also possible to delete and create users on this page.
+                    <b>Without Database Permission: </b> Have access to adjust all their own desks and permissions and <b>cannot</b> adjust their own permissions.<br/>
+                    <b>With Database Permission: </b> Have access to adjust all desks and permissions and can also adjust their own permissions.<br/>
                 </Box>
             </Box>
 
