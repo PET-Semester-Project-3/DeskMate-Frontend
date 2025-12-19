@@ -8,8 +8,8 @@ export default function UserPopoutController({ user, popupOpen, setPopupOpen, on
 
     const permissionItems = [
         {
-            id: 'sides',
-            label: 'Sides',
+            id: 'sites',
+            label: 'Sites',
             children: permissions.sort((a, b) => a.label > b.label ? 1 : -1).map(permission => ({
                 id: permission.id,
                 label: permission.label,
