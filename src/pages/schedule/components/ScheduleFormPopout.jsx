@@ -63,6 +63,8 @@ export default function ScheduleFormPopoutController({
   const validateForm = () => {
     const newErrors = {};
     if (!formData.deskId) newErrors.deskId = 'Desk is required';
+    const selectedDesk = desks.find(d => d.id === formData.deskId);
+    if (selectedDesk && !selectedDesk.is_online) newErrors.deskId = 'Cannot schedule for offline desk';
     if (!formData.new_height) newErrors.new_height = 'Height is required';
     if (!formData.scheduled_at) newErrors.scheduled_at = 'Schedule time is required';
     if (formData.scheduled_at && formData.scheduled_at.isBefore(dayjs())) {
@@ -209,6 +211,7 @@ export function ScheduleFormPopout({
             <Slider
               value={formData.new_height}
               onChange={(_, value) => onFieldChange('new_height', value)}
+              disabled={selectedDesk && !selectedDesk.is_online}
               min={60}
               max={130}
               valueLabelDisplay="auto"
@@ -253,6 +256,7 @@ export function ScheduleFormPopout({
             <Button
               variant="contained"
               onClick={onSave}
+              disabled={selectedDesk && !selectedDesk.is_online}
               sx={{
                 bgcolor: '#10b981',
                 '&:hover': { bgcolor: '#059669' },
