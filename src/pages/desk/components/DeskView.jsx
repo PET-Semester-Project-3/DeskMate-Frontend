@@ -13,12 +13,13 @@ import {
   IconButton,
   Snackbar,
   CircularProgress,
+  Button
 } from '@mui/material';
-import CheckIcon from '@mui/icons-material/Check';
-import EditIcon from '@mui/icons-material/Edit';
+import { StarBorder, Star, Edit, Check } from '@mui/icons-material';
 import deskImage from '../../../assets/desk.png';
 import { asyncPutDesk, asyncSetDeskHeight } from '../../../models/api-comm/APIDesk';
 import { APIError } from '../../../models/api-comm/APIComm';
+import { useSnackbar } from 'notistack';
 
 /**
  * Get user-friendly error message based on error code
@@ -42,7 +43,10 @@ function getErrorMessage(err) {
 }
 
 /* Controller */
-export default function DeskViewController({ desk }) {
+export default function DeskViewController({ desk, setMainDesk }){
+
+  const { enqueueSnackbar } = useSnackbar();
+
   const [deskName, setDeskName] = React.useState(desk.name);
   const [tempName, setTempName] = React.useState(desk.name);
   const [isEditingName, setIsEditingName] = React.useState(false);
@@ -56,7 +60,11 @@ export default function DeskViewController({ desk }) {
 
   const handleNameConfirm = async () => {
     setDeskName(tempName);
-    await asyncPutDesk(desk.id, { name: tempName });
+    const updatedDesk = await asyncPutDesk(desk.id, { name: tempName });
+    if (updatedDesk.id)
+      enqueueSnackbar(`Changed ${desk.name} to: ${tempName}`, { variant: 'success' });
+    else
+      enqueueSnackbar(`${updatedDesk.message}`, { variant: 'error' });
     setIsEditingName(false);
   };
 
@@ -66,7 +74,11 @@ export default function DeskViewController({ desk }) {
 
   const handleSwitchChange = async (_, newValue) => {
     setIsOnline(newValue);
-    await asyncPutDesk(desk.id, { is_online: newValue });
+    const updatedDesk = await asyncPutDesk(desk.id, { is_online: newValue });
+    if (updatedDesk.id)
+      enqueueSnackbar(`${desk.name}'s online state to: ${newValue ? 'online' : 'offline'}`, { variant: 'info' });
+    else
+      enqueueSnackbar(`${updatedDesk.message}`, { variant: 'error' });
   };
 
   const handleHeightCommit = async (_, newValue) => {
@@ -77,6 +89,7 @@ export default function DeskViewController({ desk }) {
       await asyncSetDeskHeight(desk.id, newValue);
       // On success, update the previous height to the new confirmed value
       setPreviousHeight(newValue);
+      enqueueSnackbar(`${desk.name}'s height set to: ${newValue}`, { variant: 'info' });
     } catch (err) {
       console.error('Failed to set desk height:', err);
 
@@ -98,6 +111,12 @@ export default function DeskViewController({ desk }) {
     setError(null);
   };
 
+  const handleSaveAll = () => {
+    handleNameConfirm();
+    handleHeightCommit(null, height);
+    handleSwitchChange(null, isOnline);
+  };
+
   return (
     <DeskView
       deskName={deskName}
@@ -115,6 +134,8 @@ export default function DeskViewController({ desk }) {
       handleNameConfirm={handleNameConfirm}
       handleNameEdit={handleNameEdit}
       handleErrorClose={handleErrorClose}
+      handleSaveAll={handleSaveAll}
+      setMainDesk={setMainDesk}
     />
   );
 }
@@ -136,6 +157,8 @@ export function DeskView({
   handleNameConfirm,
   handleNameEdit,
   handleErrorClose,
+  handleSaveAll,
+  setMainDesk,
 }) {
   return (
     <Card component='div' id='desk-view' sx={{ pt: 3, width: 700 }}>
@@ -146,13 +169,14 @@ export function DeskView({
             {/* Desk Name */}
             <Box component='span' id='desk-view-left-panel-desk-container' sx={{ display: 'flex', gap: 1, alignItems: 'flex-start' }}>
               <TextField
-                component='form'
+                component='div'
                 id='desk-view-left-panel-desk-name-textfield'
                 label="Desk Name"
                 value={isEditingName ? tempName : deskName}
                 onChange={(e) => setTempName(e.target.value)}
                 fullWidth
                 variant="outlined"
+                onKeyUp={e => { if (e.key == "Enter") handleNameConfirm(); }}
                 disabled={!isEditingName}
               />
               {isEditingName ? (
@@ -163,7 +187,7 @@ export function DeskView({
                   onClick={handleNameConfirm}
                   sx={{ mt: 1 }}
                 >
-                  <CheckIcon id='desk-view-left-panel-desk-name-check-icon' />
+                  <Check id='desk-view-left-panel-desk-name-check-icon' />
                 </IconButton>
               ) : (
                 <IconButton
@@ -173,7 +197,7 @@ export function DeskView({
                   onClick={handleNameEdit}
                   sx={{ mt: 1 }}
                 >
-                  <EditIcon id='desk-view-left-panel-desk-name-icon-edit' />
+                  <Edit id='desk-view-left-panel-desk-name-icon-edit' />
                 </IconButton>
               )}
             </Box>
@@ -194,7 +218,7 @@ export function DeskView({
                 )}
               </Box>
               <Slider
-                component='form'
+                component='div'
                 id='desk-view-left-panel-height-slider'
                 value={height}
                 onChange={setHeight}
@@ -212,7 +236,7 @@ export function DeskView({
               id='desk-view-left-panel-power-container'
               control={
                 <Switch
-                  component='form'
+                  component='div'
                   id='desk-view-left-panel-power-switch'
                   checked={isOnline}
                   onChange={setIsOnline}
@@ -240,15 +264,32 @@ export function DeskView({
 
         {/* Right Panel - Desk Visualization */}
         <Grid component='section' id='desk-view-grid-right-panel' item xs={12} md={6}>
-          <img
-            id='desk-view-grid-right-panel-desk-image'
-            src={deskImage}
-            alt="Desk"
-            style={{
-              maxWidth: '300px',
-              height: 'auto',
-            }}
-          />
+          <Box component='div' id='desk-view-right-panel-desk-image-container' sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+            <img
+              id='desk-view-grid-right-panel-desk-image'
+              src={deskImage}
+              alt="Desk"
+              style={{
+                maxWidth: '275px',
+                height: 'auto',
+              }}
+            />
+            <IconButton
+              component='div'
+              id='desk-view-right-panel-favorite-desk-button'
+              onClick={() => setMainDesk(desk)}
+              sx={{ top: -275, right: -150 }}
+            >
+              {desk.isFavorit ? <Star id='desk-view-right-panel-favorite-desk-star-icon' /> : <StarBorder id='desk-view-right-panel-favorite-desk-starborder-icon' />}
+            </IconButton>
+            <Button
+              variant='contained'
+              sx={{ top: -15, right: -115 }}
+              onClick={handleSaveAll}
+            >
+              Ensure Save
+            </Button>
+          </Box>
         </Grid>
       </Grid>
 

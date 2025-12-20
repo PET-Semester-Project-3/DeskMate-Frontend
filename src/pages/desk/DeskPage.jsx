@@ -1,36 +1,71 @@
 import * as React from 'react';
 import RestrictedPage from '../restricted/RestrictedPage'
-import { Box, Typography, Stack, CircularProgress } from '@mui/material';
+import { Box, Typography, CircularProgress } from '@mui/material';
 import useSession from '../../models/SessionContext';
 import DeskView from './components/DeskView';
-import { asyncGetUserDesks } from '../../models/api-comm/APIUsers'
+import { asyncGetUserDesks, asyncPutUser } from '../../models/api-comm/APIUsers'
+import { useSnackbar } from 'notistack';
 
 
 /* Controller */
 export default function DeskPageController() {
   
+  const { enqueueSnackbar } = useSnackbar();
+
   const [waitingForResponse, setWaitingForResponse] = React.useState(false);
 
   const [desks, setDesks] = React.useState([]);
-  const { session } = useSession();
+  const { session, setSession } = useSession();
+
+  const setMainDesk = async (desk) => {
+    const newMainDeskId = session.user.main_desk_id != desk.id ? desk.id : null;
+    const updatedUser = await asyncPutUser({ id: session.user.id, main_desk_id: newMainDeskId });
+    if (updatedUser.id) {
+      setSession(prev => ({...prev, user: { ...prev.user, main_desk_id: newMainDeskId }}));
+      if (newMainDeskId)
+        enqueueSnackbar(`Favorited ${desk.name}`, { variant: 'success' });
+      else
+        enqueueSnackbar(`Removed favorit ${desk.name}`, { variant: 'info' });
+    }
+    else 
+      enqueueSnackbar(`${updatedUser.message}`, { variant: 'error' });
+  }
 
   React.useEffect(() => {
     const getDesks = async (id) => {
       setWaitingForResponse(true);
-      const desks = await asyncGetUserDesks(id);
-      setDesks(desks);
+      var desks = await asyncGetUserDesks(id);
+      if (desks.length){
+        desks = desks.map(desk => {
+          return {
+            ...desk,
+            isFavorit: desk.id == session?.user?.main_desk_id
+          }
+        })
+        setDesks(desks);
+      }
+      else
+        enqueueSnackbar(`Failed to retrieve data`, { variant: 'error' });
       setWaitingForResponse(false);
     }
     getDesks(session?.user?.id);
-  }, [session?.user?.id]);
+  }, [session?.user]);
 
   return (
-    <RestrictedPage Page={<DeskPage userDesks={desks} waitingForResponse={waitingForResponse} />} />
+    <RestrictedPage 
+      Page={
+        <DeskPage 
+          userDesks={desks}
+          setMainDesk={setMainDesk}
+          waitingForResponse={waitingForResponse} 
+        />
+      } 
+    />
   )
 }
 
 /* View */
-export function DeskPage({ userDesks, waitingForResponse }) {
+export function DeskPage({ userDesks, setMainDesk, waitingForResponse }) {
   return (
     <Box component='main' id='desk-page'>
       <Typography
@@ -61,7 +96,7 @@ export function DeskPage({ userDesks, waitingForResponse }) {
           :
           <Box component='section' id='user-desks-list' sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', width: '100%', gap: 5, justifyContent: 'center' }} >
             {userDesks.map(desk => (
-              <DeskView id={'user-desk-' + desk.id} key={desk.id} desk={desk} />
+              <DeskView id={'user-desk-' + desk.id} key={desk.id} desk={desk} setMainDesk={setMainDesk} />
             ))}
           </Box>
         ) : (
