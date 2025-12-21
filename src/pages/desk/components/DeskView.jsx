@@ -83,7 +83,7 @@ export default function DeskViewController({ desk, setMainDesk }){
       setTempName={setTempName}
       setHeight={handleHeightChange}
       setHeightCommit={handleHeightCommit}
-      setIsOnline={handleSwitchChange}
+      setIsOnline={setIsOnline}
       handleNameConfirm={handleNameConfirm}
       handleNameEdit={handleNameEdit}
       handleSaveAll={handleSaveAll}
@@ -95,7 +95,7 @@ export default function DeskViewController({ desk, setMainDesk }){
 /* View */
 export function DeskView({ deskName, desk, tempName, isEditingName, height, isOnline, setTempName, setHeight, setHeightCommit, setIsOnline, handleNameConfirm, handleNameEdit, handleSaveAll, setMainDesk }) {
   return (
-    <Card component='div' id='desk-view' sx={{ pt: 3, width: 700 }}>
+    <Card component='div' id='desk-view' sx={{ pt: 3, minWidth: 700 }}>
       <Grid component='section' id='desk-view-grid' container spacing={4}>
         {/* Left Panel - Controls */}
         <Grid component='section' id='desk-view-grid-left-panel' item xs={12} md={6}>
@@ -118,7 +118,7 @@ export function DeskView({ deskName, desk, tempName, isEditingName, height, isOn
                   component='button'
                   id='desk-view-left-panel-desk-name-edit-check-button'
                   color="primary"
-                  onClick={handleNameConfirm}
+                  //onClick={handleNameConfirm}
                   sx={{ mt: 1 }}
                 >
                   <Check id='desk-view-left-panel-desk-name-check-icon' />
@@ -149,7 +149,7 @@ export function DeskView({ deskName, desk, tempName, isEditingName, height, isOn
                 id='desk-view-left-panel-height-slider'
                 value={height}
                 onChange={setHeight}
-                onChangeCommitted={setHeightCommit}
+                //onChangeCommitted={setHeightCommit}
                 min={60}
                 max={130}
                 valueLabelDisplay="auto"
@@ -165,7 +165,7 @@ export function DeskView({ deskName, desk, tempName, isEditingName, height, isOn
                   component='div'
                   id='desk-view-left-panel-power-switch'
                   checked={isOnline}
-                  onChange={setIsOnline}
+                  onChange={() => setIsOnline(!isOnline)}
                   color="primary"
                 />
               }
@@ -210,10 +210,10 @@ export function DeskView({ deskName, desk, tempName, isEditingName, height, isOn
             </IconButton>
             <Button 
               variant='contained' 
-              sx={{ top: -15, right: -115 }}
+              sx={{ top: -15, right: -140 }}
               onClick={handleSaveAll}
             >
-              Ensure Save
+              Save
             </Button>
           </Box>
         </Grid>
