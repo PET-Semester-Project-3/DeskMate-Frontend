@@ -6,7 +6,6 @@ import WarningIcon from '@mui/icons-material/Warning';
 import dayjs from 'dayjs';
 import { asyncGetUserDesks } from '../../models/api-comm/APIUsers';
 import useSession from '../../models/SessionContext';
-import dayjs from 'dayjs';
 import { useSnackbar } from 'notistack';
 
 
@@ -23,7 +22,7 @@ export default function DashboardPageController() {
   const total_counter = [0, 0];
 
   desks.map(desk => (
-    total_counter[0] += desk.last_data.activationCounter,
+    total_counter[0] += desk.last_data.activationsCounter,
     total_counter[1] += desk.last_data.sitStandCounter
   ));
 
@@ -230,7 +229,7 @@ export function DashboardPage({ desks, session, total, waitingForResponse }) {
                         component=''
                         id={'dashboard-error-list-' + desk.id}
                         sx={{
-                          bgcolor: 'primary'
+                          bgcolor: 'primary',
                           borderRadius: 2,
                           width: 250,
                           p: 2,
@@ -345,7 +344,7 @@ export function DashboardPage({ desks, session, total, waitingForResponse }) {
                   yAxis={[{
                     tickMinStep: 5,
                     min: 1,
-                    max: [desk.last_data.activationCounter + 5],
+                    max: [desk.last_data.activationsCounter + 5],
                   }]}
                   series={
                     [
@@ -353,7 +352,7 @@ export function DashboardPage({ desks, session, total, waitingForResponse }) {
                         barLabel: 'value',
                         barLabelPlacement: 'outside', 
                         color: 'rgba(0, 150, 250, 0.5)', 
-                        data: [desk.last_data.activationCounter]
+                        data: [desk.last_data.activationsCounter]
                       },
 
                       {label: 'Sit/Stand', 
@@ -374,7 +373,7 @@ export function DashboardPage({ desks, session, total, waitingForResponse }) {
                   width={250} 
                   height={100} 
                   value={desk.last_data.sitStandCounter}
-                  valueMax={desk.last_data.activationCounter}
+                  valueMax={desk.last_data.activationsCounter}
                   startAngle={-90} 
                   endAngle={90}
                   text={({ value, valueMax }) => `${value} / ${valueMax}`}

@@ -203,7 +203,7 @@ export function DeskCard({ desk, anchorEl, isOnline, handleClick, handleClose, h
               Activation Count:
             </Typography>
             <Typography component='p' id='desk-details-activationcount-value' variant="body2" fontWeight="medium">
-              {desk.last_data.activationCounter}
+              {desk.last_data.activationsCounter}
             </Typography>
           </Box>
 
