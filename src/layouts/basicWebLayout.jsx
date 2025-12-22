@@ -16,11 +16,11 @@ export default function LayoutController() {
 }
 
 /* View */
-export function Layout({ widowHeight, widowWidth }) {
+export function Layout({ widowHeight }) {
   return (
-    <Box component='main' id='basic-web-layout' >
+    <Box component='main' id='basic-web-layout' sx={{ display: 'flex', flexDirection: 'column' }} >
       <NavBar/>
-      <Box component='section' id='basic-web-layout-page-container' sx={{ p: 3, pt: 18, minHeight: widowHeight-275 }} >
+      <Box component='section' id='basic-web-layout-page-container' sx={{ display: 'flex', p: 3, pt: 18, minHeight: widowHeight }} >
           <Outlet />
       </Box>
       <Footer/>

@@ -1,15 +1,19 @@
 import * as React from 'react';
 import RestrictedPage from '../restricted/RestrictedPage'
-import { Typography, Box, Card } from '@mui/material';
+import { Typography, Box, Card, CircularProgress } from '@mui/material';
 import { BarChart, Gauge, gaugeClasses } from '@mui/x-charts';
 import WarningIcon from '@mui/icons-material/Warning';
 import dayjs from 'dayjs';
 import { asyncGetUserDesks } from '../../models/api-comm/APIUsers';
 import useSession from '../../models/SessionContext';
+import dayjs from 'dayjs';
+import { useSnackbar } from 'notistack';
 
 
 /* Controller */
 export default function DashboardPageController() {
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const [waitingForResponse, setWaitingForResponse] = React.useState(false);
 
@@ -27,20 +31,29 @@ export default function DashboardPageController() {
     async function getDesks(id) {
       setWaitingForResponse(true);
       const desks = await asyncGetUserDesks(id);
-      setDesks(desks);
+      if (desks.length)
+        setDesks(desks);
+      else
+        enqueueSnackbar(`Failed to retrieve data`, { variant: 'error' });
       setWaitingForResponse(false);
     }
     getDesks(session?.user?.id);
   }, []);
 
-  return (<RestrictedPage Page={<DashboardPage desks={desks} session={session} total={total_counter} />} />)
-
+  return (
+    <DashboardPage 
+      desks={desks} 
+      session={session}
+      total={total_counter}
+      waitingForResponse={waitingForResponse}
+    />
+  )
 }
 
 /* View */
-export function DashboardPage({ desks, session, total }) {
+export function DashboardPage({ desks, session, total, waitingForResponse }) {
   return (
-    <Box id='dashboard-page' sx={{ boxShadow: 2 }}>
+    <Box id='dashboard-page' sx={{ width: '100%' }}>
       <Typography
         variant="h4"
         sx={{
@@ -110,23 +123,29 @@ export function DashboardPage({ desks, session, total }) {
             flexDirection: 'row',
             gap: 3
           }}>
-            {desks.map(desk => (
-                <Card 
-                  component=''
-                  id={'dashboard-desk-position-value-' + desk.id}
-                  sx={{
-                    bgcolor: 'primary)',
-                    borderRadius: 2,
-                    width: 250,
-                    p: 2,
-                    mt: 2,
-                    mb: 2
-                  }}
-                >
-                  {desk.name} <br/>
-                  Current height: {desk.last_data.height} cm
-                </Card>
-              ))}
+            {
+              !waitingForResponse ? (
+                desks.map(desk => (
+                  <Card 
+                    component=''
+                    id={'dashboard-desk-position-value-' + desk.id}
+                    sx={{
+                      bgcolor: 'primary',
+                      borderRadius: 2,
+                      width: 250,
+                      p: 2,
+                      mt: 2,
+                      mb: 2
+                    }}
+                  >
+                    {desk.name} <br/>
+                    Current height: {desk.last_data.height} cm
+                  </Card>
+                ))
+              ) : (
+                <CircularProgress />
+              )
+            }
           </Box>
         </Box>
       </Box>
@@ -173,76 +192,82 @@ export function DashboardPage({ desks, session, total }) {
               flexDirection: 'row',
               gap: 3
             }}>
-              { (desks.length > 0) ? (
-                desks.map(desk => (
+              {
+                !waitingForResponse ? (
+                  (desks.length > 0) ? (
+                    desks.map(desk => (
 
-                  desk.last_data.errors ? (
-                    <Card
-                      component=''
-                      id={'dashboard-error-list-' + desk.id}
-                      sx={{
-                        bgcolor: 'rgba(250, 10, 10, 0.2)',
-                        borderLeft: '4px solid rgba(250, 50, 50, 0.75)',
-                        borderRadius: 2,
-                        width: 250,
-                        p: 2,
-                        mt: 2,
-                        mb: 2
-                      }}
-                    >
-                      {desk.name} <br/>
-                      {desk.last_data.errors.map(error =>(
-                        
-                        <Typography
-                        component='p'
-                        id={'dashboard-error-list-' + desk.id + error}
-                        color='warning'
+                      desk.last_data.errors ? (
+                        <Card
+                        component=''
+                        id={'dashboard-error-list-' + desk.id}
+                        sx={{
+                          bgcolor: 'rgba(250, 10, 10, 0.2)',
+                          borderLeft: '4px solid rgba(250, 50, 50, 0.75)',
+                          borderRadius: 2,
+                          width: 250,
+                          p: 2,
+                          mt: 2,
+                          mb: 2
+                        }}
                         >
-                          <WarningIcon id='dasboard-error-list-warning-icon' sx={{mr: 1}}/>
-                          {error} <br/>
-                        </Typography>
+                          {desk.name} <br/>
+                          {desk.last_data.errors.map(error =>(
+                            
+                            <Typography
+                            component='p'
+                            id={'dashboard-error-list-' + desk.id + error}
+                            color='warning'
+                            >
+                              <WarningIcon id='dasboard-error-list-warning-icon'/>
+                              {error} <br/>
+                            </Typography>
 
-                      ))}
-                    </Card>
+                          ))}
+                        </Card>
+                      ) : (
+                        <Card
+                        component=''
+                        id={'dashboard-error-list-' + desk.id}
+                        sx={{
+                          bgcolor: 'primary'
+                          borderRadius: 2,
+                          width: 250,
+                          p: 2,
+                          mt: 2,
+                          mb: 2
+                        }}
+                        >
+                          {desk.name}
+
+                          <Typography
+                          component='p'
+                          id='dashboard-error-list-no-errors'
+                          sx={{
+                            color: 'rgba(0, 250, 0, 0.5)'
+                          }}
+                          >
+                            No errors was detected.<br/>
+                          </Typography>
+                        </Card>
+                      )
+                      
+                    ))
                   ) : (
-                    <Card
-                    component=''
-                    id={'dashboard-error-list-' + desk.id}
+                    <Typography
+                    component='p'
+                    id='dashboard-error-list-no-desks'
                     sx={{
-                      bgcolor: 'primary',
-                      borderRadius: 2,
-                      width: 250,
-                      p: 2,
-                      mt: 2,
-                      mb: 2
+                      color: 'rgba(250, 0, 0, 1)'
                     }}
                     >
-                      {desk.name}
-
-                      <Typography
-                      component='p'
-                      id='dashboard-error-list-no-errors'
-                      sx={{
-                        color: 'rgba(0, 250, 0, 0.5)'
-                      }}
-                      >
-                        No errors was detected.<br/>
-                      </Typography>
-                    </Card>
+                      No desks has been detected. Please contact an administrator for help.
+                    </Typography>
                   )
-                  
-                ))
-              ) : (
-                <Typography
-                component='p'
-                id='dashboard-error-list-no-desks'
-                sx={{
-                  color: 'rgba(250, 0, 0, 1)'
-                }}
-                >
-                  No desks has been detected. Please contact an administrator for help.
-                </Typography>
-              )}
+                ) : (
+                  <CircularProgress />
+                )
+              }
             </Box>
 
         </Box>

@@ -11,7 +11,7 @@ export default function AboutPageController() {
 /* View */
 export function AboutPage() {
     return (
-        <Box component='main' id='about-page' sx={{ boxShadow: 2}}>
+        <Box component='main' id='about-page' sx={{ width: '100%' }}>
 
             <Typography
                 component='h4'
@@ -29,7 +29,7 @@ export function AboutPage() {
                 component='section'
                 id='about-page-text-container'
                 sx={{
-                    bgcolor: 'rgba(102, 126, 234, 0.1)',
+                    bgcolor: '#667eea23',
                     borderRadius: 2,
                     p: 2,
                     mb: 3,

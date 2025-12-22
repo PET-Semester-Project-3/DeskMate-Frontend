@@ -11,24 +11,60 @@ import {
   Grid,
   Stack,
   IconButton,
+  Snackbar,
+  CircularProgress,
+  Button
 } from '@mui/material';
-import CheckIcon from '@mui/icons-material/Check';
-import EditIcon from '@mui/icons-material/Edit';
+import { StarBorder, Star, Edit, Check } from '@mui/icons-material';
 import deskImage from '../../../assets/desk.png';
-import { asyncPutDesk } from '../../../models/api-comm/APIDesk';
+import { asyncPutDesk, asyncSetDeskHeight } from '../../../models/api-comm/APIDesk';
+import { APIError } from '../../../models/api-comm/APIComm';
+import { useSnackbar } from 'notistack';
+
+/**
+ * Get user-friendly error message based on error code
+ */
+function getErrorMessage(err) {
+  if (err instanceof APIError) {
+    switch (err.code) {
+      case 'SIMULATOR_TIMEOUT':
+        return 'The desk did not respond in time. Please try again.';
+      case 'SIMULATOR_UNAVAILABLE':
+        return 'Unable to communicate with the desk. Please check if it is powered on.';
+      case 'HEIGHT_OUT_OF_RANGE':
+        return `Height must be between ${err.details?.min || 68}cm and ${err.details?.max || 132}cm.`;
+      case 'NETWORK_ERROR':
+        return 'Network error. Please check your internet connection.';
+      default:
+        return err.message || 'Failed to adjust desk height. Please try again.';
+    }
+  }
+  return 'An unexpected error occurred. Please try again.';
+}
 
 /* Controller */
-export default function DeskViewController({ desk }){
+export default function DeskViewController({ desk, setMainDesk }){
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const [deskName, setDeskName] = React.useState(desk.name);
   const [tempName, setTempName] = React.useState(desk.name);
   const [isEditingName, setIsEditingName] = React.useState(false);
   const [height, setHeight] = React.useState(desk.last_data.height);
+  const [previousHeight, setPreviousHeight] = React.useState(desk.last_data.height);
   const [isOnline, setIsOnline] = React.useState(desk.is_online);
+
+  // Error and loading states
+  const [error, setError] = React.useState(null);
+  const [isHeightLoading, setIsHeightLoading] = React.useState(false);
 
   const handleNameConfirm = async () => {
     setDeskName(tempName);
-    await asyncPutDesk(desk.id, { name: tempName });
+    const updatedDesk = await asyncPutDesk(desk.id, { name: tempName });
+    if (updatedDesk.id)
+      enqueueSnackbar(`Changed ${desk.name} to: ${tempName}`, { variant: 'success' });
+    else
+      enqueueSnackbar(`${updatedDesk.message}`, { variant: 'error' });
     setIsEditingName(false);
   };
 
@@ -38,16 +74,47 @@ export default function DeskViewController({ desk }){
 
   const handleSwitchChange = async (_, newValue) => {
     setIsOnline(newValue);
-    await asyncPutDesk(desk.id, { is_online: newValue });
+    const updatedDesk = await asyncPutDesk(desk.id, { is_online: newValue });
+    if (updatedDesk.id)
+      enqueueSnackbar(`${desk.name}'s online state to: ${newValue ? 'online' : 'offline'}`, { variant: 'info' });
+    else
+      enqueueSnackbar(`${updatedDesk.message}`, { variant: 'error' });
   };
 
   const handleHeightCommit = async (_, newValue) => {
-    desk.last_data.height = newValue;
-    await asyncPutDesk(desk.id,  { last_data: desk.last_data });
+    setIsHeightLoading(true);
+    setError(null);
+
+    try {
+      await asyncSetDeskHeight(desk.id, newValue);
+      // On success, update the previous height to the new confirmed value
+      setPreviousHeight(newValue);
+      enqueueSnackbar(`${desk.name}'s height set to: ${newValue}`, { variant: 'info' });
+    } catch (err) {
+      console.error('Failed to set desk height:', err);
+
+      // Rollback to previous height on failure
+      setHeight(previousHeight);
+
+      // Set user-friendly error message
+      setError(getErrorMessage(err));
+    } finally {
+      setIsHeightLoading(false);
+    }
   };
 
   const handleNameEdit = () => {
     setIsEditingName(true);
+  };
+
+  const handleErrorClose = () => {
+    setError(null);
+  };
+
+  const handleSaveAll = () => {
+    handleNameConfirm();
+    handleHeightCommit(null, height);
+    handleSwitchChange(null, isOnline);
   };
 
   return (
@@ -58,20 +125,43 @@ export default function DeskViewController({ desk }){
       isEditingName={isEditingName}
       height={height}
       isOnline={isOnline}
+      error={error}
+      isHeightLoading={isHeightLoading}
       setTempName={setTempName}
       setHeight={handleHeightChange}
       setHeightCommit={handleHeightCommit}
-      setIsOnline={handleSwitchChange}
+      setIsOnline={setIsOnline}
       handleNameConfirm={handleNameConfirm}
       handleNameEdit={handleNameEdit}
+      handleErrorClose={handleErrorClose}
+      handleSaveAll={handleSaveAll}
+      setMainDesk={setMainDesk}
     />
-  )
+  );
 }
 
 /* View */
-export function DeskView({ deskName, desk, tempName, isEditingName, height, isOnline, setTempName, setHeight, setHeightCommit, setIsOnline, handleNameConfirm, handleNameEdit }) {
+export function DeskView({
+  deskName,
+  desk,
+  tempName,
+  isEditingName,
+  height,
+  isOnline,
+  error,
+  isHeightLoading,
+  setTempName,
+  setHeight,
+  setHeightCommit,
+  setIsOnline,
+  handleNameConfirm,
+  handleNameEdit,
+  handleErrorClose,
+  handleSaveAll,
+  setMainDesk,
+}) {
   return (
-    <Card component='div' id='desk-view' sx={{ pt: 3, width: 700 }}>
+    <Card component='div' id='desk-view' sx={{ pt: 3, minWidth: 700 }}>
       <Grid component='section' id='desk-view-grid' container spacing={4}>
         {/* Left Panel - Controls */}
         <Grid component='section' id='desk-view-grid-left-panel' item xs={12} md={6}>
@@ -79,13 +169,14 @@ export function DeskView({ deskName, desk, tempName, isEditingName, height, isOn
             {/* Desk Name */}
             <Box component='span' id='desk-view-left-panel-desk-container' sx={{ display: 'flex', gap: 1, alignItems: 'flex-start' }}>
               <TextField
-                component='form'
+                component='div'
                 id='desk-view-left-panel-desk-name-textfield'
                 label="Desk Name"
                 value={isEditingName ? tempName : deskName}
                 onChange={(e) => setTempName(e.target.value)}
                 fullWidth
                 variant="outlined"
+                onKeyUp={e => { if (e.key == "Enter") handleNameConfirm(); }}
                 disabled={!isEditingName}
               />
               {isEditingName ? (
@@ -93,10 +184,10 @@ export function DeskView({ deskName, desk, tempName, isEditingName, height, isOn
                   component='button'
                   id='desk-view-left-panel-desk-name-edit-check-button'
                   color="primary"
-                  onClick={handleNameConfirm}
+                  //onClick={handleNameConfirm}
                   sx={{ mt: 1 }}
                 >
-                  <CheckIcon id='desk-view-left-panel-desk-name-check-icon' />
+                  <Check id='desk-view-left-panel-desk-name-check-icon' />
                 </IconButton>
               ) : (
                 <IconButton
@@ -106,7 +197,7 @@ export function DeskView({ deskName, desk, tempName, isEditingName, height, isOn
                   onClick={handleNameEdit}
                   sx={{ mt: 1 }}
                 >
-                  <EditIcon id='desk-view-left-panel-desk-name-icon-edit' />
+                  <Edit id='desk-view-left-panel-desk-name-icon-edit' />
                 </IconButton>
               )}
             </Box>
@@ -117,17 +208,25 @@ export function DeskView({ deskName, desk, tempName, isEditingName, height, isOn
             </Typography>
 
             {/* Height Control */}
-            <Box component='span' id='desk-view-left-panel-height-container' >
-              <Typography component='p' id='desk-view-left-panel-height-header' gutterBottom>Height: {height} cm</Typography>
+            <Box component='span' id='desk-view-left-panel-height-container'>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Typography component='p' id='desk-view-left-panel-height-header' gutterBottom>
+                  Height: {height} cm
+                </Typography>
+                {isHeightLoading && (
+                  <CircularProgress size={16} sx={{ color: '#1976d2' }} />
+                )}
+              </Box>
               <Slider
-                component='form'
+                component='div'
                 id='desk-view-left-panel-height-slider'
                 value={height}
                 onChange={setHeight}
-                onChangeCommitted={setHeightCommit}
+                //onChangeCommitted={setHeightCommit}
                 min={60}
                 max={130}
                 valueLabelDisplay="auto"
+                disabled={isHeightLoading || !isOnline}
               />
             </Box>
 
@@ -137,25 +236,25 @@ export function DeskView({ deskName, desk, tempName, isEditingName, height, isOn
               id='desk-view-left-panel-power-container'
               control={
                 <Switch
-                  component='form'
+                  component='div'
                   id='desk-view-left-panel-power-switch'
                   checked={isOnline}
-                  onChange={setIsOnline}
+                  onChange={() => setIsOnline(!isOnline)}
                   color="primary"
                 />
               }
               label={isOnline ? 'Online' : 'Offline'}
             />
 
-            {/* Error Warnings */}
+            {/* Error Warnings from desk */}
             {desk.lasterrors && desk.lasterrors.length > 0 && (
               <Alert component='section' id='desk-view-left-panel-error-alert' severity="warning">
                 <Typography component='p' id='desk-view-left-panel-error-alert-header' variant="subtitle2" gutterBottom>
                   Errors detected:
                 </Typography>
                 <ul id='desk-view-left-panel-error-alert-entry-list' style={{ margin: 0, paddingLeft: 20 }}>
-                  {desk.lasterrors.map((error, index) => (
-                    <li id={'desk-view-left-panel-error-alert-entry-' + index} key={index}>{error}</li>
+                  {desk.lasterrors.map((err, index) => (
+                    <li id={'desk-view-left-panel-error-alert-entry-' + index} key={index}>{err}</li>
                   ))}
                 </ul>
               </Alert>
@@ -165,17 +264,46 @@ export function DeskView({ deskName, desk, tempName, isEditingName, height, isOn
 
         {/* Right Panel - Desk Visualization */}
         <Grid component='section' id='desk-view-grid-right-panel' item xs={12} md={6}>
-          <img
+          <Box component='div' id='desk-view-right-panel-desk-image-container' sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+            <img
               id='desk-view-grid-right-panel-desk-image'
               src={deskImage}
               alt="Desk"
               style={{
-                maxWidth: '300px',
+                maxWidth: '275px',
                 height: 'auto',
               }}
-          />
+            />
+            <IconButton
+              component='div'
+              id='desk-view-right-panel-favorite-desk-button'
+              onClick={() => setMainDesk(desk)}
+              sx={{ top: -275, right: -150 }}
+            >
+              {desk.isFavorit ? <Star id='desk-view-right-panel-favorite-desk-star-icon' /> : <StarBorder id='desk-view-right-panel-favorite-desk-starborder-icon' />}
+            </IconButton>
+            <Button 
+              variant='contained' 
+              sx={{ top: -15, right: -140 }}
+              onClick={handleSaveAll}
+            >
+              Save
+            </Button>
+          </Box>
         </Grid>
       </Grid>
+
+      {/* Error Snackbar */}
+      <Snackbar
+        open={!!error}
+        autoHideDuration={6000}
+        onClose={handleErrorClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={handleErrorClose} severity="error" sx={{ width: '100%' }}>
+          {error}
+        </Alert>
+      </Snackbar>
     </Card>
   );
 }

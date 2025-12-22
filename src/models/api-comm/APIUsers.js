@@ -36,24 +36,24 @@ export async function asyncPostUser({ email, password, mainDeskId }) {
 // 400 returns: { success: false, message: "Email required" }
 // 409 returns: { success: false, message: "User exists" }
 // 500 returns: { success: false, message: "Failed to create user with permissions" }
-export async function asyncPostUserWithPermissions({ email, permissionIds }) {
+export async function asyncPostUserWithPermissions({ email, password, permissionIds }) {
   if (!email) {
-    console.log(`email (${email}) was null or empty`)
+    console.log(`email (${email}) or password ${password} was null or empty`)
     return null
   }
-  return asyncFetch(`${APIUSERSURL}/with-permissions`, "POST", { email, permissionIds })
+  return asyncFetch(`${APIUSERSURL}/with-permissions`, "POST", { email, password, permissionIds })
 }
 
 // 200 returns: { success: true, data: user }
 // 409 returns: { success: false, message: "Email already in use" }
 // 409 returns: { success: false, message: "Main Desk User exists" }
 // 500 returns: { success: false, message: "Failed to update user" }
-export async function asyncPutUser({ id, email, password, mainDeskId }) {
+export async function asyncPutUser({ id, email, password, main_desk_id }) {
   if (!id) {
     console.log(`id (${id}) was null or empty`)
     return null
   }
-  return asyncFetch(`${APIUSERSURL}/${id}`, "PUT", { email, password, mainDeskId })
+  return asyncFetch(`${APIUSERSURL}/${id}`, "PUT", { email, password, main_desk_id })
 }
 
 // 200 returns: { success: true, message: "User deleted successfully" }
@@ -169,9 +169,9 @@ export async function asyncGetUserScheduledTasks(id) {
 // 500 returns: { success: false, message: "Failed to change password" }
 export async function asyncPostNewPassword(id, currentPassword, newPassword) {
   console.log(id, currentPassword, newPassword)
-  if (!id || !currentPassword || !newPassword) {
+  if (!id || !newPassword) {
     console.log(
-      `id (${id}), currentPassword (${currentPassword}) or newPassword (${newPassword}) was null or empty`
+      `id (${id}) or newPassword (${newPassword}) was null or empty`
     )
     return null
   }
@@ -187,8 +187,8 @@ export async function asyncPostNewPassword(id, currentPassword, newPassword) {
 // 401 returns: { success: false, message: "Invalid email or password" }
 // 500 returns: { success: false, message: "Failed to login" }
 export async function asyncPostLoginUser(email, password) {
-  if (!email || !password) {
-    console.log(`email (${email}) or password (${password}) was null or empty`)
+  if (!email) {
+    console.log(`email (${email}) was null or empty`)
     return null
   }
   return asyncFetch(`${APIUSERSURL}/login`, "POST", { email, password })

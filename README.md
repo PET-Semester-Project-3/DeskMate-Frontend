@@ -38,6 +38,13 @@ Username: admin@deskmate.com
 Password: password
 ```
 
+Manager:
+
+```bash
+Username: manager@deskmate.com
+Password: password
+```
+
 Guest:
 
 ```bash

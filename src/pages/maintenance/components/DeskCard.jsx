@@ -13,9 +13,14 @@ import {
 } from '@mui/material';
 import WarningIcon from '@mui/icons-material/Warning';
 import deskImage from '../../../assets/desk.png';
+import { asyncPutDesk } from '../../../models/api-comm/APIDesk';
+import { useSnackbar } from 'notistack';
+
 
 /* Controller */
 export default function DeskCardController({ desk }) {
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [isOnline, setIsOnline] = React.useState(desk.is_online);
@@ -28,10 +33,14 @@ export default function DeskCardController({ desk }) {
     setAnchorEl(null);
   };
 
-  const handleSwitchChange = (event) => {
-    const newStatus = event.target.checked;
-    setIsOnline(newStatus);
-  };
+  const handleSwitchChange = async (_, newValue) => {
+      setIsOnline(newValue);
+      const updatedDesk = await asyncPutDesk(desk.id, { is_online: newValue });
+      if (updatedDesk.id)
+        enqueueSnackbar(`${desk.name}'s online state to: ${newValue ? 'online' : 'offline'}`, { variant: 'info' });
+      else
+        enqueueSnackbar(`${updatedDesk.message}`, { variant: 'error' });
+    };
 
   const open = Boolean(anchorEl);
   const id = open ? 'error-popover' : undefined;

@@ -4,20 +4,26 @@ import { Typography, Box, CircularProgress } from '@mui/material';
 import RestrictedPage from '../restricted/RestrictedPage'
 import DeskCard from './components/DeskCard';
 import { asyncGetUserDesks } from '../../models/api-comm/APIUsers'
+import { useSnackbar } from 'notistack';
 
 /* Controller */
 export default function MaintenancePageController() {
 
+  const { enqueueSnackbar } = useSnackbar();
+
   const [waitingForResponse, setWaitingForResponse] = React.useState(false);
 
   const [desks, setDesks] = React.useState([]);
-  const { session, setSession } = useSession();
+  const { session } = useSession();
 
   React.useEffect(() => {
     const getDesks = async (id) => {
       setWaitingForResponse(true);
       const desks = await asyncGetUserDesks(id);
-      setDesks(desks);
+      if (desks.length)
+        setDesks(desks);
+      else
+        enqueueSnackbar(`Failed to retrieve data`, { variant: 'error' });
       setWaitingForResponse(false);
     }
     getDesks(session?.user?.id);
@@ -31,7 +37,7 @@ export default function MaintenancePageController() {
 /* View */
 export function MaintenancePage({ desks, waitingForResponse }) {
   return (
-    <Box component='main' id='maintenance-page' sx={{ boxShadow: 2 }}>
+    <Box component='main' id='maintenance-page' sx={{ width: '100%' }}>
       <Typography
         component='h4'
         id='maintenance-page-header'

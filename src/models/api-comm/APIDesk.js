@@ -54,4 +54,16 @@ export async function asyncDeleteDesk(id) {
   return asyncFetch(`${APIDESKSURL}/${id}`, 'DELETE');
 }
 
+// 200 returns: { success: true, data: desk }
+// 400 returns: { success: false, message: "Height must be a number" }
+// 404 returns: { success: false, message: "Desk not found" }
+// 500 returns: { success: false, message: "Failed to set desk height" }
+export async function asyncSetDeskHeight(id, height) {
+  if (!id) {
+    console.log(`id (${id}) was null or empty`)
+    return null;
+  }
+  return asyncFetch(`${APIDESKSURL}/${id}/height`, 'PUT', { height });
+}
+
 //#endregion
