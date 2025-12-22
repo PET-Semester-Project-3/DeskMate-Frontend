@@ -53,4 +53,15 @@ export async function asyncDeleteScheduledTask(id) {
   return asyncFetch(`${APISCHEDULEDTASKSURL}/${id}`, 'DELETE');
 }
 
+// 200 returns: { success: true, data: task }
+// 404 returns: { success: false, message: "ScheduledTask not found" }
+// 500 returns: { success: false, message: "Failed to cancel scheduled task" }
+export async function asyncCancelScheduledTask(id) {
+  if (!id) {
+    console.log(`id (${id}) was null or empty`)
+    return null;
+  }
+  return asyncFetch(`${APISCHEDULEDTASKSURL}/${id}/cancel`, 'POST');
+}
+
 //#endregion
