@@ -29,7 +29,7 @@ http://localhost:5173/
 
 ## Users and Passwords
 
-Due to this being a demo, there has been set up 2 user types (1 Admin, 1 Guest) with the following credentials:
+Due to this being a demo, there has been set up 3 user types with the following credentials:
 
 Admin:
 
