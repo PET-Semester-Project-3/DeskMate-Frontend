@@ -149,22 +149,24 @@ export function SignInPage({ apiReady, windowHeight, imageSrc, username, changeU
             <TextField
               component='div'
               id='signin-username-textfield'
+              inputProps={{ 'data-testid': 'username-input' }}
               error={usernameErrorText == '' ? false : true}
               label='Username'
-              value={username} 
-              onChange={changeUsername} 
+              value={username}
+              onChange={changeUsername}
               variant='outlined'
               helperText={usernameErrorText}
               onKeyUp={e => { if (e.key == "Enter") signinFunction(); }}
-              sx={{ width: '100%' }} 
+              sx={{ width: '100%' }}
             />
             <FormControl component='div' id='signin-password-textfield' sx={{ m: 1, width: '100%' }} variant="outlined">
               <InputLabel component='label' id='signin-password-textfield-inputlabel' error={passwordErrorText == '' ? false : true} >Password</InputLabel>
               <OutlinedInput
                 id='signin-password-textfield-outlinedinput'
+                inputProps={{ 'data-testid': 'password-input' }}
                 error={passwordErrorText == '' ? false : true}
                 label="Password"
-                value={password} 
+                value={password}
                 type={showPassword ? 'text' : 'password'}
                 onChange={changePassword}
                 onKeyUp={e => { if (e.key == "Enter") signinFunction(); }}
